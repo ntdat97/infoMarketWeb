@@ -4,7 +4,9 @@ import Header from "../common/Header";
 import Sidebar from "../common/SideBar";
 import { useFormik } from "formik";
 import { Uploader } from "../common/Upload";
-import { ModalSubmit } from "./ModalSubmit";
+import { ModalSubmit } from "../modal/ModalSubmit";
+import { LoadingModal } from "../modal/LoadingModal";
+import { useAuth } from "../../fb/auth";
 import {
   MdAccessTime,
   MdImage,
@@ -14,8 +16,10 @@ import {
   MdSyncDisabled,
   MdSync,
 } from "react-icons/md";
+import toast, { Toaster } from "react-hot-toast";
 import CarouselComponent from "../common/CaroselComponent";
 import DatePicker, { registerLocale } from "react-datepicker";
+import { ErrorModal } from "../modal/ErrorModal";
 import vi from "date-fns/locale/vi";
 import * as yup from "yup";
 import "react-datepicker/dist/react-datepicker.css";
@@ -55,7 +59,10 @@ const rightOptions = [
 const CreateProject = () => {
   const [caroselImage, setCaroselImage] = useState([]);
   const [isShowUploader, setIsShowUploader] = useState(false);
-
+  const [modalSubmitVisible, setModalSubmitVisible] = useState(false);
+  const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const { user } = useAuth();
   useEffect(() => {
     if (caroselImage.length > 0) {
       formik.setFieldValue("caroselImage", caroselImage);
@@ -74,7 +81,6 @@ const CreateProject = () => {
       caroselImage: [],
       projectName: "",
       price: "",
-      unit: "",
       maxUnit: "",
       openDay: "",
       closeDay: "",
@@ -82,7 +88,6 @@ const CreateProject = () => {
       usedFor: "",
       requirements: "",
       contact: "",
-      test: "",
     },
     validationSchema: yup.object().shape({
       projectName: yup
@@ -113,11 +118,28 @@ const CreateProject = () => {
         .email("Vui lòng nhập đúng định dạng")
         .required("Vui lòng nhập email"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: (values) => handleCreate(values),
   });
-
+  async function handleCreate(values) {
+    setModalLoadingVisible(true);
+    console.log(formik.values);
+    const token = await user.getIdToken();
+    const response = await fetch("/api/posts/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ data: { values } }),
+    });
+    if (response.ok) {
+      setModalLoadingVisible(false);
+      setModalSubmitVisible(true);
+    } else {
+      setModalLoadingVisible(false);
+      setErrorModalVisible(true);
+    }
+  }
   return (
     <>
       {isShowUploader ? (
@@ -129,6 +151,18 @@ const CreateProject = () => {
         />
       ) : null}
       <Header />
+      <ModalSubmit
+        modalVisible={modalSubmitVisible}
+        setModalVisible={setModalSubmitVisible}
+      />
+      <ErrorModal
+        modalVisible={errorModalVisible}
+        setModalVisible={setErrorModalVisible}
+      />
+      <LoadingModal
+        modalVisible={modalLoadingVisible}
+        setModalVisible={setModalLoadingVisible}
+      />
       <div className="flex flex-row ">
         <div className="w-1/6 sticky border-r border-[#e6e6e6] top-16 self-start h-auto ">
           <Sidebar />
@@ -136,7 +170,6 @@ const CreateProject = () => {
         <div className="flex w-11/12 ">
           <div className=" max-w-[1108px] mx-auto mt-4">
             <div style={{ backgroundColor: "white" }}>
-              <ModalSubmit />
               <div className="text-center items-center text-4xl text-[#2b2d38] font-semibold py-5 mb-4">
                 Tạo dự án thu thập ảnh
               </div>
@@ -172,7 +205,7 @@ const CreateProject = () => {
                     onChange={formik.handleChange}
                   />
                   <div style={{ paddingVertical: 1.5 }} className="text-xl ">
-                    Microsoft Corporation
+                    {user.displayName}
                   </div>
                   {formik.errors.price && formik.touched.price && (
                     <p style={{ color: "red" }}>{formik.errors.price}</p>
@@ -188,6 +221,7 @@ const CreateProject = () => {
                       className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
                       placeholder="Price"
                       name="price"
+                      type="number"
                       value={formik.values.price}
                       onChange={formik.handleChange}
                     />
@@ -212,6 +246,7 @@ const CreateProject = () => {
                       className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
                       placeholder="Maximun unit"
                       name="maxUnit"
+                      type="number"
                       value={formik.values.maxUnit}
                       onChange={formik.handleChange}
                     />
@@ -279,7 +314,7 @@ const CreateProject = () => {
                     <a /* onPress={() => navigation.navigate('Profilediver')} */
                     >
                       <img
-                        src="/microsoft.png"
+                        src={user.photoURL}
                         style={{ height: 70, width: 70 }}
                       />
                     </a>
@@ -372,23 +407,19 @@ const CreateProject = () => {
                 >
                   Contact requester
                 </div>
-                <Link href="#">
-                  <a>
-                    <input
-                      style={{
-                        borderColor:
-                          formik.errors.contact && formik.touched.contact
-                            ? "red"
-                            : "#e5e7eb",
-                      }}
-                      className="w-11/12 text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold text-lg   text-[#454545] focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300 "
-                      placeholder="Địa chỉ email liên lạc"
-                      name="contact"
-                      value={formik.values.contact}
-                      onChange={formik.handleChange}
-                    />
-                  </a>
-                </Link>
+                <input
+                  style={{
+                    borderColor:
+                      formik.errors.contact && formik.touched.contact
+                        ? "red"
+                        : "#e5e7eb",
+                  }}
+                  className="w-11/12 text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold text-lg   text-[#454545] focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300 "
+                  placeholder="Địa chỉ email liên lạc"
+                  name="contact"
+                  value={formik.values.contact}
+                  onChange={formik.handleChange}
+                />
 
                 <div
                   style={{

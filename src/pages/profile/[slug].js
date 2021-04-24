@@ -1,5 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
+import Profile from "../../components/profile/Profile";
+import Login from "../../components/profile/Login";
+import { useAuth } from "../../fb/auth";
+import { firebaseClient } from "../../fb/firebaseClient";
+import Header from "../../components/common/Header";
+import Sidebar from "../../components/common/Sidebar";
+import { useRouter } from "next/router";
+import { useAsyncList } from "@react-stately/data";
 export default function ProfileViewer() {
+  let list = useAsyncList({
+    async load() {
+      let res = await fetch("/api/publicPost/all", {
+        headers: {
+          ContentType: "application/json",
+        },
+      });
+      let json = await res.json();
+
+      return { items: json };
+    },
+  });
+  console.log(list.items);
   return (
     <div className="flex flex-col bg-[#F8F8F8] max-w-[789px] mx-auto ">
       <div style={{ backgroundColor: "white" }}>

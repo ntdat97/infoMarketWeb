@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = "postgres://pxwndyeurkilvv:aa7c6e39a661f2c5c14d03f3b56775053c2c90dc2ef5d00b0641a8bacf323f77@ec2-3-234-85-177.compute-1.amazonaws.com:5432/d3c4lqr7mqtoe2"
+  url      = "postgres://prisma:prisma@localhost:5432"
 }
 
 generator client {
@@ -14,6 +14,7 @@ model User {
   email     String    @unique
   role      Role      @default(USER)
   name      String?
+  providers String
   username String? @unique
   photoURL  String?
   website String?
@@ -25,12 +26,12 @@ model Project {
   id        String    @id @default(cuid())
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @default(now())
-  status Status
+  status Status @default(PENDING)
   complete isComplete @default(UNCOMPLETE)
-  coverURL String[]
+  caroselImage Json[]
   explanImagesURL String[]
   slug String @unique
-  title String
+  projectName String
   price Float
   maxUnit Int
   openDay DateTime
@@ -42,7 +43,9 @@ model Project {
   media Media[]
   author     User        @relation(fields: [authorId], references: [id])
   authorId String
+  authorName String
 }
+
 model Media {
   id        String    @id @default(cuid()) 
   url String
@@ -50,7 +53,7 @@ model Media {
   updatedAt  DateTime    @default(now()) 
   isApprove isApprove @default(PENDING)
   user    User    @relation(fields: [userId], references: [id])
-  userId  String @unique
+  userId  String
   project    Project    @relation(fields: [projectId], references: [id])
   projectId String
 }

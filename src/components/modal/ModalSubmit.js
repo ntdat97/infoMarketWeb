@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { useRouter } from "next/router";
 export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
+  const router = useRouter();
   const navigate = () => {
     setModalVisible(!modalVisible);
-    /* navigation.navigate('Project'); */
+    router.push("/");
   };
   return (
     <Modal
@@ -44,8 +46,8 @@ export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
             Thành công!
           </div>
           <div className="items-center font-medium text-[#333333] text-center">
-            Hình ảnh của bạn đã được gởi và chờ xét duyệt. <br /> Bạn có thể
-            tiếp tuc với những dự án khác
+            Dự án của bạn đã được gởi và chờ xét duyệt. <br /> Bạn có thể tiếp
+            tuc với những dự án khác
           </div>
           <button
             className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1"

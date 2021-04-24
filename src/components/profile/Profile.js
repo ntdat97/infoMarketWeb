@@ -1,21 +1,58 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { IoEarth } from "react-icons/io5";
 import { useAuth } from "../../fb/auth";
+import { firebaseClient } from "../../fb/firebaseClient";
+import { useAsyncList } from "@react-stately/data";
+
 /* 
 import { firebase } from "../firebase/config"; */
 /* import Login from "./Login"; */
 export default function Profile() {
+  const { user } = useAuth();
   const { signout } = useAuth();
+
+  const [initValues, setInitValues] = useState({
+    id: user.id,
+    email: user.email,
+    role: "USER",
+    name: "",
+    providers: "",
+    username: "",
+    photoURL: user.photoURL,
+    website: null,
+    bio: null,
+  });
+  let me = useAsyncList({
+    async load() {
+      const getTokenResult = await firebaseClient
+        .auth()
+        .currentUser.getIdTokenResult(true);
+      console.log(getTokenResult);
+      let res = await fetch("/api/profile/me", {
+        headers: {
+          Authorization: `Bearer ${await user.getIdToken(true)}`,
+        },
+      });
+
+      let json = await res.json();
+      setInitValues(json[0]);
+      return { items: json };
+    },
+  });
   return (
     <div className="flex flex-col w-full bg-[#F8F8F8] max-w-[1108px] mx-auto ">
       <div className="px-[22px] bg-white">
         <div className="flex flex-row mt-3">
           <div className="w-1/12 items-center py-3">
-            <img src="/avatar.png" style={{ width: 80, height: 80 }} />
+            <img
+              src={user.photoURL ? user.photoURL : "/avatar.png"}
+              style={{ width: 80, height: 80 }}
+              className="rounded-full"
+            />
           </div>
           <div className="w-10/12 flex flex-col  justify-center">
             <div style={{ paddingBottom: 5, fontSize: 18 }}>
-              email@gmail.com
+              {user.email && user.email}
             </div>
             <div style={{ fontSize: 18, color: "#868483" }}>87 redivs</div>
           </div>
@@ -23,7 +60,7 @@ export default function Profile() {
         <div
           style={{ paddingHorizontal: 22, paddingVertical: 10, fontSize: 15 }}
         >
-          Description
+          "{initValues.bio}"
         </div>
         <div className="flex flex-row  py-3 items-center">
           <IoEarth className="mr-3" size={24} />
@@ -65,7 +102,7 @@ export default function Profile() {
         </div>
         {/* <Icon name="chevron-right" size={24} color="#969696" /> */}
       </a>
-      <buttom onClick={signout}>dangxuat</buttom>
+      <button onClick={signout}>dangxuat</button>
     </div>
   );
 }

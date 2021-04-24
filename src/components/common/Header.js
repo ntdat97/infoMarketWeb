@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-
 export default function Header() {
   const [slideNav, setSlideNav] = useState("translate-y-0");
   useEffect(() => {

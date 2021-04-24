@@ -1,31 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../fb/auth";
-import { firebaseClient } from "../../fb/firebaseClient";
+
 import Link from "next/link";
 function Login() {
   const { signinWithGoogle } = useAuth();
-  const { user } = useAuth();
 
-  const getClaims = async () => {
-    const getTokenResult = await firebaseClient
-      .auth()
-      .currentUser.getIdTokenResult(true);
-  };
-  useEffect(() => {
-    fetch("http://192.168.2.137:1234/api/hello", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
-      },
-    })
-      .then((response) => console.log(response.json()))
-      .catch((error) => console.error(error));
-  }, []);
-  useEffect(() => {
-    if (!user) return;
-    getClaims();
-  }, [user]);
   return (
     <body className="flex w-full ">
       <div className=" py-6 w-full">

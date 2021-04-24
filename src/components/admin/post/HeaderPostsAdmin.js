@@ -5,13 +5,14 @@ import React from "react";
 export const HeaderPostsAdmin = ({ user }) => {
   let list = useAsyncList({
     async load() {
-      let res = await fetch("/api/admin/posts/posts-count-by-status", {
+      let res = await fetch("/api/posts/posts-count-by-status", {
         headers: {
           Authorization: `Bearer ${await user.getIdToken(true)}`,
         },
       });
 
       let json = await res.json();
+      console.log(json);
       return { items: json };
     },
   });
@@ -69,7 +70,7 @@ export const HeaderPostsAdmin = ({ user }) => {
             </a>
           </ActiveLink>
 
-          <ActiveLink
+          {/* <ActiveLink
             href={{
               pathname: "/admin/posts/[status]",
               query: { status: "draft" },
@@ -83,7 +84,7 @@ export const HeaderPostsAdmin = ({ user }) => {
                 list.items[0]?.totalPostsStatusDRAFT}
               )
             </a>
-          </ActiveLink>
+          </ActiveLink> */}
 
           <ActiveLink
             href={{

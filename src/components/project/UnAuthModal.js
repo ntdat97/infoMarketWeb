@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
+export const UnAuthModal = ({ setModalVisible, modalVisible }) => {
   const navigate = () => {
     setModalVisible(!modalVisible);
     /* navigation.navigate('Project'); */
@@ -13,7 +13,6 @@ export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
       contentLabel="Thành Công"
       style={{
         overlay: {
-          zIndex: 50,
           position: "fixed",
           top: 0,
           left: 0,
@@ -23,7 +22,6 @@ export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
         },
         content: {
           position: "absolute",
-
           top: "100px",
           left: "40px",
           right: "40px",
@@ -41,14 +39,11 @@ export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
       <div className="justify-center items-center mt-5 flex">
         <div className="m-5 bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col">
           <div className="my-3 text-center text-lg font-bold text-[#333333]">
-            Thành công!
+            Vui lòng đăng nhập để gởi ảnh
           </div>
-          <div className="items-center font-medium text-[#333333] text-center">
-            Hình ảnh của bạn đã được gởi và chờ xét duyệt. <br /> Bạn có thể
-            tiếp tuc với những dự án khác
-          </div>
+
           <button
-            className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1"
+            className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1 "
             onClick={navigate}
           >
             <div style={{ color: "white", fontSize: 15, paddingVertical: 3 }}>

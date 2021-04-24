@@ -10,6 +10,8 @@ export const Uploader = ({
   setIsOpen,
   outFiles,
   setOutFile,
+  /* setCountTempFiles, */
+  isUploadButtonDisable = false,
   isAllowMultipleUploads = true,
 }) => {
   const [uppy, setUppy] = useState(null);
@@ -27,6 +29,9 @@ export const Uploader = ({
         console.log("Upload result:", result);
         setOutFile(result.successful);
       });
+    /* .on("files-added", (file) => {
+        setCountTempFiles(file.lenght);
+      }); */
 
     setUppy(uppyInstance);
   }, []);
@@ -45,6 +50,7 @@ export const Uploader = ({
         <DashboardModal
           open={true}
           disablePageScrollWhenModalOpen={false}
+          hideUploadButton={isUploadButtonDisable}
           uppy={uppy}
           closeAfterFinish
           // closeModalOnClickOutside

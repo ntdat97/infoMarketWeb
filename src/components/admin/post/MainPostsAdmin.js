@@ -10,16 +10,16 @@ import React, { useEffect, useMemo } from "react";
 
 export const MainPostsAdmin = ({ user }) => {
   const router = useRouter();
-
   let list = useAsyncList({
     async load() {
-      let res = await fetch(`/api/admin/posts/${router.query.status}`, {
+      let res = await fetch(`/api/posts/${router.query.status}`, {
         headers: {
           Authorization: `Bearer ${await user.getIdToken(true)}`,
         },
       });
 
       let json = await res.json();
+      console.log(json);
       return { items: json };
     },
   });
@@ -43,28 +43,18 @@ export const MainPostsAdmin = ({ user }) => {
                 }}
               >
                 <a className="hover:underline font-semibold text-base mb-1">
-                  {row.original.title}
+                  {row.original.projectName}
                 </a>
               </Link>
               <span className="text-xs text-gray-500">
                 Đăng bởi{" "}
                 <Link
                   href={{
-                    pathname: "/",
+                    pathname: `/profile/${row.original.author.username}`,
                   }}
                 >
                   <a className="hover:underline font-semibold">
                     {row.original.author.name}{" "}
-                  </a>
-                </Link>
-                trong{" "}
-                <Link
-                  href={{
-                    pathname: "/",
-                  }}
-                >
-                  <a className="hover:underline font-semibold">
-                    {row.original.topic.name}{" "}
                   </a>
                 </Link>
               </span>
@@ -76,13 +66,13 @@ export const MainPostsAdmin = ({ user }) => {
         Header: "Trạng thái",
         accessor: "status",
         Cell: ({ row }) => {
-          if (row.original.status === "DRAFT") {
+          /*  if (row.original.status === "DRAFT") {
             return (
               <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#096dd9] bg-[#e6f7ff] border border-[#91d5ff]">
                 {row.original.status}
               </span>
             );
-          }
+          } */
           if (row.original.status === "PUBLISHED") {
             return (
               <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#389e0d] bg-[#f6ffed] border border-[#b7eb8f]">
@@ -118,6 +108,7 @@ export const MainPostsAdmin = ({ user }) => {
         Header: "Cập nhật gần đây",
         accessor: "updatedAt",
         Cell: ({ row }) => {
+          console.log(row);
           return (
             <span className="text-sm">
               <Tooltip

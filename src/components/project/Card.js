@@ -2,7 +2,7 @@ import React from "react";
 import { MdStar, MdStarHalf } from "react-icons/md";
 import { IoTrophyOutline } from "react-icons/io5";
 import Link from "next/link";
-export default function Card() {
+export default function Card({ data, index }) {
   const RenderStar = () => {
     const star = 4.5;
     var i;
@@ -20,18 +20,21 @@ export default function Card() {
   };
   return (
     <>
-      <div className="flex rounded-md shadow mt-4 mr-4 ml-4 flex-col hover:bg-gray-100 hover:bg-gradient-to-r hover:from-bg-white hover:to-bg-gray-100 transition duration-100 ease-linear">
-        <Link href="/project/123">
+      <div
+        key={index}
+        className="flex rounded-md shadow mt-4 mr-4 ml-4 flex-col hover:bg-gray-100 hover:bg-gradient-to-r hover:from-bg-white hover:to-bg-gray-100 transition duration-100 ease-linear"
+      >
+        <Link href={`/project/${data.slug}`}>
           <a
             className="p-0.5 justify-center relative overflow-hidden rounded-t-lg w-auto h-[171px] bg-cover bg-center object-fill"
             style={{
-              backgroundImage: `url(./thumbnail.jpg)`,
+              backgroundImage: `url(${data.caroselImage[0].url})`,
             }}
           >
             <div className="absolute top-0 right-0 bottom-0 left-0 bg-[rgba(70,70,70,0.5)]"></div>
             <div className="flex flex-col absolute">
               <div className="line-clamp-1 text-white text-3xl font-bold px-3 pt-1">
-                Pictures of books in library
+                {data.projectName}
               </div>
               <div className="flex flex-row items-center mt-[5px]">
                 <IoTrophyOutline
@@ -39,21 +42,23 @@ export default function Card() {
                   color="white"
                   size="20"
                 />
-                <div className="text-base text-white items-center">$0.25</div>
+                <div className="text-base text-white items-center">
+                  ${data.price}
+                </div>
                 <div className="text-base text-white items-center">/</div>
                 <div className="text-base text-white items-center">Photo</div>
               </div>
             </div>
             <div className="absolute right-0 bottom-9 z-10">
               <div className="text-[#00574a] bg-[#e7f5f2] rounded-l-3xl p-1 pl-5 pr-[10px]">
-                COMPLETED
+                {data.complete}
               </div>
             </div>
           </a>
         </Link>
-        <Link href="#">
+        <Link href={`/project/${data.slug}`}>
           <a className="flex flex-row items-center p-4">
-            <div>MicroSoft Corporation</div>
+            <div>{data.authorName}</div>
             <div className="flex flex-row items-center ml-2 mt-[2px]">
               <RenderStar />
             </div>

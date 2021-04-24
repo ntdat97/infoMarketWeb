@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
+export const ErrorModal = ({ setModalVisible, modalVisible }) => {
   const navigate = () => {
     setModalVisible(!modalVisible);
     /* navigation.navigate('Project'); */
@@ -41,11 +41,7 @@ export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
       <div className="justify-center items-center mt-5 flex">
         <div className="m-5 bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col">
           <div className="my-3 text-center text-lg font-bold text-[#333333]">
-            Thành công!
-          </div>
-          <div className="items-center font-medium text-[#333333] text-center">
-            Hình ảnh của bạn đã được gởi và chờ xét duyệt. <br /> Bạn có thể
-            tiếp tuc với những dự án khác
+            Có lỗi xảy ra, vui lòng thử lại
           </div>
           <button
             className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1"
