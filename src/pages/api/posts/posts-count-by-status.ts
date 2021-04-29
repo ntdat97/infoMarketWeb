@@ -6,19 +6,15 @@ import prisma from "../../../libs/prisma";
 import { NextApiResponse } from "next";
 
 const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
-  const totalPostsStatusALL = await prisma.project.count();
-  /*   const totalPostsStatusDRAFT = await prisma.post.count({
+  const totalPostsStatusALL = await prisma.project.count({
     where: {
       authorId: req.uid,
-      status: {
-        equals: 'DRAFT',
-      },
     },
-  }); */
+  });
 
   const totalPostsStatusPENDING = await prisma.project.count({
     where: {
-      /*       authorId: req.uid, */
+      authorId: req.uid,
       status: {
         equals: "PENDING",
       },
@@ -27,7 +23,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
 
   const totalPostsStatusPUBLISHED = await prisma.project.count({
     where: {
-      /* authorId: req.uid, */
+      authorId: req.uid,
       status: {
         equals: "PUBLISHED",
       },
@@ -36,7 +32,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
 
   const totalPostsStatusDELETED = await prisma.project.count({
     where: {
-      /* authorId: req.uid, */
+      authorId: req.uid,
       status: {
         equals: "DELETED",
       },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import Modal from "react-modal";
@@ -12,7 +12,12 @@ import {
   MdSync,
 } from "react-icons/md";
 
-export default function CarouselComponent({ data }) {
+export default function CarouselComponent({
+  data,
+  isEdit = false,
+  del,
+  setCarousel,
+}) {
   const [openImageModal, setOpenImageModal] = useState(false);
   let winHeight = 1366;
   const navigate = () => {
@@ -22,6 +27,12 @@ export default function CarouselComponent({ data }) {
   useEffect(() => {
     winHeight = window.innerHeight;
   });
+  /*   const carouselRef = useRef(null);
+  const snapItemOnDel = ({ index }) => {
+    del();
+    console.log(carouselRef.current);
+    carouselRef.current.props.selectedItem = index - 1;
+  }; */
   return (
     <>
       <Modal
@@ -67,9 +78,18 @@ export default function CarouselComponent({ data }) {
             showThumbs={false}
             infiniteLoop={true}
             dynamicHeight={true}
+            selectedItem={2}
           >
             {data.map((item, index) => (
               <div key={index} className=" w-full  bg-[#cfcfcf] ">
+                {isEdit && (
+                  <button
+                    onClick={del}
+                    className="absolute top-2 focus:outline-none bg-gray-100 bg-opacity-50 rounded z-40 right-10"
+                  >
+                    <MdClear size={30} color="red" />
+                  </button>
+                )}
                 <img
                   className="object-contain w-full max-h-[600px]"
                   src={item.url}
@@ -79,7 +99,7 @@ export default function CarouselComponent({ data }) {
           </Carousel>
         </div>
       </Modal>
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-row  justify-center">
         <Carousel
           onClickItem={() => setOpenImageModal(!openImageModal)}
           autoPlay={true}
@@ -87,6 +107,8 @@ export default function CarouselComponent({ data }) {
           infiniteLoop={true}
           swipeable={true}
           dynamicHeight={true}
+          onChange={setCarousel}
+          /* ref={carouselRef} */
         >
           {data.map((item, index) => (
             <div

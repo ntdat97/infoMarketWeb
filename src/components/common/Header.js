@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { MenuUser } from "./MenuUser";
+import { useAuth } from "../../fb/auth";
 export default function Header() {
   const [slideNav, setSlideNav] = useState("translate-y-0");
+  const { user } = useAuth();
   useEffect(() => {
     var threshold = 0;
     let lastScrollY = window.pageYOffset;
@@ -33,17 +36,21 @@ export default function Header() {
           slideNav
         }
       >
-        <div className=" flex flex-row justify-between items-center">
+        <div className=" flex justify-between items-center">
           <Link href="/">
             <a>
               <img src="/icon.png" className="h-[45px] w-[45px]" />
             </a>
           </Link>
-          <Link href="/new">
-            <a className="text-center bg-gray-300 justify-center items-center rounded-md h-full p-2.5">
-              <div className="">Thêm dự án mới</div>
-            </a>
-          </Link>
+
+          <div className="items-center flex flex-row">
+            <Link href="/new">
+              <a className="text-center shadow bg-[#21b532] justify-center items-center rounded-xl h-full py-1 px-2">
+                <div className="text-white">Thêm mới</div>
+              </a>
+            </Link>
+            <MenuUser />
+          </div>
         </div>
       </div>
     </>

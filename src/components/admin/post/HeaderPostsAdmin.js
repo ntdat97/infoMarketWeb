@@ -5,7 +5,7 @@ import React from "react";
 export const HeaderPostsAdmin = ({ user }) => {
   let list = useAsyncList({
     async load() {
-      let res = await fetch("/api/posts/posts-count-by-status", {
+      let res = await fetch("/api/admin/posts/posts-count-by-status", {
         headers: {
           Authorization: `Bearer ${await user.getIdToken(true)}`,
         },

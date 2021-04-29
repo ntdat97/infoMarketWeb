@@ -1,4 +1,4 @@
-import { useTable } from 'react-table';
+import { useTable } from "react-table";
 
 export const TableData = ({ columns, data }) => {
   const {
@@ -21,9 +21,9 @@ export const TableData = ({ columns, data }) => {
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="z-50 bg-white font-semibold text-left text-xs px-6 py-3 border-b border-gray-800"
+                  className="z-50 bg-white font-semibold  text-left px-3 py-3 border-b border-gray-800"
                 >
-                  {column.render('Header')}
+                  {column.render("Header")}
                 </th>
               ))}
             </tr>
@@ -36,8 +36,8 @@ export const TableData = ({ columns, data }) => {
               <tr {...row.getRowProps()} className="border-b hover:bg-gray-50">
                 {row.cells.map((cell) => {
                   return (
-                    <td {...cell.getCellProps()} className="px-6 py-3">
-                      {cell.render('Cell')}
+                    <td {...cell.getCellProps()} className="px-3 py-3">
+                      {cell.render("Cell")}
                     </td>
                   );
                 })}

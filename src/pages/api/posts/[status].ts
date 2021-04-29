@@ -17,7 +17,13 @@ const PostsAPI = async (
       orderBy: {
         updatedAt: "desc",
       },
+      where: {
+        authorId: req.uid,
+      },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -27,45 +33,15 @@ const PostsAPI = async (
         updatedAt: "desc",
       },
       where: {
-        /* authorId: req.uid, */
-        status: {
-          equals: Status.PENDING,
-        },
-      },
-      include: {
-        author: true,
-      },
-    });
-  } /* else if (status === "draft") {
-    getAllPostsByStatus = await prisma.project.findMany({
-      orderBy: {
-        updatedAt: "desc",
-      },
-      where: {
         authorId: req.uid,
         status: {
-          equals: Status.DRAFT,
-        },
-      } ,
-      include: {
-        author: true,
-        topic: true,
-      }, 
-    });
-  } */ else if (
-    status === "pending"
-  ) {
-    getAllPostsByStatus = await prisma.project.findMany({
-      orderBy: {
-        updatedAt: "desc",
-      },
-      where: {
-        /* authorId: req.uid, */
-        status: {
           equals: Status.PENDING,
         },
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -75,12 +51,15 @@ const PostsAPI = async (
         updatedAt: "desc",
       },
       where: {
-        /* authorId: req.uid, */
+        authorId: req.uid,
         status: {
           equals: Status.PUBLISHED,
         },
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -90,12 +69,15 @@ const PostsAPI = async (
         updatedAt: "desc",
       },
       where: {
-        /* authorId: req.uid, */
+        authorId: req.uid,
         status: {
           equals: Status.DELETED,
         },
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -104,4 +86,8 @@ const PostsAPI = async (
   return res.status(200).send(getAllPostsByStatus);
 };
 
-export default use(allowedHttpMethod("GET"), addRequestId)(PostsAPI);
+export default use(
+  allowedHttpMethod("GET"),
+  addRequestId,
+  addUserIdAndRole
+)(PostsAPI);

@@ -5,7 +5,7 @@ import { Uploader } from "../../components/common/Upload";
 import { ModalSubmit } from "../../components/project/ModalSubmit";
 import { UnAuthModal } from "../../components/project/UnAuthModal";
 import Header from "../../components/common/Header";
-import Sidebar from "../../components/common/Sidebar";
+import SideBar from "../../components/common/SideBar";
 import { useAsyncList } from "@react-stately/data";
 import { useRouter } from "next/router";
 import { Loading } from "../../components/common/Loading";
@@ -70,7 +70,6 @@ const ProjectInfo = ({ post, author }) => {
 export default function ProjectDetail() {
   const [coverImage, setCoverImage] = useState([]);
   const [isShowUploader, setIsShowUploader] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [modalAuthVisible, setModalAuthVisible] = useState(false);
   const [status, setStatus] = useState(undefined);
   const [post, setPost] = useState(undefined);
@@ -92,6 +91,7 @@ export default function ProjectDetail() {
     });
 
     const data = await req.json();
+    console.log(data);
     const req1 = await fetch(`/api/profile/${data?.authorId}`, {
       headers: {
         ContentType: "application/json",
@@ -124,7 +124,7 @@ export default function ProjectDetail() {
       toast.error("Có lỗi xảy ra, Vui lòng thử lại.");
     }
   }
-  async function countPhoto(values) {
+  /* async function countPhoto(values) {
     const response = await fetch("/api/sendPhoto/count-photo", {
       method: "POST",
       headers: {
@@ -134,7 +134,7 @@ export default function ProjectDetail() {
     });
     let json = await response.json();
     setCountUserPhoto(json);
-  }
+  } */
   useEffect(() => {
     fetchPost();
   }, [slug]);
@@ -217,7 +217,7 @@ export default function ProjectDetail() {
           />
           <div className="flex flex-row ">
             <div className="w-1/6 sticky top-16 self-start h-auto border-r border-[#e6e6e6] ">
-              <Sidebar />
+              <SideBar />
             </div>
             <div className="flex w-11/12 ">
               <div className="max-w-[1108px] mx-auto mt-4">

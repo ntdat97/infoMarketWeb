@@ -1,6 +1,6 @@
 import Card from "../components/project/Card";
 import Header from "../components/common/Header";
-import Sidebar from "../components/common/Sidebar";
+import SideBar from "../components/common/SideBar";
 import { Loading } from "../components/common/Loading";
 import React, { useEffect } from "react";
 import { useAuth } from "../fb/auth";
@@ -26,7 +26,7 @@ export default function Home() {
       <Header />
       <div className="flex flex-row ">
         <div className="w-1/6 sticky top-16 border-r border-[#e6e6e6]  self-start">
-          <Sidebar />
+          <SideBar />
         </div>
         <div className=" w-11/12">
           <div className="max-w-[1108px] mx-auto ">

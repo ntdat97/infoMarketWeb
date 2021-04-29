@@ -12,14 +12,13 @@ export const MainPostsAdmin = ({ user }) => {
   const router = useRouter();
   let list = useAsyncList({
     async load() {
-      let res = await fetch(`/api/posts/${router.query.status}`, {
+      let res = await fetch(`/api/admin/posts/${router.query.status}`, {
         headers: {
           Authorization: `Bearer ${await user.getIdToken(true)}`,
         },
       });
 
       let json = await res.json();
-      console.log(json);
       return { items: json };
     },
   });
@@ -38,7 +37,7 @@ export const MainPostsAdmin = ({ user }) => {
             <div className="flex flex-col">
               <Link
                 href={{
-                  pathname: `/[slug]/preview`,
+                  pathname: `/project/[slug]/preview`,
                   query: { slug: row.original.slug },
                 }}
               >
@@ -108,7 +107,6 @@ export const MainPostsAdmin = ({ user }) => {
         Header: "Cập nhật gần đây",
         accessor: "updatedAt",
         Cell: ({ row }) => {
-          console.log(row);
           return (
             <span className="text-sm">
               <Tooltip

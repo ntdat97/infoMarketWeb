@@ -34,18 +34,6 @@ const PostsAPI = async (
         },
       },
     });
-  } else if (status === "pending") {
-    getAllPostsByStatus = await prisma.project.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      where: {
-        authorId: req.uid,
-        status: {
-          equals: Status.PENDING,
-        },
-      },
-    });
   } else if (status === "published") {
     getAllPostsByStatus = await prisma.project.findMany({
       orderBy: {

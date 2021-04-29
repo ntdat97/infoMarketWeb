@@ -17,56 +17,25 @@ const apiRoute = nextConnect({
 apiRoute.get(async (req: any, res: NextApiResponse) => {
   const slug = req.query.slug as string;
 
-  /*   const authValue = req.headers.authorization;
-  const token = authValue.replace('Bearer ', '');
+  /* const authValue = req.headers.authorization;
+  const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
-  const userId = decoded.uid;
   const role = decoded.role; */
-
-  /*     try {
-      const getPostByAdmin = await prisma.project.findFirst({
-        where: {
-          slug: {
-            equals: slug,
-          },
-        },
-      });
-
-      if (!getPostByAdmin) {
-        return res.status(400).json({ message: 'Data is empty.' });
-      }
-
-      return res.status(200).json(getPostByAdmin);
-    } catch (error) {
-      // console.log(error);
-
-      res.status(400).json({
-        success: '0',
-        data: error,
-      });
-    }
-
- */
   try {
-    const getPostByPublic = await prisma.project.findFirst({
+    const getPostByAdmin = await prisma.project.findFirst({
       where: {
         slug: {
           equals: slug,
         },
       },
     });
-
-    // console.log(userId);
-
-    // console.log(getPostByUserId);
-
-    if (!getPostByPublic) {
-      return res.status(400).json({ message: "Data is empty.", id: "empty" });
+    if (!getPostByAdmin) {
+      return res.status(400).json({ message: "Data is empty." });
     }
 
-    return res.status(200).json(getPostByPublic);
+    return res.status(200).json(getPostByAdmin);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     res.status(400).json({
       success: "0",

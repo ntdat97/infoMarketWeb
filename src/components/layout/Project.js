@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { MdAccessTime, MdImage } from "react-icons/md";
-import CarouselComponent from "../../components/common/CaroselComponent";
-import { Uploader } from "../../components/common/Upload";
-import { ModalSubmit } from "../../components/project/ModalSubmit";
-import { UnAuthModal } from "../../components/project/UnAuthModal";
-import Header from "../../components/common/Header";
-import Sidebar from "../../components/common/Sidebar";
+import CarouselComponent from "../common/CaroselComponent";
+import { Uploader } from "../common/Upload";
+import { ModalSubmit } from "../project/ModalSubmit";
+import { UnAuthModal } from "../project/UnAuthModal";
+import Header from "../common/Header";
+import SideBar from "../common/SideBar";
 import { useAsyncList } from "@react-stately/data";
 import { useRouter } from "next/router";
-import { Loading } from "../../components/common/Loading";
+import { Loading } from "../common/Loading";
 import Link from "next/link";
 import DatePicker, { registerLocale } from "react-datepicker";
 import vi from "date-fns/locale/vi";
-import { LoadingModal } from "../../components/common/LoadingModal";
+import { LoadingModal } from "../common/LoadingModal";
 import toast, { Toaster } from "react-hot-toast";
 import { useAuth } from "../../fb/auth";
 const ProjectInfo = ({ post, author }) => {
@@ -67,20 +67,11 @@ const ProjectInfo = ({ post, author }) => {
   );
 };
 
-export default function ProjectDetail() {
-  const [coverImage, setCoverImage] = useState([]);
-  const [isShowUploader, setIsShowUploader] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalAuthVisible, setModalAuthVisible] = useState(false);
+export default function Project() {
   const [status, setStatus] = useState(undefined);
   const [post, setPost] = useState(undefined);
   const [author, setAuthor] = useState(undefined);
-  const [modalSubmitVisible, setModalSubmitVisible] = useState(false);
-  const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
-  const [countUserPhoto, setCountUserPhoto] = useState(0);
-  /* const [countTemp, setCountTemp] = useState(0); */
   const router = useRouter();
-  const { user } = useAuth();
   const slug = router.query.slug;
   const fetchPost = async () => {
     setStatus("loading");
@@ -107,65 +98,11 @@ export default function ProjectDetail() {
     setPost(data);
     setStatus("ok");
   };
-  async function sendPhoto(values) {
-    setModalLoadingVisible(true);
-    const response = await fetch("/api/sendPhoto/project", {
-      method: "POST",
-      headers: {
-        ContentType: "application/json",
-      },
-      body: JSON.stringify({ data: { values } }),
-    });
-    if (response.ok) {
-      setModalLoadingVisible(false);
-      setModalSubmitVisible(true);
-    } else {
-      setModalLoadingVisible(false);
-      toast.error("Có lỗi xảy ra, Vui lòng thử lại.");
-    }
-  }
-  async function countPhoto(values) {
-    const response = await fetch("/api/sendPhoto/count-photo", {
-      method: "POST",
-      headers: {
-        ContentType: "application/json",
-      },
-      body: JSON.stringify({ data: { values } }),
-    });
-    let json = await response.json();
-    setCountUserPhoto(json);
-  }
   useEffect(() => {
     fetchPost();
   }, [slug]);
-  useEffect(() => {
-    if (coverImage.length > 0 && post) {
-      coverImage.map((item, index) => {
-        const data = {
-          url: item.response.body.data[0].linkUrl,
-          userId: user.uid,
-          projectId: post.id,
-        };
-        sendPhoto(data);
-      });
-    }
-  }, [coverImage]);
-  /* useEffect(() => {
-    console.log(countTemp);
-    setCountUserPhoto(countUserPhoto + coverImage.length);
-  }, [countTemp]); */
   const sendPhotoChecker = () => {
-    /*     const data = {
-      userId: user.uid,
-      projectId: post.id,
-    };
-
-    countPhoto(data); */
-    if (user) {
-      setIsShowUploader(true);
-    } else {
-      setModalAuthVisible(true);
-    }
+    toast.error("Không thể gởi ảnh trong chế độ Preview");
   };
   if (post?.id == "empty") {
     return (
@@ -173,7 +110,7 @@ export default function ProjectDetail() {
         <Header />
         <div className="flex flex-row ">
           <div className="w-1/6 sticky top-16 self-start h-auto border-r border-[#e6e6e6] ">
-            <Sidebar />
+            <SideBar />
           </div>
           <div className="flex w-11/12 ">
             <div className="max-w-[1108px] mx-auto mt-4">
@@ -192,32 +129,10 @@ export default function ProjectDetail() {
         <Loading />
       ) : status === "ok" ? (
         <>
-          {isShowUploader ? (
-            <Uploader
-              isOpen={isShowUploader}
-              setIsOpen={setIsShowUploader}
-              outFiles={coverImage}
-              setOutFile={setCoverImage}
-              /* setCountTempFiles={setCountTemp} 
-               isUploadButtonDisable={countUserPhoto > 12 ? true : false} */
-            />
-          ) : null}
-          <Header />
-          <LoadingModal
-            modalVisible={modalLoadingVisible}
-            setModalVisible={setModalLoadingVisible}
-          />
-          <ModalSubmit
-            setModalVisible={setModalSubmitVisible}
-            modalVisible={modalSubmitVisible}
-          />
-          <UnAuthModal
-            setModalVisible={setModalAuthVisible}
-            modalVisible={modalAuthVisible}
-          />
+          <Toaster />
           <div className="flex flex-row ">
             <div className="w-1/6 sticky top-16 self-start h-auto border-r border-[#e6e6e6] ">
-              <Sidebar />
+              <SideBar />
             </div>
             <div className="flex w-11/12 ">
               <div className="max-w-[1108px] mx-auto mt-4">

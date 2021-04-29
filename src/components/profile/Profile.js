@@ -3,7 +3,6 @@ import { IoEarth } from "react-icons/io5";
 import { useAuth } from "../../fb/auth";
 import { firebaseClient } from "../../fb/firebaseClient";
 import { useAsyncList } from "@react-stately/data";
-
 /* 
 import { firebase } from "../firebase/config"; */
 /* import Login from "./Login"; */
@@ -22,6 +21,24 @@ export default function Profile() {
     website: null,
     bio: null,
   });
+  async function setAdmin() {
+    const token = await user.getIdToken();
+    const response = await fetch("/api/onboarding/set-admin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({}),
+    });
+    if (response.ok) {
+      await firebaseClient.auth().currentUser.getIdTokenResult(true);
+    }
+    const getTokenResult = await firebaseClient
+      .auth()
+      .currentUser.getIdTokenResult(true);
+    console.log(getTokenResult);
+  }
   let me = useAsyncList({
     async load() {
       const getTokenResult = await firebaseClient
@@ -103,6 +120,7 @@ export default function Profile() {
         {/* <Icon name="chevron-right" size={24} color="#969696" /> */}
       </a>
       <button onClick={signout}>dangxuat</button>
+      <button onClick={setAdmin}>set me admin</button>
     </div>
   );
 }
