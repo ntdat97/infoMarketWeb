@@ -1,53 +1,24 @@
-import Card from "../components/project/Card";
-import Header from "../components/common/Header";
+import { Header } from "../components/common/Header";
 import SideBar from "../components/common/SideBar";
-import { Loading } from "../components/common/Loading";
+import HomePage from "../components/homePage/HomePage";
+import { MainUser } from "../components/layout/MainUser";
+import { LayoutUser } from "../components/layout/LayoutUser";
 import React, { useEffect } from "react";
 import { useAuth } from "../fb/auth";
-import { firebaseClient } from "../fb/firebaseClient";
-import { useRouter } from "next/router";
-
-import { useAsyncList } from "@react-stately/data";
+import { HeaderGuess } from "../components/common/HeaderGuess";
 export default function Home() {
-  let list = useAsyncList({
-    async load() {
-      let res = await fetch("/api/publicPost/all", {
-        headers: {
-          ContentType: "application/json",
-        },
-      });
-      let json = await res.json();
-
-      return { items: json };
-    },
-  });
   return (
     <>
-      <Header />
-      <div className="flex flex-row ">
-        <div className="w-1/6 sticky top-16 border-r border-[#e6e6e6]  self-start">
-          <SideBar />
-        </div>
-        <div className=" w-11/12">
-          <div className="max-w-[1108px] mx-auto ">
-            <div className="grid-col-1 md:grid-cols-2 grid p-1.5 mb-4 ">
-              {list.isLoading ? (
-                <Loading />
-              ) : (
-                <>
-                  {list.items.length > 0 ? (
-                    list.items.map((item, index) => (
-                      <Card data={item} index={index} />
-                    ))
-                  ) : (
-                    <p>Chưa có Project</p>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <LayoutUser
+        header={<Header />}
+        sidebar={<SideBar />}
+        main={
+          <MainUser
+            /*             subHeader={<HeaderPostsUser user={user} />} */
+            content={<HomePage />}
+          />
+        }
+      />
     </>
   );
 }

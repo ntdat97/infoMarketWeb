@@ -1,15 +1,25 @@
-import { PostLayout } from "../../components/layout/LayoutPost";
 import { Tooltip } from "../common/Tooltip";
 import { dateFromNow } from "../../libs/dateFromNow";
-import { XCircle, CheckCircle, Loader } from "react-feather";
+import { XCircle, CheckCircle, Loader, ArrowLeft } from "react-feather";
 import { format } from "date-fns";
 import Link from "next/link";
+import { HeaderCollection } from "../project/HeaderCollection";
 import CarouselFullSreen from "../common/CarouselFullScreen";
 import React, { useState, useEffect } from "react";
-export const PhotoCollectionMain = ({ data, user }) => {
+import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
+import { LoadingModal } from "../modal/LoadingModal";
+import { ModalSubmitMedia } from "../modal/ModalSubmitMedia";
+export const PhotoCollectionMain = ({ data, user, setReloadTable }) => {
   const [openImageModal, setOpenImageModal] = useState(false);
   const [indexImage, setIndexImage] = useState(0);
+  const [loadingModal, setLoadingModal] = useState(false);
+  const [submitModal, setSubmitModal] = useState(false);
   const [listImageData, setListImageData] = useState([]);
+  const [status, setStatus] = useState(undefined);
+  const [post, setPost] = useState(undefined);
+  const router = useRouter();
+  const slug = router.query.slug;
   useEffect(() => {
     const listTemp = [];
     data.map((item, index) => {
@@ -17,37 +27,107 @@ export const PhotoCollectionMain = ({ data, user }) => {
         mediaId: item.id,
         status: item.isApprove,
         url: item.url,
+        isChange: false,
       });
     });
     /* console.log(listTemp); */
     setListImageData(listTemp);
-  }, []);
+  }, [submitModal]);
+  const reviewMedia = async ({
+    listImagePending,
+    listImageApprove,
+    listImageReject,
+  }) => {
+    setLoadingModal(true);
+    if (!slug) return;
+    const req = await fetch(`/api/posts/review-media?slug=${slug}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${await user.getIdToken(true)}`,
+      },
+      body: JSON.stringify({
+        listImagePending: listImagePending,
+        listImageApprove: listImageApprove,
+        listImageReject: listImageReject,
+      }),
+    });
+
+    const data = await req.json();
+
+    console.log(data[0].count + data[1].count + data[2].count);
+    if (!req.ok) {
+      setStatus("error");
+      toast.error("Có lỗi xảy ra");
+      setLoadingModal(false);
+    }
+    const count = data[0].count + data[1].count + data[2].count;
+    setPost(data);
+    setLoadingModal(false);
+    setSubmitModal(true);
+    setStatus(count);
+  };
   const approve = (index) => {
     const listImageClone = [...listImageData];
 
     listImageClone[index].status = "APPROVE";
+    listImageClone[index].isChange = true;
     setListImageData(listImageClone);
   };
   const pending = (index) => {
     const listImageClone = [...listImageData];
     listImageClone[index].status = "PENDING";
+    listImageClone[index].isChange = true;
     setListImageData(listImageClone);
   };
   const reject = (index) => {
     const listImageClone = [...listImageData];
 
     listImageClone[index].status = "REJECT";
+    listImageClone[index].isChange = true;
     setListImageData(listImageClone);
+  };
+  const confirm = () => {
+    const listImagePending = [];
+    const listImageApprove = [];
+    const listImageReject = [];
+    listImageData.map((item, index) => {
+      if (item.isChange) {
+        if (item.status === "PENDING") {
+          listImagePending.push(item.mediaId);
+        } else if (item.status === "APPROVE") {
+          listImageApprove.push(item.mediaId);
+        } else if (item.status === "REJECT") {
+          listImageReject.push(item.mediaId);
+        }
+      }
+    });
+    reviewMedia({ listImagePending, listImageApprove, listImageReject });
   };
   if (data.length > 0 && listImageData.length > 0) {
     return (
       <>
+        <ModalSubmitMedia
+          modalVisible={submitModal}
+          setModalVisible={setSubmitModal}
+          successText={"Đã cập nhât " + status + " hình ảnh"}
+          setReloadTable={setReloadTable}
+        />
+        <LoadingModal
+          setModalVisible={setLoadingModal}
+          modalVisible={loadingModal}
+          loadingText="Đang ghi nhận kết quả"
+        />
+        <Toaster />
         <CarouselFullSreen
           data={listImageData}
           openImageModal={openImageModal}
           setOpenImageModal={setOpenImageModal}
           index={indexImage}
+          approve={approve}
+          reject={reject}
+          pending={pending}
         />
+        <HeaderCollection data={data} user={user} confirm={confirm} />
         <div className="grid grid-cols-4 gap-4 p-2">
           {data.map((item, index) => (
             <div
@@ -137,7 +217,12 @@ export const PhotoCollectionMain = ({ data, user }) => {
   } else {
     return (
       <>
-        <div>Chưa có ảnh nào được gởi</div>
+        <HeaderCollection data={data} user={user} confirm={confirm} />
+        <div className="flex flex-row text-center items-center">
+          <div className="text-center mt-5 text-2xl justify-center">
+            Chưa có ảnh nào được gởi
+          </div>
+        </div>
       </>
     );
   }

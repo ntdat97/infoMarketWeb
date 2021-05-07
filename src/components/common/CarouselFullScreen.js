@@ -2,31 +2,30 @@ import React, { useState, useEffect, useRef } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import Modal from "react-modal";
-import {
-  MdAccessTime,
-  MdImage,
-  MdAdd,
-  MdClear,
-  MdArrowUpward,
-  MdSyncDisabled,
-  MdSync,
-} from "react-icons/md";
-
+import { MdAccessTime, MdImage, MdAdd, MdClear } from "react-icons/md";
+import { XCircle, CheckCircle, Loader } from "react-feather";
 export default function CarouselFullScreen({
   data,
   setCarousel,
   setOpenImageModal,
   openImageModal,
   index,
+  pending,
+  reject,
+  approve,
 }) {
-  let winHeight = 1366;
+  let winHeight = 660;
+  let imageHeight = "h-[" + Math.round(winHeight * 0.8) + "px]";
+  if (process.browser) {
+    winHeight = window.innerHeight;
+    imageHeight = "h-[" + Math.round(winHeight * 0.8) + "px]";
+  }
+  console.log(winHeight);
+
   const navigate = () => {
     setOpenImageModal(!openImageModal);
     /* navigation.navigate('Project'); */
   };
-  useEffect(() => {
-    winHeight = window.innerHeight;
-  });
   /*   const carouselRef = useRef(null);
   const snapItemOnDel = ({ index }) => {
     del();
@@ -66,13 +65,7 @@ export default function CarouselFullScreen({
           },
         }}
       >
-        <button
-          onClick={navigate}
-          className="absolute top-10 focus:outline-none bg-gray-500 rounded z-30 right-5"
-        >
-          <MdClear size={30} color="white" />
-        </button>
-        <div className=" flex flex-row justify-center h-min-screen">
+        <div className=" flex flex-row justify-center ">
           <Carousel
             autoPlay={true}
             infiniteLoop={true}
@@ -81,6 +74,39 @@ export default function CarouselFullScreen({
           >
             {data.map((item, index) => (
               <div key={index} className=" w-full  bg-[#cfcfcf] ">
+                <button
+                  onClick={navigate}
+                  className="absolute top-10 focus:outline-none bg-gray-500 rounded z-30 right-8"
+                >
+                  <MdClear size={30} color="white" />
+                </button>
+                <button
+                  onClick={() => pending(index)}
+                  className="absolute top-32 focus:outline-none bg-gray-500 rounded z-30 right-8"
+                >
+                  <Loader
+                    size={30}
+                    color={item.status === "PENDING" ? "#c3c900" : "white"}
+                  />
+                </button>
+                <button
+                  onClick={() => reject(index)}
+                  className="absolute top-44 focus:outline-none bg-gray-500 rounded z-30 right-8"
+                >
+                  <XCircle
+                    size={30}
+                    color={item.status === "REJECT" ? "red" : "white"}
+                  />
+                </button>
+                <button
+                  onClick={() => approve(index)}
+                  className="absolute top-56 focus:outline-none bg-gray-500 rounded z-30 right-8"
+                >
+                  <CheckCircle
+                    size={30}
+                    color={item.status === "APPROVE" ? "green" : "white"}
+                  />
+                </button>
                 {/* {isEdit && (
                   <button
                     onClick={del}

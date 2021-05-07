@@ -3,7 +3,7 @@ import multer from "multer";
 import { NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 
-const fileId = nanoid(8);
+const fileId = nanoid(16);
 
 const upload = multer({
   storage: multer.diskStorage({

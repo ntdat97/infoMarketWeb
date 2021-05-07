@@ -33,14 +33,14 @@ export default function SideBar() {
           </div>
         </a>
       </Link>
-      <Link href="/my-project">
+      <Link href="/my-projects/all">
         <a
           className=" flex flex-col p-1 justify-center mb-[10px] items-center border-b pb-3 text-center"
           style={{
-            borderColor: path == "/my-project/all" ? "#21b532" : "#e6e6e6",
+            borderColor: path == "/my-projects/all" ? "#21b532" : "#e6e6e6",
           }}
         >
-          {path == "/my-project" ? (
+          {path == "/my-projects/all" ? (
             <RiFileUserFill size={30} fill="#21b532" />
           ) : (
             <RiFileUserLine size={30} fill="gray" />

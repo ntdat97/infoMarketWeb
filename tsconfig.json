@@ -18,8 +18,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/[slug]/preview.js",
-    "src/components/Posts/HeaderPreview.tsx"
-, "src/components/userProject/PreviewPost."  ],
+    "src/pages/api/admin/members/get-userInfots"
+  ],
   "exclude": ["node_modules"]
 }

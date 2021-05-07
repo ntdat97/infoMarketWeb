@@ -8,42 +8,38 @@ import { genSlug } from "../../../libs/slugify";
 import { NextApiResponse } from "next";
 import { isAdmin } from "../../../libs/middleware/utils/isAdmin";
 
-const OnboardingWelcomeAPI = async (req: any, res: NextApiResponse) => {
-  try {
-    await firebaseAdmin.auth().setCustomUserClaims(req.uid, {
-      role: ["ADMIN"],
-    });
-    const setAdmin = await prisma.user.update({
+const setAdminAPI = async (req: any, res: NextApiResponse) => {
+  const slug = req.query.slug;
+  console.log(slug);
+  const authValue = req.headers.authorization;
+  const token = authValue.replace("Bearer ", "");
+  const decoded = await firebaseAdmin.auth().verifyIdToken(token);
+  const role = decoded.role;
+  if (role[0] === "ADMIN") {
+    const getProfile = await prisma.user.findFirst({
       where: {
-        id: req.uid,
-      },
-      data: {
-        role: "ADMIN",
+        username: slug,
       },
     });
-    return;
-  } catch (error) {
-    console.log(error);
+    try {
+      await firebaseAdmin.auth().setCustomUserClaims(getProfile.id, {
+        role: ["ADMIN"],
+      });
+      const setAdmin = await prisma.user.update({
+        where: {
+          username: slug,
+        },
+        data: {
+          role: "ADMIN",
+        },
+      });
+      return res.status(200).send(setAdmin);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return res.status(200).send({ messgae: "You are not Admin" });
   }
-
-  // const createProfile = await prisma.profile.create({
-  //   data: {
-  //     userId: req.uid,
-  //   },
-  // });
-
-  // const addTopics = await prisma.profile.update({
-  //   where: {
-  //     userId: req.uid,
-  //   },
-  //   data: {
-  //     followed_topics: { connect: req.body.topics },
-  //   },
-  // });
 };
 
-export default use(
-  allowedHttpMethod("POST"),
-  addRequestId,
-  addUserIdAndRole
-)(OnboardingWelcomeAPI);
+export default use(allowedHttpMethod("GET"))(setAdminAPI);

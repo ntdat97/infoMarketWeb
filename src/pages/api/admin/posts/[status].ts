@@ -20,6 +20,9 @@ const AdminPostsAPI = async (req: NextApiRequest, res: NextApiResponse) => {
         updatedAt: "desc",
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -35,6 +38,9 @@ const AdminPostsAPI = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -50,6 +56,9 @@ const AdminPostsAPI = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });
@@ -65,6 +74,9 @@ const AdminPostsAPI = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
       include: {
+        _count: {
+          select: { media: true },
+        },
         author: true,
       },
     });

@@ -3,7 +3,15 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import { firebaseClient as firebase } from "./firebaseClient";
 
 const authContext = createContext(null);
-
+const getUserInfo = async (user) => {
+  let res = await fetch(`/api/admin/members/get-userInfo?id=${user.uid}`, {
+    headers: {
+      ContentType: "application/json",
+    },
+  });
+  const info = await res.json();
+  return info;
+};
 // You can wrap your _app.js with this provider
 export function AuthProvider({ children }) {
   const auth = useProvideAuth();
@@ -27,13 +35,21 @@ function useProvideAuth() {
     return firebase
       .auth()
       .signInWithPopup(provider)
-      .then((response) => {
-        setUser(response.user);
+      .then(async (response) => {
+        const userInfo = await getUserInfo(response.user);
+        if (userInfo.userState === "BANNED") {
+          signout();
+        } else {
+          setUser(response.user);
+        }
+
+        /* console.log(response.user); */
+
         // router.reload();
       });
   };
 
-  const signupWithEmail = (email, password) => {
+  /*  const signupWithEmail = (email, password) => {
     firebase.auth().languageCode = "vi";
 
     return firebase
@@ -53,7 +69,7 @@ function useProvideAuth() {
       .then((response) => {
         setUser(response.user);
       });
-  };
+  }; */
 
   // const forgotPassword = (email: string) => {
   //   return firebase.auth()
@@ -79,8 +95,8 @@ function useProvideAuth() {
   return {
     user,
     signinWithGoogle,
-    signinWithEmail,
-    signupWithEmail,
+    /*     signinWithEmail,
+    signupWithEmail, */
     signout,
   };
 }

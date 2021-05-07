@@ -33,6 +33,7 @@ const OnboardingWelcomeAPI = async (req: any, res: NextApiResponse) => {
         flag_is_save_user: true,
         role: ["USER"],
         username: req.uid,
+        userState: "ACTIVE",
       });
     }
 

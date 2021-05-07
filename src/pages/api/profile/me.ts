@@ -11,9 +11,26 @@ const MePofileAPI = async (req: any, res: NextApiResponse) => {
     where: {
       id: req.uid,
     },
+    include: {
+      userPaymentMethod: {
+        where: {
+          paymentState: "LIVE",
+        },
+      },
+      _count: {
+        select: { media: true, project: true },
+      },
+    },
   });
-
-  return res.status(200).send([getProfile]);
+  const countApprove = await prisma.media.count({
+    where: {
+      user: {
+        id: req.uid,
+      },
+      isApprove: "APPROVE",
+    },
+  });
+  return res.status(200).send([getProfile, countApprove]);
 };
 
 export default use(

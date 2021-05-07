@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { LayoutUser } from "..//userProject/LayoutUser";
+import { LayoutUser } from "../layout/LayoutUser";
 import SideBar from "../common/SideBar";
-import Header from "../common/Header";
+import { Header } from "../common/Header";
 import { Loading } from "../common/Loading";
-import { MainUser } from "../userProject/MainUser";
+import { MainUser } from "../layout/MainUser";
 import { PhotoCollectionMain } from "./PhotoCollectionMain";
 import { HeaderCollection } from "./HeaderCollection";
-import { Redirect } from "..//common/Redirect";
 import { useAuth } from "../../fb/auth";
 
 export const PhotoCollection = () => {
   const [status, setStatus] = useState(undefined);
   const [post, setPost] = useState(undefined);
+  const [reloadTable, setReloadTable] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
   const slug = router.query.slug;
+  const statusURL = router.query.status;
   const fetchPost = async () => {
     setStatus("loading");
     if (!slug) return;
-    const req = await fetch(`/api/posts/photo-collection?slug=${slug}`, {
-      headers: {
-        Authorization: `Bearer ${await user.getIdToken(true)}`,
-      },
-    });
+    const req = await fetch(
+      `/api/posts/photo-collection/${statusURL}?slug=${slug}`,
+      {
+        headers: {
+          Authorization: `Bearer ${await user.getIdToken(true)}`,
+        },
+      }
+    );
 
     const data = await req.json();
     console.log(data);
@@ -35,7 +39,7 @@ export const PhotoCollection = () => {
   };
   useEffect(() => {
     fetchPost();
-  }, [slug]);
+  }, [slug, statusURL, reloadTable]);
   return (
     <>
       <LayoutUser
@@ -46,11 +50,17 @@ export const PhotoCollection = () => {
             <Loading />
           ) : status === "ok" ? (
             <MainUser
-              subHeader={<HeaderCollection data={post} user={user} />}
-              content={<PhotoCollectionMain data={post} user={user} />}
+              /* subHeader={<HeaderCollection data={post} user={user} />} */
+              content={
+                <PhotoCollectionMain
+                  data={post}
+                  user={user}
+                  setReloadTable={() => setReloadTable(!reloadTable)}
+                />
+              }
             />
           ) : (
-            <p>Something went wrong.</p>
+            <p className="text-center">Something went wrong.</p>
           )
         }
       />

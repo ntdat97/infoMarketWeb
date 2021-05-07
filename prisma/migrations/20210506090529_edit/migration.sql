@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "UserPaymentMethod" ALTER COLUMN "phone" SET DATA TYPE TEXT,
+ALTER COLUMN "stk" SET DATA TYPE TEXT;

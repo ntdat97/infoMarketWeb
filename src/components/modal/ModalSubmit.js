@@ -5,7 +5,7 @@ export const ModalSubmit = ({ setModalVisible, modalVisible }) => {
   const router = useRouter();
   const navigate = () => {
     setModalVisible(!modalVisible);
-    router.push("/my-project/all");
+    router.push("/my-projects/all");
   };
   return (
     <Modal

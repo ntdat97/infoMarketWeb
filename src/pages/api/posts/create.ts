@@ -22,8 +22,8 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const userId = decoded.uid;
 
-  const inputPostData = req.body.data.values as Project;
-
+  const inputPostData = req.body;
+  console.log(req.body);
   // generate slug
   const slug = genSlug(inputPostData.projectName);
   try {
@@ -32,12 +32,19 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
         authorId: userId,
         authorName: decoded.name,
         slug,
-        ...inputPostData,
+        ...inputPostData.data,
       },
+    });
+    const temp = [];
+    inputPostData.payment.map((item) => {
+      temp.push({ ProjectPaymentMethodId: item, projectId: createPost.id });
+    });
+    const createPaymentMethod = await prisma.projectPaymentMethod.createMany({
+      data: temp,
     });
     res.status(200).json({
       success: "1",
-      data: createPost,
+      data: [createPost, createPaymentMethod],
     });
   } catch (error) {
     console.log(error);

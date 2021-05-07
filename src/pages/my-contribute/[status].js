@@ -1,11 +1,9 @@
-import { HeaderUser } from "../../components/userContribute/HeaderUser";
-import { LayoutUser } from "../../components/userContribute/LayoutUser";
-import { MainUser } from "../../components/userContribute/MainUser";
-import { HeaderPostsUser } from "../../components/userContribute/post/HeaderPostsUser";
-import { MainPostsUser } from "../../components/userContribute/post/MainPostsUser";
-import { SidebarUser } from "../../components/userContribute/SidebarUser";
+import { Header } from "../../components/common/Header";
+import { LayoutUser } from "../../components/layout/LayoutUser";
+import { MainUser } from "../../components/layout/MainUser";
+import { HeaderPostsUser } from "../../components/userContribute/HeaderPostsUser";
+import { MainPostsUser } from "../../components/userContribute/MainPostsUser";
 import SideBar from "../../components/common/SideBar";
-import Header from "../../components/common/Header";
 import { Loading } from "../../components/common/Loading";
 import { Redirect } from "../../components/common/Redirect";
 import { useAuth } from "../../fb/auth";
@@ -20,11 +18,6 @@ const MyContribute = () => {
   if (user === false) {
     return <Redirect />;
   }
-
-  user.getIdToken().then((data) => {
-    // console.log(data);
-  });
-
   return (
     <>
       <LayoutUser

@@ -1,18 +1,16 @@
-import { useAuth } from "../../fb/auth";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 import { ChevronDown } from "react-feather";
 import toast from "react-hot-toast";
 import { Arrow, useLayer } from "react-laag";
-export const MenuUser = () => {
+import { useAuth } from "../../fb/auth";
+export const MenuUser = ({ isAdmin, user }) => {
   const [isOpen, setOpen] = React.useState(false);
   const { signout } = useAuth();
-  const { user } = useAuth();
   function close() {
     setOpen(false);
   }
-
   const { renderLayer, triggerProps, layerProps, arrowProps } = useLayer({
     isOpen,
     onOutsideClick: close,
@@ -34,9 +32,12 @@ export const MenuUser = () => {
       >
         <img src={user?.photoURL} className="ml-4 rounded-full w-8 h-8" />
         <span className="text-sm mx-2">{user?.displayName}</span>
-        {/* <span className="text-xs bg-[#fff7e6] text-[#fa8c16] border-[#ffd591] p-1 mx-1 font-semibold">
-          ADMIN
-        </span> */}
+        {isAdmin && (
+          <span className="text-xs bg-[#fff7e6] text-[#fa8c16] border-[#ffd591] p-1 mx-1 font-semibold">
+            ADMIN
+          </span>
+        )}
+
         <span className="">
           <ChevronDown size={18} />
         </span>
@@ -51,13 +52,13 @@ export const MenuUser = () => {
               <Link href="/new">
                 <a>
                   <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
-                    Viết bài mới
+                    Tạo dự án mới
                   </li>
                 </a>
               </Link>
               <Link
                 href={{
-                  pathname: "/me/articles/[status]",
+                  pathname: "/my-projects/[status]",
                   query: {
                     status: "all",
                   },
@@ -69,17 +70,14 @@ export const MenuUser = () => {
                   </li>
                 </a>
               </Link>
-              <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
-                <button
-                  type="button"
-                  onClick={() => {
-                    // signout();
-                    toast.success("Đăng xuất thành công.");
-                  }}
-                >
-                  Cài đặt
-                </button>
-              </li>
+              {isAdmin && (
+                <Link href="/admin/projects/all">
+                  <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
+                    <a>Admin dashboard</a>
+                  </li>
+                </Link>
+              )}
+
               <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
                 <button
                   className="block w-full text-left"

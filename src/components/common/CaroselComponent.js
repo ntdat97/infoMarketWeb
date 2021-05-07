@@ -78,10 +78,9 @@ export default function CarouselComponent({
             showThumbs={false}
             infiniteLoop={true}
             dynamicHeight={true}
-            selectedItem={2}
           >
             {data.map((item, index) => (
-              <div key={index} className=" w-full  bg-[#cfcfcf] ">
+              <div key={index} className=" w-full h-auto bg-[#cfcfcf] ">
                 {isEdit && (
                   <button
                     onClick={del}

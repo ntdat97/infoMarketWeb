@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Header from "../common/Header";
+import { Header } from "../common/Header";
 import Sidebar from "../common/SideBar";
 import { useFormik } from "formik";
 import { Uploader } from "../common/Upload";
 import { ModalSubmit } from "../modal/ModalSubmit";
 import { LoadingModal } from "../modal/LoadingModal";
 import { useAuth } from "../../fb/auth";
+import { useAsyncList } from "@react-stately/data";
 import {
   MdAccessTime,
   MdImage,
@@ -62,13 +63,31 @@ const CreateProject = () => {
   const [modalSubmitVisible, setModalSubmitVisible] = useState(false);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
   const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [provider, setProvider] = useState([]);
   const { user } = useAuth();
   useEffect(() => {
     if (caroselImage.length > 0) {
       formik.setFieldValue("caroselImage", caroselImage);
     }
   }, [caroselImage]);
-
+  let me = useAsyncList({
+    async load() {
+      let payment = await fetch("/api/profile/get-payment-method", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      let paymentJson = await payment.json();
+      if (paymentJson[0].length > 0) {
+        const temp = [];
+        paymentJson[0].map((item, index) => {
+          temp.push({ isCheck: false, id: item.id });
+        });
+        setProvider(temp);
+      }
+      return { items: paymentJson };
+    },
+  });
   const addImage = (e) => {
     let imageTemp = Object.assign([], caroselImage);
     e.map((item, index) => {
@@ -88,6 +107,7 @@ const CreateProject = () => {
       usedFor: "",
       requirements: "",
       contact: "",
+      provider: [],
     },
     validationSchema: yup.object().shape({
       projectName: yup
@@ -117,12 +137,16 @@ const CreateProject = () => {
         .string()
         .email("Vui lòng nhập đúng định dạng")
         .required("Vui lòng nhập email"),
+      provider: yup
+        .array()
+        .min(1, "Vui lòng chọn ít nhất 1 phương thức thanh toán"),
     }),
     onSubmit: (values) => handleCreate(values),
   });
   async function handleCreate(values) {
     setModalLoadingVisible(true);
-    console.log(formik.values);
+    const projectData = { ...values };
+    delete projectData.provider;
     const token = await user.getIdToken();
     const response = await fetch("/api/posts/create", {
       method: "POST",
@@ -130,7 +154,7 @@ const CreateProject = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ data: { values } }),
+      body: JSON.stringify({ data: projectData, payment: values.provider }),
     });
     if (response.ok) {
       setModalLoadingVisible(false);
@@ -308,6 +332,49 @@ const CreateProject = () => {
                       className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
                     />
                   </div>
+                  {formik.errors.provider && formik.touched.provider && (
+                    <>
+                      <p style={{ color: "red" }}>{formik.errors.provider}</p>
+                    </>
+                  )}
+                  <div
+                    onChange={() => {
+                      const temp = [];
+                      provider.map((item) => {
+                        if (item.isCheck) {
+                          temp.push(item.id);
+                        }
+                      });
+                      formik.setFieldValue("provider", temp);
+                    }}
+                    className="flex flex-row items-center flex-wrap"
+                  >
+                    {!me.isLoading &&
+                      me.items.length > 0 &&
+                      me.items[0]?.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
+                        >
+                          <label>{item.id.toUpperCase()}</label>
+                          <input
+                            type="checkbox"
+                            value={item.id}
+                            name="ewallet"
+                            checked={provider[index].isCheck}
+                            onChange={() => {
+                              var temp = [...provider];
+                              temp[index] = {
+                                isCheck: !temp[index].isCheck,
+                                id: temp[index].id,
+                              };
+                              setProvider(temp);
+                            }}
+                            className="mx-2"
+                          />
+                        </div>
+                      ))}
+                  </div>
                 </div>
                 <div className="flex justify-center items-center w-3/12">
                   <Link href="/profile/user">
@@ -461,7 +528,9 @@ const CreateProject = () => {
             <div className="p-2 border-t-[0.5px] border-[#f0f0f0]  mt-0.5  bg-white sticky bottom-0 ">
               <button
                 type="button"
-                onClick={formik.handleSubmit}
+                onClick={() => {
+                  formik.handleSubmit();
+                }}
                 className="py-1  rounded-md bg-[#006A73] flex w-full items-center justify-center"
               >
                 <div className="text-white font-semibold">Send photos</div>

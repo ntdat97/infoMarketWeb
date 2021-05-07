@@ -1,12 +1,12 @@
 import { Loading } from "../../../components/common/Loading";
 import { Redirect } from "../../../components/common/Redirect";
-import { PostLayout } from "../../../components/layout/LayoutPost";
-import { HeaderPreview } from "../../../components/Posts/HeaderPreview";
+import { MainUser } from "../../../components/layout/MainUser";
+import SideBar from "../../../components/common/SideBar";
+import { LayoutUser } from "../../../components/layout/LayoutUser";
+import { HeaderPreview } from "../../../components/admin/HeaderPreview";
 import Project from "../../../components/layout/Project";
 import { useAuth } from "../../../fb/auth";
 import React from "react";
-import { useRouter } from "next/router";
-import { useAsyncList } from "@react-stately/data";
 export const PostPreviewPage = () => {
   const { user } = useAuth();
 
@@ -19,10 +19,15 @@ export const PostPreviewPage = () => {
   }
 
   return (
-    <PostLayout
+    <LayoutUser
       header={<HeaderPreview user={user} />}
-      main={<Project />}
-      /* footer={<Footer />} */
+      sidebar={<SideBar />}
+      main={
+        <MainUser
+          /* subHeader={<HeaderPostsUser user={user} />} */
+          content={<Project />}
+        />
+      }
     />
   );
 };

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-export const LoadingModal = ({ setModalVisible, modalVisible }) => {
+export const LoadingModal = ({
+  setModalVisible,
+  modalVisible,
+  loadingText = "Đang gởi ảnh",
+}) => {
   const navigate = () => {
     setModalVisible(!modalVisible);
     /* navigation.navigate('Project'); */
@@ -40,7 +44,7 @@ export const LoadingModal = ({ setModalVisible, modalVisible }) => {
       <div className="justify-center items-center mt-5 flex">
         <div className="m-5 bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col px-7">
           <div className="my-3 text-center text-lg font-bold text-[#333333] mb-5">
-            Đang gởi ảnh
+            {loadingText}
           </div>
 
           <div className="grid place-items-center">

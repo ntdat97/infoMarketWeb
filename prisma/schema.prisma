@@ -7,60 +7,110 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["selectRelationCount"]
 }
+
 model User {
-  id        String    @id
-  email     String    @unique
-  role      Role      @default(USER)
-  name      String?
-  providers String
-  username String? @unique
-  photoURL  String?
-  website String?
-  bio     String?
-  project Project[]
-  media Media[]
+  id            String          @id
+  email         String          @unique
+  role          Role            @default(USER)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  name          String?
+  providers     String
+  username      String?         @unique
+  userState     userState       @default(ACTIVE)
+  photoURL      String?
+  website       String?
+  bio           String?
+  userPaymentMethod UserPaymentMethod[]
+  project       Project[]
+  media         Media[]
 }
+
+model AlaivablePaymentMethod {
+  id                   String          @id
+  provider             String
+  ewalletProvider      String?
+  bankProvider         String?
+  paymentMethod        UserPaymentMethod[]
+  projectPaymentMethod ProjectPaymentMethod[]
+}
+model ProjectPaymentMethod {
+  id                  String                 @id @default(cuid())
+  ProjectPaymentMethod   AlaivablePaymentMethod @relation(fields: [ProjectPaymentMethodId], references: [id])
+  ProjectPaymentMethodId String
+  project Project @relation(fields: [projectId], references: [id])
+  projectId String
+   createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+}
+model UserPaymentMethod {
+  id                  String                 @id @default(cuid())
+  userPaymentMethod   AlaivablePaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethodId String
+   createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+  paymentState  PaymentState @default(LIVE)
+  name                String?
+  phone               String?
+  stk                 String?
+  user                User @relation(fields: [userId], references: [id])
+  userId   String
+}
+
 model Project {
-  id        String    @id @default(cuid())
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @default(now())
-  status Status @default(PENDING)
-  complete isComplete @default(UNCOMPLETE)
-  caroselImage Json[]
-  explanImagesURL String[]
-  slug String @unique
-  projectName String
-  price Float
-  maxUnit Int
-  openDay DateTime
-  closeDay DateTime
-  description String
-  usedFor String
-  requirements String
-  contact String
-  media Media[]
-  author     User        @relation(fields: [authorId], references: [id])
-  authorId String
-  authorName String
+  id              String                   @id @default(cuid())
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+  status          Status                   @default(PENDING)
+  complete        isComplete               @default(UNCOMPLETE)
+  caroselImage    Json[]
+  slug            String                   @unique
+  projectName     String
+  price           Float
+  maxUnit         Int
+  openDay         DateTime
+  closeDay        DateTime
+  description     String
+  usedFor         String
+  requirements    String
+  contact         String
+  media           Media[]
+  author          User                     @relation(fields: [authorId], references: [id])
+  authorId        String
+  authorName      String
+  projectPaymentMethod   ProjectPaymentMethod[]
 }
 
 model Media {
-  id        String    @id @default(cuid()) 
-  url String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @default(now()) 
+  id        String    @id @default(cuid())
+  url       String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
   isApprove isApprove @default(PENDING)
-  user    User    @relation(fields: [userId], references: [id])
-  userId  String
-  project    Project    @relation(fields: [projectId], references: [id])
+  isPaid    Boolean   @default(false)
+  paidDate  DateTime?
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project   @relation(fields: [projectId], references: [id])
   projectId String
 }
+
 enum Role {
   USER
   ADMIN
+}
+
+enum userState {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+enum PaymentState {
+  LIVE
+  DELETED
 }
 
 enum Status {
@@ -68,10 +118,12 @@ enum Status {
   PUBLISHED
   DELETED
 }
+
 enum isComplete {
   COMPLETE
   UNCOMPLETE
 }
+
 enum isApprove {
   PENDING
   REJECT

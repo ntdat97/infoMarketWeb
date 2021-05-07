@@ -17,33 +17,83 @@ const apiRoute = nextConnect({
 
 apiRoute.get(async (req: any, res: NextApiResponse) => {
   const slug = req.query.slug as string;
-  console.log(slug);
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
-  const userId = decoded.uid;
-  try {
-    const updatePost = await prisma.project.update({
-      where: {
-        slug: slug,
-      },
-      data: {
-        status: Status.DELETED,
-        updatedAt: new Date().toISOString(),
-      },
-    });
+  const role = decoded.role;
+  if (role[0] === "ADMIN") {
+    try {
+      const updatePost = await prisma.project.update({
+        where: {
+          slug: slug,
+        },
+        data: {
+          status: Status.DELETED,
+          updatedAt: new Date().toISOString(),
+        },
+      });
 
-    res.status(200).json({
-      success: "1",
-      data: updatePost,
-    });
-  } catch (error) {
-    console.log(error);
+      res.status(200).json({
+        success: "1",
+        data: updatePost,
+      });
+    } catch (error) {
+      console.log(error);
 
-    res.status(400).json({
-      success: "0",
-      data: error,
-    });
+      res.status(400).json({
+        success: "0",
+        data: error,
+      });
+    }
+  } else {
+    try {
+      const getPostByPublic = await prisma.project.findFirst({
+        where: {
+          slug: {
+            equals: slug,
+          },
+        },
+      });
+      if (!getPostByPublic) {
+        return res.status(400).json({ message: "Data is empty.", id: "empty" });
+      }
+      if (getPostByPublic.authorId === decoded.uid) {
+        try {
+          const updatePost = await prisma.project.update({
+            where: {
+              slug: slug,
+            },
+            data: {
+              status: Status.DELETED,
+              updatedAt: new Date().toISOString(),
+            },
+          });
+
+          res.status(200).json({
+            success: "1",
+            data: updatePost,
+          });
+        } catch (error) {
+          console.log(error);
+
+          res.status(400).json({
+            success: "0",
+            data: error,
+          });
+        }
+      } else {
+        return res
+          .status(200)
+          .json({ message: "Not Authorization", id: "unauth" });
+      }
+    } catch (error) {
+      console.log(error);
+
+      res.status(400).json({
+        success: "0",
+        data: error,
+      });
+    }
   }
 });
 

@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
+
+import { MainUser } from "../../components/layout/MainUser";
+import { LayoutUser } from "../../components/layout/LayoutUser";
+
 import Profile from "../../components/profile/Profile";
 import Login from "../../components/profile/Login";
 import { useAuth } from "../../fb/auth";
 import { firebaseClient } from "../../fb/firebaseClient";
-import Header from "../../components/common/Header";
+import { Header } from "../../components/common/Header";
 import SideBar from "../../components/common/SideBar";
 import { useRouter } from "next/router";
 export default function ProfilePage() {
   const { user } = useAuth();
   const router = useRouter();
-  console.log(user);
   async function createUser() {
     const token = await user.getIdToken();
     const response = await fetch("/api/onboarding/welcome", {
@@ -27,35 +30,42 @@ export default function ProfilePage() {
   }
   useEffect(() => {
     if (!user) return;
+    /*     if (user?.userState === "BANNED") return; */
     createUser();
   }, [user]);
+  /*   if (user?.userState === "BANNED") {
+    return <div>USER BANNED</div>;
+  } */
   return (
     <>
       {user !== null && (
         <>
           {user === false ? (
             <>
-              <Header />
-              <div className="flex flex-row ">
-                <div className="w-1/6 sticky border-r border-[#e6e6e6] top-16 self-start h-auto ">
-                  <SideBar />
-                </div>
-                <div className="flex w-11/12 ">
-                  <Login />
-                </div>
-              </div>
+              <LayoutUser
+                shadow={true}
+                header={<Header />}
+                sidebar={<SideBar />}
+                main={
+                  <MainUser
+                    /*             subHeader={<HeaderPostsUser user={user} />} */
+                    content={<Login />}
+                  />
+                }
+              />
             </>
           ) : (
             <>
-              <Header />
-              <div className="flex flex-row ">
-                <div className="w-1/6 sticky top-16 border-r border-[#e6e6e6] self-start h-auto ">
-                  <SideBar />
-                </div>
-                <div className="flex w-11/12 ">
-                  <Profile />
-                </div>
-              </div>
+              <LayoutUser
+                header={<Header />}
+                sidebar={<SideBar />}
+                main={
+                  <MainUser
+                    /*             subHeader={<HeaderPostsUser user={user} />} */
+                    content={<Profile />}
+                  />
+                }
+              />
             </>
           )}
         </>
