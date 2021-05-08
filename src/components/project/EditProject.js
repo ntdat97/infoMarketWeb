@@ -6,6 +6,7 @@ import UpdateProject from "./UpdateProject";
 const EditProject = () => {
   const [status, setStatus] = useState(undefined);
   const [post, setPost] = useState(undefined);
+  const [payment, setPayment] = useState(undefined);
   const { user } = useAuth();
   //fetch post
   const router = useRouter();
@@ -18,12 +19,17 @@ const EditProject = () => {
         Authorization: `Bearer ${await user.getIdToken(true)}`,
       },
     });
-
+    let payment = await fetch("/api/profile/get-payment-method", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const paymentJson = await payment.json();
     const data = await req.json();
-    console.log(req);
     if (!req.ok) {
       setStatus("error");
     }
+    setPayment(paymentJson);
     setPost(data);
     setStatus("ok");
   };
@@ -42,7 +48,7 @@ const EditProject = () => {
         <Loading />
       ) : status === "ok" ? (
         <>
-          <UpdateProject post={post} user={user} />
+          <UpdateProject post={post} user={user} payment={payment} />
         </>
       ) : (
         <p>Something went wrong.</p>

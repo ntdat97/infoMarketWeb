@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-export const ErrorModal = ({
-  setModalVisible,
-  modalVisible,
-  errorText = "Có lỗi xảy ra, vui lòng thử lại",
-}) => {
+export const PaymentMissingModal = ({ setModalVisible, modalVisible }) => {
   const navigate = () => {
     setModalVisible(!modalVisible);
     /* navigation.navigate('Project'); */
@@ -45,7 +41,8 @@ export const ErrorModal = ({
       <div className="justify-center items-center mt-5 flex">
         <div className="m-5 bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col">
           <div className="my-3 text-center text-lg font-bold text-[#333333]">
-            {errorText}
+            Bạn phải thêm phương thức thanh toán{" "}
+            {/* {modalVisible[1].map(() => ())} */}
           </div>
           <button
             className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1"

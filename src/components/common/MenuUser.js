@@ -72,9 +72,11 @@ export const MenuUser = ({ isAdmin, user }) => {
               </Link>
               {isAdmin && (
                 <Link href="/admin/projects/all">
-                  <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
-                    <a>Admin dashboard</a>
-                  </li>
+                  <a>
+                    <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
+                      Admin dashboard
+                    </li>
+                  </a>
                 </Link>
               )}
 

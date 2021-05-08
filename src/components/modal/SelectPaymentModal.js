@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-export const ErrorModal = ({
+import { useRouter } from "next/router";
+export const SelectPaymentModal = ({
   setModalVisible,
   modalVisible,
-  errorText = "Có lỗi xảy ra, vui lòng thử lại",
+  title = "Vui lòng chọn phương thức thanh toán",
+  confirmButton,
 }) => {
+  const router = useRouter();
   const navigate = () => {
-    setModalVisible(!modalVisible);
-    /* navigation.navigate('Project'); */
+    const state = [...modalVisible];
+    state[0] = !modalVisible[0];
+    setModalVisible(state);
+    /* router.reload(); */
   };
   return (
     <Modal
-      isOpen={modalVisible}
+      isOpen={modalVisible[0]}
       ariaHideApp={false}
       onRequestClose={navigate}
       contentLabel="Thành Công"
@@ -45,16 +50,29 @@ export const ErrorModal = ({
       <div className="justify-center items-center mt-5 flex">
         <div className="m-5 bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col">
           <div className="my-3 text-center text-lg font-bold text-[#333333]">
-            {errorText}
+            {title}
           </div>
-          <button
-            className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1"
-            onClick={navigate}
-          >
-            <div style={{ color: "white", fontSize: 15, paddingVertical: 3 }}>
-              Đồng ý
-            </div>
-          </button>
+          <div className="items-center font-medium text-[#333333] text-center">
+            {}
+          </div>
+          <div>
+            <button
+              className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1 mr-5"
+              onClick={navigate}
+            >
+              <div style={{ color: "white", fontSize: 15, paddingVertical: 3 }}>
+                Hủy
+              </div>
+            </button>
+            <button
+              className="py-0.5 px-6 rounded-md bg-[#006A73] mt-3 mb-1"
+              onClick={confirmButton}
+            >
+              <div style={{ color: "white", fontSize: 15, paddingVertical: 3 }}>
+                Đồng ý
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </Modal>

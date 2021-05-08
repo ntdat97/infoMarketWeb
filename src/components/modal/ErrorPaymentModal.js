@@ -1,17 +1,26 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-export const ErrorModal = ({
+export const ErrorPaymentModal = ({
   setModalVisible,
   modalVisible,
   errorText = "Có lỗi xảy ra, vui lòng thử lại",
 }) => {
+  console.log(modalVisible);
+  errorText =
+    "Bạn phải thêm phương thức thanh toán " +
+    modalVisible[1].map(
+      (item) => item.ProjectPaymentMethodId.toUpperCase() + ", "
+    ) +
+    " \nđể đóng góp cho dự án này";
   const navigate = () => {
-    setModalVisible(!modalVisible);
+    const state = [...modalVisible];
+    state[0] = !modalVisible[0];
+    setModalVisible(state);
     /* navigation.navigate('Project'); */
   };
   return (
     <Modal
-      isOpen={modalVisible}
+      isOpen={modalVisible[0]}
       ariaHideApp={false}
       onRequestClose={navigate}
       contentLabel="Thành Công"
@@ -44,7 +53,7 @@ export const ErrorModal = ({
     >
       <div className="justify-center items-center mt-5 flex">
         <div className="m-5 bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col">
-          <div className="my-3 text-center text-lg font-bold text-[#333333]">
+          <div className="my-3 text-center text-lg font-bold text-[#333333] whitespace-pre-wrap	">
             {errorText}
           </div>
           <button

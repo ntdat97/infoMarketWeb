@@ -21,21 +21,38 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const userId = decoded.uid;
 
-  const inputPostData = req.body as Project;
+  const inputPost = req.body;
+  const inputPostData = req.body.data;
   try {
-    const createPost = await prisma.project.update({
+    const updatePost = await prisma.project.update({
       where: {
-        slug: inputPostData.slug,
+        slug: inputPost.slug,
       },
       data: {
-        ...inputPostData,
+        ...inputPostData.data,
+        status: "PENDING",
         updatedAt: new Date().toISOString(),
       },
+    });
+    const deleteUsers = await prisma.projectPaymentMethod.deleteMany({
+      where: {
+        projectId: inputPostData.id,
+      },
+    });
+    const temp = [];
+    inputPost.payment.map((item) => {
+      temp.push({
+        ProjectPaymentMethodId: item,
+        projectId: inputPostData.id,
+      });
+    });
+    const createPaymentMethod = await prisma.projectPaymentMethod.createMany({
+      data: temp,
     });
 
     res.status(200).json({
       success: "1",
-      data: createPost,
+      data: updatePost,
     });
   } catch (error) {
     console.log(error);

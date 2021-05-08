@@ -8,10 +8,13 @@ import { genSlug } from "../../../libs/slugify";
 import { NextApiResponse } from "next";
 
 const OnboardingWelcomeAPI = async (req: any, res: NextApiResponse) => {
+  const authValue = req.headers.authorization;
+  const token = authValue.replace("Bearer ", "");
+  const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   try {
     const user = await prisma.user.findFirst({
       where: {
-        id: req.uid,
+        id: decoded.uid,
       },
     });
     if (user) {
@@ -20,21 +23,22 @@ const OnboardingWelcomeAPI = async (req: any, res: NextApiResponse) => {
     } else {
       const welcomeUser = await prisma.user.create({
         data: {
-          id: req.uid,
-          email: req.email,
-          providers: req.providers,
-          name: req.name,
+          id: decoded.uid,
+          email: decoded.email,
+          providers: decoded.firebase.sign_in_provider,
+          name: decoded.name,
           role: "USER",
-          username: genSlug(req.name),
-          photoURL: req.picture,
+          username: genSlug(decoded.name),
+          photoURL: decoded.picture,
         },
       });
-      await firebaseAdmin.auth().setCustomUserClaims(req.uid, {
+      await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {
         flag_is_save_user: true,
         role: ["USER"],
-        username: req.uid,
+        username: decoded.username,
         userState: "ACTIVE",
       });
+      return res.status(201).send(welcomeUser);
     }
 
     return;
@@ -58,8 +62,4 @@ const OnboardingWelcomeAPI = async (req: any, res: NextApiResponse) => {
   // });
 };
 
-export default use(
-  allowedHttpMethod("POST"),
-  addRequestId,
-  addUserIdAndRole
-)(OnboardingWelcomeAPI);
+export default use(allowedHttpMethod("GET"))(OnboardingWelcomeAPI);

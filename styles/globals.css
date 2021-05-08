@@ -8,7 +8,9 @@ body {
 .ce-toolbar__content {
   max-width: 860px;
 }
-
+html {
+  scroll-behavior: smooth;
+}
 h1 {
   @apply text-2xl;
 }

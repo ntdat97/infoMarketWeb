@@ -16,13 +16,12 @@ export default function ProfilePage() {
   async function createUser() {
     const token = await user.getIdToken();
     const response = await fetch("/api/onboarding/welcome", {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({}),
     });
+
     if (response.ok) {
       await firebaseClient.auth().currentUser.getIdTokenResult(true);
       router.push("/profile");
@@ -30,6 +29,7 @@ export default function ProfilePage() {
   }
   useEffect(() => {
     if (!user) return;
+
     /*     if (user?.userState === "BANNED") return; */
     createUser();
   }, [user]);

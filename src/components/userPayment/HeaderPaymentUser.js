@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "react-feather";
 import { useAsyncList } from "@react-stately/data";
 import { ActiveLink } from "../common/ActiveLink";
-export const HeaderCollection = ({ data, user, confirm }) => {
+export const HeaderPaymentUser = ({ data, user, confirm }) => {
   const router = useRouter();
   const slug = router.query.slug;
   let list = useAsyncList({

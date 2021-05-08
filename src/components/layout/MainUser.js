@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export const MainUser = ({ subHeader, content }) => {
   return (
-    <div className="overflow-auto">
+    <div>
       {subHeader}
       {content}
     </div>

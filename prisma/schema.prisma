@@ -57,6 +57,7 @@ model UserPaymentMethod {
   phone               String?
   stk                 String?
   user                User @relation(fields: [userId], references: [id])
+  media Media[]
   userId   String
 }
 
@@ -96,6 +97,8 @@ model Media {
   userId    String
   project   Project   @relation(fields: [projectId], references: [id])
   projectId String
+  userPaymentMethod UserPaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethodId String
 }
 
 enum Role {

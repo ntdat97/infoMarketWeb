@@ -48,7 +48,7 @@ export const HeaderPreview = ({ user }) => {
   }); */
   async function handlePublishPost() {
     const token = await user.getIdToken();
-    const req = await fetch("/api/posts/update-post", {
+    const req = await fetch("/api/posts/preview-project", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export const HeaderPreview = ({ user }) => {
   }
   async function handleDeletePost() {
     const token = await user.getIdToken();
-    const req = await fetch("/api/posts/update-post", {
+    const req = await fetch("/api/posts/preview-project", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

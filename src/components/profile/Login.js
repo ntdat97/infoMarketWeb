@@ -6,7 +6,7 @@ function Login() {
   const { signinWithGoogle } = useAuth();
 
   return (
-    <body className="flex w-full ">
+    <div className="flex w-full ">
       <div className=" py-6 w-full">
         <div className="flex   bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-2xl">
           <div className="flex flex-col h-full p-8 w-full">
@@ -90,7 +90,7 @@ function Login() {
           </div>
         </div>
       </div>
-    </body>
+    </div>
   );
 }
 export default Login;

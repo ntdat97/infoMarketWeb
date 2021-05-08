@@ -1,4 +1,8 @@
 import React from "react";
+import { Header } from "../components/common/Header";
+import SideBar from "../components/common/SideBar";
+import { MainUser } from "../components/layout/MainUser";
+import { LayoutUser } from "../components/layout/LayoutUser";
 import CreateProject from "../components/project/CreateProject";
 import { Redirect } from "../components/common/Redirect";
 import { Loading } from "../components/common/Loading";
@@ -14,6 +18,17 @@ const NewPostPage = () => {
     return <Redirect />;
   }
 
-  return <CreateProject />;
+  return (
+    <LayoutUser
+      header={<Header />}
+      sidebar={<SideBar />}
+      main={
+        <MainUser
+          /*             subHeader={<HeaderPostsUser user={user} />} */
+          content={<CreateProject />}
+        />
+      }
+    />
+  );
 };
 export default NewPostPage;

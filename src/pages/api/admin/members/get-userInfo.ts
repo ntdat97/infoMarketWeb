@@ -12,15 +12,24 @@ const getUserInfo = async (
   res: NextApiResponse
 ) => {
   const id: string = req.query.id as string;
-  const getUserState = await prisma.user.findUnique({
-    select: {
-      userState: true,
-    },
-    where: {
-      id: id,
-    },
-  });
-  return res.status(200).send(getUserState);
+  try {
+    const getUserState = await prisma.user.findFirst({
+      select: {
+        userState: true,
+      },
+      where: {
+        id: id,
+      },
+    });
+    return res.status(200).send(getUserState);
+  } catch (error) {
+    console.log(error);
+
+    res.status(400).json({
+      success: "0",
+      data: error,
+    });
+  }
 };
 
 export default use(allowedHttpMethod("GET"))(getUserInfo);

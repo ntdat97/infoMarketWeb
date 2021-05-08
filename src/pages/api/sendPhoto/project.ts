@@ -14,15 +14,15 @@ const sendPhoto = async (req: any, res: NextApiResponse) => {
       where: {
         userId: cloneData.data.values.userId,
         projectId: cloneData.data.values.projectId,
-      },
-    });
- */
-    const createMedia = await prisma.media.create({
-      data: {
+      },{
         url: cloneData.data.values.url,
         userId: cloneData.data.values.userId,
         projectId: cloneData.data.values.projectId,
-      },
+      }
+    });
+ */
+    const createMedia = await prisma.media.createMany({
+      data: [...cloneData.data.values],
     });
     res.status(200).json({
       success: "1",

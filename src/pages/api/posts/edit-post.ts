@@ -29,6 +29,9 @@ apiRoute.get(async (req: any, res: NextApiResponse) => {
             equals: slug,
           },
         },
+        include: {
+          projectPaymentMethod: true,
+        },
       });
 
       if (!getPostByAdmin) {
@@ -51,6 +54,9 @@ apiRoute.get(async (req: any, res: NextApiResponse) => {
           slug: {
             equals: slug,
           },
+        },
+        include: {
+          projectPaymentMethod: true,
         },
       });
       if (getPostByPublic.authorId === decoded.uid) {

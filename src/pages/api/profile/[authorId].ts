@@ -18,6 +18,13 @@ const AdminPostsAPI = async (
   if (!req.uid) {
     getUserProfile = await prisma.user.findUnique({
       where: { id: authorId },
+      include: {
+        userPaymentMethod: {
+          where: {
+            paymentState: "LIVE",
+          },
+        },
+      },
     });
   }
 

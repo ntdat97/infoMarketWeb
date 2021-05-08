@@ -5,7 +5,8 @@ import { MainUser } from "../../../components/layout/MainUser";
 import { Header } from "../../../components/common/Header";
 import SideBar from "../../../components/common/SideBar";
 
-import EditProject from "../../../components/project/EditProject";
+import { HeaderPaymentUser } from "../../../components/userPayment/HeaderPaymentUser";
+import { MainPaymentUser } from "../../../components/userPayment/MainPaymentUser";
 import { Redirect } from "../../../components/common/Redirect";
 import { Loading } from "../../../components/common/Loading";
 import { useAuth } from "../../../fb/auth";
@@ -26,8 +27,8 @@ const Edit = () => {
       sidebar={<SideBar />}
       main={
         <MainUser
-          /* subHeader={<HeaderPostsUser user={user} />} */
-          content={<EditProject />}
+          subHeader={<HeaderPaymentUser user={user} />}
+          content={<MainPaymentUser />}
         />
       }
     />

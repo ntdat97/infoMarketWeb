@@ -23,9 +23,8 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
   const userId = decoded.uid;
 
   const inputPostData = req.body;
-  console.log(req.body);
   // generate slug
-  const slug = genSlug(inputPostData.projectName);
+  const slug = genSlug(inputPostData.data.projectName);
   try {
     const createPost = await prisma.project.create({
       data: {

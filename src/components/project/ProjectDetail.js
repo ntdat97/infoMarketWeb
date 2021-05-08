@@ -3,69 +3,21 @@ import { MdAccessTime, MdImage } from "react-icons/md";
 import CarouselComponent from "../common/CaroselComponent";
 import { Uploader } from "../common/Upload";
 import { ModalSubmit } from "./ModalSubmit";
+import { ErrorPaymentModal } from "../modal/ErrorPaymentModal";
 import { UnAuthModal } from "./UnAuthModal";
 import Header from "../common/Header";
+import Modal from "react-modal";
 import SideBar from "../common/SideBar";
 import { useAsyncList } from "@react-stately/data";
 import { useRouter } from "next/router";
 import { Loading } from "../common/Loading";
 import Link from "next/link";
 import DatePicker, { registerLocale } from "react-datepicker";
+import { Tooltip } from "../common/Tooltip";
 import vi from "date-fns/locale/vi";
 import { LoadingModal } from "../common/LoadingModal";
 import toast, { Toaster } from "react-hot-toast";
 import { useAuth } from "../../fb/auth";
-const ProjectInfo = ({ post, author }) => {
-  const closeDateFormated = new Date(post.closeDay).toLocaleDateString(vi);
-  const openDateFormated = new Date(post.openDay).toLocaleDateString(vi);
-  return (
-    <div className="flex flex-row pb-2.5 border-b border-[#f0f0f0]">
-      <div className="w-9/12 px-2">
-        <div className="text-3xl m font-bold  py-2">{post.projectName}</div>
-        <div style={{ paddingVertical: 1.5 }}>{post.authorName}</div>
-        <div
-          style={{
-            fontSize: 17,
-            color: "black",
-            alignItems: "center",
-            paddingVertical: 3,
-            color: "#454545",
-          }}
-        >
-          $ {post.price}/photo
-        </div>
-        <div className="flex flex-row items-center py-1">
-          <MdImage color="#8f8f8f" className="mr-1" />
-          <div style={{ color: "#454545", fontSize: 17 }}>
-            {" "}
-            {post.maxUnit} photos
-          </div>
-        </div>
-        <div className="flex flex-row items-center py-1">
-          <MdAccessTime color="#8f8f8f" className="mr-3" size={30} />
-
-          <div className="text-[17px] text-[#454545] items-center  ">
-            {openDateFormated}
-          </div>
-          <div className="text-xl p-1 justify-center items-center mx-2">
-            {" "}
-            -{" "}
-          </div>
-          <div className=" text-[17px] text-[#454545] items-center ">
-            {closeDateFormated}
-          </div>
-        </div>
-      </div>
-      <div className="flex justify-center items-center w-3/12">
-        <Link href={`/profile/${author[0].username}`}>
-          <a /* onPress={() => navigation.navigate('Profilediver')} */>
-            <img src={author[0].photoURL} style={{ height: 70, width: 70 }} />
-          </a>
-        </Link>
-      </div>
-    </div>
-  );
-};
 
 export function ProjectDetail({ user }) {
   const [coverImage, setCoverImage] = useState([]);
@@ -75,11 +27,15 @@ export function ProjectDetail({ user }) {
   const [post, setPost] = useState(undefined);
   const [author, setAuthor] = useState(undefined);
   const [modalSubmitVisible, setModalSubmitVisible] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState([false, []]);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
+  const [paymentMethodSelected, setPaymentMethodSelected] = useState(null);
+  const [selectPaymentVisible, setSelectPaymentVisible] = useState(false);
   const [countUserPhoto, setCountUserPhoto] = useState(0);
   /* const [countTemp, setCountTemp] = useState(0); */
   const router = useRouter();
   const slug = router.query.slug;
+
   const fetchPost = async () => {
     setStatus("loading");
     if (!slug) return;
@@ -101,6 +57,7 @@ export function ProjectDetail({ user }) {
     if (!req.ok && !req1.ok) {
       setStatus("error");
     }
+
     setAuthor(authorReq);
     setPost(data);
     setStatus("ok");
@@ -138,14 +95,16 @@ export function ProjectDetail({ user }) {
   }, [slug]);
   useEffect(() => {
     if (coverImage.length > 0 && post) {
+      var data = [];
       coverImage.map((item, index) => {
-        const data = {
+        data.push({
           url: item.response.body.data[0].linkUrl,
           userId: user.uid,
           projectId: post.id,
-        };
-        sendPhoto(data);
+          userPaymentMethodId: paymentMethodSelected,
+        });
       });
+      sendPhoto(data);
     }
   }, [coverImage]);
   /* useEffect(() => {
@@ -157,12 +116,82 @@ export function ProjectDetail({ user }) {
       userId: user.uid,
       projectId: post.id,
     };
-
+    
     countPhoto(data); */
+
+    const intersection = author[0].userPaymentMethod.filter((a) =>
+      post.projectPaymentMethod.some(
+        (b) => a.userPaymentMethodId === b.ProjectPaymentMethodId
+      )
+    );
     if (user) {
-      setIsShowUploader(true);
+      if (intersection.length > 0) {
+        if (paymentMethodSelected) {
+          setIsShowUploader(true);
+        } else {
+          toast.error("Vui lòng chọn phương thức thanh toán");
+        }
+      } else {
+        var state = [...errorModalVisible];
+        state[0] = true;
+        state[1] = post.projectPaymentMethod;
+        setErrorModalVisible(state);
+      }
     } else {
       setModalAuthVisible(true);
+    }
+  };
+
+  const PaymentRender = () => {
+    if (status === "ok") {
+      const intersection = author[0].userPaymentMethod.filter((a) =>
+        post?.projectPaymentMethod.some(
+          (b) => a.ProjectPaymentMethodId === b.userPaymentMethodId
+        )
+      );
+      const postOnly = post?.projectPaymentMethod.filter(
+        (a) =>
+          !author[0].userPaymentMethod.some(
+            (b) => a.ProjectPaymentMethodId === b.userPaymentMethodId
+          )
+      );
+      console.log(intersection[0]);
+      var paymentObject = [];
+      intersection.map((item, index) =>
+        paymentObject.push(
+          <div
+            key={index}
+            className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
+          >
+            {item.userPaymentMethodId.toUpperCase()}
+            <input
+              type="radio"
+              value={item.id}
+              checked={item.id === paymentMethodSelected ? true : false}
+              name="payment"
+              className="ml-1"
+              onChange={(event) => setPaymentMethodSelected(event.target.value)}
+            />
+          </div>
+        )
+      );
+      postOnly.map((item, index) =>
+        paymentObject.push(
+          <Tooltip
+            key={index + 100}
+            text={
+              <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
+                Bạn chưa thêm phương thức thanh toán này
+              </span>
+            }
+          >
+            <div className="flex flex-row border border-gray-400 hover:disable rounded-md p-1 m-1 items-center justify-center">
+              {item.ProjectPaymentMethodId.toUpperCase()}
+            </div>
+          </Tooltip>
+        )
+      );
+      return <>{paymentObject} </>;
     }
   };
   if (post?.id == "empty") {
@@ -192,6 +221,11 @@ export function ProjectDetail({ user }) {
             modalVisible={modalLoadingVisible}
             setModalVisible={setModalLoadingVisible}
           />
+          <ErrorPaymentModal
+            modalVisible={errorModalVisible}
+            setModalVisible={setErrorModalVisible}
+          />
+
           <ModalSubmit
             setModalVisible={setModalSubmitVisible}
             modalVisible={modalSubmitVisible}
@@ -200,13 +234,78 @@ export function ProjectDetail({ user }) {
             setModalVisible={setModalAuthVisible}
             modalVisible={modalAuthVisible}
           />
-          <div className="max-w-[1108px] mx-auto mt-4">
+          <Toaster />
+          <div>
             <div style={{ backgroundColor: "white" }}>
               <ModalSubmit />
               <div>
                 <CarouselComponent data={post.caroselImage} />
               </div>
-              <ProjectInfo post={post} author={author} />
+              <div className="flex flex-row pb-2.5 border-b border-[#f0f0f0]">
+                <div className="w-9/12 px-2">
+                  <div className="text-3xl m font-bold  py-2">
+                    {post.projectName}
+                  </div>
+                  <div style={{ paddingVertical: 1.5 }}>{post.authorName}</div>
+                  <div
+                    style={{
+                      fontSize: 17,
+                      color: "black",
+                      alignItems: "center",
+                      paddingVertical: 3,
+                      color: "#454545",
+                    }}
+                  >
+                    $ {post.price}/photo
+                  </div>
+                  <div className="flex flex-row items-center py-1">
+                    <MdImage color="#8f8f8f" className="mr-1" />
+                    <div style={{ color: "#454545", fontSize: 17 }}>
+                      {" "}
+                      {post.maxUnit} photos
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center py-1">
+                    <MdAccessTime color="#8f8f8f" className="mr-3" size={30} />
+
+                    <div className="text-[17px] text-[#454545] items-center  ">
+                      {new Date(post.openDay).toLocaleDateString(vi)}
+                    </div>
+                    <div className="text-xl p-1 justify-center items-center mx-2">
+                      {" "}
+                      -{" "}
+                    </div>
+                    <div className=" text-[17px] text-[#454545] items-center ">
+                      {new Date(post.closeDay).toLocaleDateString(vi)}
+                    </div>
+                  </div>
+                  <div
+                    className="flex flex-row items-center flex-wrap"
+                    id="payment"
+                  >
+                    {/* {post?.projectPaymentMethod.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
+                      >
+                        {item.ProjectPaymentMethodId.toUpperCase()}
+                      </div>
+                    ))} */}
+                    <PaymentRender />
+                  </div>
+                </div>
+                <div className="flex justify-center items-center w-3/12">
+                  <Link href={`/profile/${author[0].username}`}>
+                    <a /* onPress={() => navigation.navigate('Profilediver')} */
+                    >
+                      <img
+                        src={author[0].photoURL}
+                        style={{ height: 70, width: 70 }}
+                      />
+                    </a>
+                  </Link>
+                </div>
+              </div>
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
                 <div
                   style={{
@@ -317,14 +416,14 @@ export function ProjectDetail({ user }) {
                 </div>
               </div>
             </div>
-            <div className="p-2 border-t-[0.5px] border-[#f0f0f0]   mt-0.5  bg-white sticky bottom-0 ">
-              <button
-                onClick={sendPhotoChecker}
-                className="py-1  rounded-md bg-[#006A73] flex w-full focus:opacity-50 focus:outline-none items-center justify-center"
-              >
-                <div className="text-white font-semibold">Send photos</div>
-              </button>
-            </div>
+          </div>
+          <div className="p-2 border-t-[0.5px] border-[#f0f0f0]   mt-0.5  bg-white sticky bottom-0 right-0">
+            <button
+              onClick={sendPhotoChecker}
+              className="py-1  rounded-md bg-[#006A73] flex w-full focus:opacity-50 focus:outline-none items-center justify-center"
+            >
+              <div className="text-white font-semibold">Send photos</div>
+            </button>
           </div>
         </>
       ) : (

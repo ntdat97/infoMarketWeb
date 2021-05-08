@@ -29,18 +29,18 @@ export function HeaderLogin({ user }) {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [slideNav]);
-  const getTokenResult = async () => {
+  async function getTokenResult() {
     const getToken = await firebaseClient
       .auth()
       .currentUser.getIdTokenResult(true);
-    if (getToken.claims?.role[0] === "ADMIN") {
+    if (getToken && getToken?.claims.role[0] === "ADMIN") {
       setIsAdmin(true);
     }
-  };
+  }
 
   useEffect(() => {
     getTokenResult();
-  }, []);
+  }, [user]);
   return (
     <>
       <div

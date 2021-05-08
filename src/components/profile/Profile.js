@@ -157,7 +157,6 @@ export default function Profile() {
       const getTokenResult = await firebaseClient
         .auth()
         .currentUser.getIdTokenResult(true);
-      console.log(getTokenResult);
       let res = await fetch("/api/profile/me", {
         headers: {
           Authorization: `Bearer ${await user.getIdToken(true)}`,
@@ -170,7 +169,6 @@ export default function Profile() {
       });
       let json = await res.json();
       let paymentJson = await payment.json();
-      console.log(json);
       formik.setFieldValue("bio", json[0].bio);
       formik.setFieldValue("website", json[0].website);
       formik.setFieldValue("avatarURL", json[0].photoURL);

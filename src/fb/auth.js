@@ -6,10 +6,11 @@ const authContext = createContext(null);
 const getUserInfo = async (user) => {
   let res = await fetch(`/api/admin/members/get-userInfo?id=${user.uid}`, {
     headers: {
-      ContentType: "application/json",
+      "Content-Type": "application/json",
     },
   });
   const info = await res.json();
+
   return info;
 };
 // You can wrap your _app.js with this provider
