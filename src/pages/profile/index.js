@@ -23,7 +23,6 @@ export default function ProfilePage() {
     });
 
     if (response.ok) {
-      await firebaseClient.auth().currentUser.getIdTokenResult(true);
       router.push("/profile");
     }
   }

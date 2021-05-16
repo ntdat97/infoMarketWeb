@@ -43,7 +43,7 @@ export const PhotoCollection = () => {
   return (
     <>
       <LayoutUser
-        header={<Header />}
+        header={<Header isScroll={false} isSticky={false} />}
         sidebar={<SideBar />}
         main={
           status === "loading" ? (

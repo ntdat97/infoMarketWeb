@@ -27,6 +27,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: {
               slug: slug,
             },
+            paidState: false,
           },
           include: {
             user: true,
@@ -57,12 +58,13 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.media.findMany({
             orderBy: {
-              updatedAt: "desc",
+              createdAt: "desc",
             },
             where: {
               project: {
                 slug: slug,
               },
+              paidState: false,
             },
             include: {
               user: true,
@@ -101,6 +103,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: {
               slug: slug,
             },
+            paidState: false,
           },
           include: {
             user: true,
@@ -138,6 +141,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               project: {
                 slug: slug,
               },
+              paidState: false,
             },
             include: {
               user: true,
@@ -176,6 +180,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               slug: slug,
             },
             isApprove: "APPROVE",
+            paidState: false,
           },
           include: {
             user: true,
@@ -213,6 +218,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
                 slug: slug,
               },
               isApprove: "APPROVE",
+              paidState: false,
             },
             include: {
               user: true,
@@ -251,6 +257,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               slug: slug,
             },
             isApprove: "REJECT",
+            paidState: false,
           },
           include: {
             user: true,
@@ -288,6 +295,82 @@ const getMedia = async (req: any, res: NextApiResponse) => {
                 slug: slug,
               },
               isApprove: "REJECT",
+              paidState: false,
+            },
+            include: {
+              user: true,
+              project: true,
+            },
+          });
+          if (!getMediaBySlug) {
+            return res
+              .status(400)
+              .json({ message: "Data is empty.", id: "empty" });
+          }
+
+          return res.status(200).json(getMediaBySlug);
+        }
+        return res
+          .status(200)
+          .json({ message: "Not Authorization", id: "unauth" });
+      } catch (error) {
+        console.log(error);
+
+        res.status(400).json({
+          success: "0",
+          data: error,
+        });
+      }
+    }
+  } else if (status === "paid") {
+    if (role[0] === "ADMIN") {
+      try {
+        const getMediaBySlug = await prisma.media.findMany({
+          orderBy: {
+            updatedAt: "desc",
+          },
+          where: {
+            project: {
+              slug: slug,
+            },
+            paidState: true,
+          },
+          include: {
+            user: true,
+            project: true,
+          },
+        });
+
+        if (!getMediaBySlug) {
+          return res.status(400).json({ message: "Data is empty." });
+        }
+
+        return res.status(200).json(getMediaBySlug);
+      } catch (error) {
+        // console.log(error);
+
+        res.status(400).json({
+          success: "0",
+          data: error,
+        });
+      }
+    } else {
+      try {
+        const getPostByPublic = await prisma.project.findFirst({
+          where: {
+            slug: slug,
+          },
+        });
+        if (getPostByPublic.authorId === decoded.uid) {
+          const getMediaBySlug = await prisma.media.findMany({
+            orderBy: {
+              updatedAt: "desc",
+            },
+            where: {
+              project: {
+                slug: slug,
+              },
+              paidState: true,
             },
             include: {
               user: true,

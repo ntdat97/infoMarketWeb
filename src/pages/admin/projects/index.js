@@ -1,8 +1,8 @@
-import { Redirect } from "../../components/common/Redirect";
+import { Redirect } from "../../../components/common/Redirect";
 export default function MyProject() {
   return (
     <>
-      <Redirect to="/admin/members/all" />
+      <Redirect to="/admin/projects/all" />
     </>
   );
 }

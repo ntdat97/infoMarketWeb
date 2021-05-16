@@ -23,6 +23,9 @@ const PostsAPI = async (
         orderBy: {
           updatedAt: "desc",
         },
+        where: {
+          paidState: false,
+        },
         include: {
           user: true,
           project: true,
@@ -37,6 +40,7 @@ const PostsAPI = async (
           isApprove: {
             equals: isApprove.PENDING,
           },
+          paidState: false,
         },
         include: {
           user: true,
@@ -52,6 +56,7 @@ const PostsAPI = async (
           isApprove: {
             equals: isApprove.APPROVE,
           },
+          paidState: false,
         },
         include: {
           user: true,
@@ -67,6 +72,20 @@ const PostsAPI = async (
           isApprove: {
             equals: isApprove.REJECT,
           },
+          paidState: false,
+        },
+        include: {
+          user: true,
+          project: true,
+        },
+      });
+    } else if (status === "paid") {
+      getAllMediaByStatus = await prisma.media.findMany({
+        orderBy: {
+          updatedAt: "desc",
+        },
+        where: {
+          paidState: true,
         },
         include: {
           user: true,

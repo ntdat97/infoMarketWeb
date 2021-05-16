@@ -19,8 +19,6 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
-  const userId = decoded.uid;
-
   const inputPost = req.body;
   const inputPostData = req.body.data;
   try {
@@ -29,25 +27,10 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
         slug: inputPost.slug,
       },
       data: {
-        ...inputPostData.data,
+        ...inputPostData,
         status: "PENDING",
         updatedAt: new Date().toISOString(),
       },
-    });
-    const deleteUsers = await prisma.projectPaymentMethod.deleteMany({
-      where: {
-        projectId: inputPostData.id,
-      },
-    });
-    const temp = [];
-    inputPost.payment.map((item) => {
-      temp.push({
-        ProjectPaymentMethodId: item,
-        projectId: inputPostData.id,
-      });
-    });
-    const createPaymentMethod = await prisma.projectPaymentMethod.createMany({
-      data: temp,
     });
 
     res.status(200).json({

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "react-feather";
 import { useAsyncList } from "@react-stately/data";
 import { ActiveLink } from "../common/ActiveLink";
+import Link from "next/link";
 export const HeaderCollection = ({ data, user, confirm }) => {
   const router = useRouter();
   const slug = router.query.slug;
@@ -24,7 +25,7 @@ export const HeaderCollection = ({ data, user, confirm }) => {
   });
   return (
     <>
-      <div className="sticky top-0 right-0">
+      <div className="sticky top-0 right-0 bg-white">
         <div className="flex flex-row justify-between items-center p-4 border-b">
           <div>
             <ActiveLink href="/my-projects/all">
@@ -99,15 +100,34 @@ export const HeaderCollection = ({ data, user, confirm }) => {
                 )
               </a>
             </ActiveLink>
+            <ActiveLink
+              href={{
+                pathname: "/project/[slug]/photo-collection/[status]",
+                query: { status: "paid", slug: slug },
+              }}
+              activeClassName="border-b border-b-2 border-black font-semibold"
+            >
+              <a className="py-2 mx-3 text-sm">
+                Đã thanh toán (
+                {!list.isLoading &&
+                  list.items.length > 0 &&
+                  list.items[0]?.totalMediaStatusPAID}
+                )
+              </a>
+            </ActiveLink>
           </div>
 
           <div>
-            <button
-              onClick={confirm}
-              className="text-center mr-4 text-white shadow bg-[#ff8a24] justify-center items-center rounded-xl h-full py-1 px-2"
+            <Link
+              href={{
+                pathname: "/project/[slug]/payment",
+                query: { slug: slug },
+              }}
             >
-              Thanh toán
-            </button>
+              <a className="text-center mr-4 text-white shadow bg-[#ff8a24] justify-center items-center rounded-xl h-full py-1.5 px-2">
+                Thanh toán
+              </a>
+            </Link>
             <button
               onClick={confirm}
               className="text-center text-white shadow bg-[#2e43ff] justify-center items-center rounded-xl h-full py-1 px-2"

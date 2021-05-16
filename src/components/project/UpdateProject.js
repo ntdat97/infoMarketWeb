@@ -65,27 +65,6 @@ const UpdateProject = ({ post, user, payment }) => {
   const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [provider, setProvider] = useState([]);
-  useEffect(() => {
-    if (payment[0].length > 0) {
-      const temp = [];
-      payment[0].map((item1, index) => {
-        let check = false;
-        post?.projectPaymentMethod.map((item) => {
-          if (item.ProjectPaymentMethodId === item1.id) {
-            check = true;
-          }
-        });
-        if (check === true) {
-          temp.push({ isCheck: true, id: item1.id });
-        } else {
-          temp.push({ isCheck: false, id: item1.id });
-        }
-      });
-      console.log(temp);
-      setProvider(temp);
-    }
-  }, []);
   // edit post
   useEffect(() => {
     if (caroselImage.length > 0) {
@@ -112,7 +91,6 @@ const UpdateProject = ({ post, user, payment }) => {
       usedFor: post.usedFor,
       requirements: post.requirements,
       contact: post.contact,
-      provider: provider,
     },
     validationSchema: yup.object().shape({
       projectName: yup
@@ -142,16 +120,12 @@ const UpdateProject = ({ post, user, payment }) => {
         .string()
         .email("Vui lòng nhập đúng định dạng")
         .required("Vui lòng nhập email"),
-      provider: yup
-        .array()
-        .min(1, "Vui lòng chọn ít nhất 1 phương thức thanh toán"),
     }),
     onSubmit: (values) => handleCreate(values),
   });
   async function handleCreate(values) {
     setModalLoadingVisible(true);
     const projectData = { ...values };
-    delete projectData.provider;
     const token = await user.getIdToken();
     const response = await fetch("/api/posts/update-post", {
       method: "POST",
@@ -162,7 +136,6 @@ const UpdateProject = ({ post, user, payment }) => {
       body: JSON.stringify({
         slug: post.slug,
         data: { ...projectData },
-        payment: values.provider,
       }),
     });
     if (response.ok) {
@@ -340,38 +313,6 @@ const UpdateProject = ({ post, user, payment }) => {
                 onChange={(date) => formik.setFieldValue("closeDay", date)}
                 className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
               />
-            </div>
-            <div className="flex flex-row items-center flex-wrap">
-              {provider.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
-                >
-                  <label>{item.id.toUpperCase()}</label>
-                  <input
-                    type="checkbox"
-                    value={item.id}
-                    name="ewallet"
-                    checked={provider[index].isCheck}
-                    onChange={() => {
-                      var temp = [...provider];
-                      temp[index] = {
-                        isCheck: !temp[index].isCheck,
-                        id: temp[index].id,
-                      };
-                      const temp1 = [];
-                      temp.map((item) => {
-                        if (item.isCheck) {
-                          temp1.push(item.id);
-                        }
-                      });
-                      formik.setFieldValue("provider", temp1);
-                      setProvider(temp);
-                    }}
-                    className="mx-2"
-                  />
-                </div>
-              ))}
             </div>
           </div>
           <div className="flex justify-center items-center w-3/12">

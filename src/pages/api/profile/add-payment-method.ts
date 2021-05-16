@@ -8,17 +8,25 @@ import { NextApiResponse } from "next";
 
 const AddPaymentAPI = async (req: any, res: NextApiResponse) => {
   const data = req.body.data.values;
-  const addPayment = await prisma.userPaymentMethod.create({
-    data: {
-      userPaymentMethodId: data.id,
-      name: data.name,
-      phone: data.phone,
-      stk: data.stk,
-      userId: req.uid,
-    },
-  });
+  try {
+    const addPayment = await prisma.userPaymentMethod.create({
+      data: {
+        userPaymentMethodId: data.id,
+        name: data.name,
+        phone: data.phone,
+        stk: data.stk,
+        userId: req.uid,
+      },
+    });
 
-  return res.status(201).send(addPayment);
+    return res.status(201).send(addPayment);
+  } catch (error) {
+    //console.log(error)
+    res.status(400).json({
+      success: "0",
+      data: error,
+    });
+  }
 };
 
 export default use(

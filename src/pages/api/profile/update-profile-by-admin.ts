@@ -13,43 +13,51 @@ const UpdatePofileAPI = async (req: any, res: NextApiResponse) => {
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const role = decoded.role;
   const data = req.body.data.values;
-  if (role[0] === "ADMIN") {
-    const updateProfile = await prisma.user.update({
-      where: {
-        username: slug,
-      },
-      data: {
-        bio: data.bio,
-        website: data.website,
-        name: data.displayName,
-        photoURL: data.avatarURL,
-      },
-    });
-
-    const updateFirebaseProfile = await firebaseAdmin
-      .auth()
-      .updateUser(req.uid, {
-        displayName: data.displayName,
+  try {
+    if (role[0] === "ADMIN") {
+      const updateProfile = await prisma.user.update({
+        where: {
+          username: slug,
+        },
+        data: {
+          bio: data.bio,
+          website: data.website,
+          name: data.displayName,
+          photoURL: data.avatarURL,
+        },
       });
 
-    /* console.log(req.picture, data.avatarURL); */
+      const updateFirebaseProfile = await firebaseAdmin
+        .auth()
+        .updateUser(req.uid, {
+          displayName: data.displayName,
+        });
 
-    if (data.photoURL !== req.picture) {
-      await firebaseAdmin.auth().updateUser(req.uid, {
-        photoURL: data.avatarURL,
-      });
-    }
+      /* console.log(req.picture, data.avatarURL); */
 
-    /*  const claims = (await firebaseAdmin.auth().getUser(req.uid)).customClaims;
+      if (data.photoURL !== req.picture) {
+        await firebaseAdmin.auth().updateUser(req.uid, {
+          photoURL: data.avatarURL,
+        });
+      }
+
+      /*  const claims = (await firebaseAdmin.auth().getUser(req.uid)).customClaims;
     await firebaseAdmin.auth().setCustomUserClaims(req.uid, {
       ...claims,
       username: data.username,
       flag_is_setting_profile: true,
     }); */
 
-    return res.status(201).send([updateProfile, updateFirebaseProfile]);
-  } else {
-    return res.status(201).send({ message: "You are not authourize" });
+      return res.status(201).send([updateProfile, updateFirebaseProfile]);
+    } else {
+      return res.status(201).send({ message: "You are not authourize" });
+    }
+  } catch (error) {
+    //console.log(error)
+    res.status(400).json({
+      success: "0",
+      data: error,
+    });
   }
 };
 

@@ -186,7 +186,7 @@ export const MainContributeAdmin = ({ user }) => {
           );
         },
       },
-      {
+      /* {
         Header: "Hành động",
         accessor: "slug",
         Cell: ({ row }) => {
@@ -256,7 +256,7 @@ export const MainContributeAdmin = ({ user }) => {
             </>
           );
         },
-      },
+      }, */
     ],
     []
   );

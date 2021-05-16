@@ -17,6 +17,7 @@ model User {
   role          Role            @default(USER)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
+  point         Float           @default(0)
   name          String?
   providers     String
   username      String?         @unique
@@ -24,31 +25,36 @@ model User {
   photoURL      String?
   website       String?
   bio           String?
+  userWithdrawRecorder UserWithdrawRecorder[]
   userPaymentMethod UserPaymentMethod[]
   project       Project[]
+  projectTransactionRecorderSender ProjectTransactionRecorder[] @relation("SenderUser")
+  projectTransactionRecorderReceiver ProjectTransactionRecorder[] @relation("ReceiverUser")
   media         Media[]
+  userDepositRecorder UserDepositRecorder[]
 }
-
-model AlaivablePaymentMethod {
+model AvailableDepositMethod {
   id                   String          @id
-  provider             String
+  provider             WithdrawProvider 
+  ewalletProvider      String?
+  bankProvider         String?
+   createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+    name                String?
+  phone               String?
+  stk                 String?
+  userDepositRecorder UserDepositRecorder[]
+}
+model AvailablePaymentMethod {
+  id                   String          @id
+  provider             WithdrawProvider
   ewalletProvider      String?
   bankProvider         String?
   paymentMethod        UserPaymentMethod[]
-  projectPaymentMethod ProjectPaymentMethod[]
-}
-model ProjectPaymentMethod {
-  id                  String                 @id @default(cuid())
-  ProjectPaymentMethod   AlaivablePaymentMethod @relation(fields: [ProjectPaymentMethodId], references: [id])
-  ProjectPaymentMethodId String
-  project Project @relation(fields: [projectId], references: [id])
-  projectId String
-   createdAt       DateTime                 @default(now())
-  updatedAt       DateTime                 @default(now())
 }
 model UserPaymentMethod {
   id                  String                 @id @default(cuid())
-  userPaymentMethod   AlaivablePaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethod   AvailablePaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
   userPaymentMethodId String
    createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @default(now())
@@ -57,10 +63,36 @@ model UserPaymentMethod {
   phone               String?
   stk                 String?
   user                User @relation(fields: [userId], references: [id])
-  media Media[]
+  userWithdrawRecorder UserWithdrawRecorder[]
   userId   String
 }
 
+model UserDepositRecorder {
+  id String                 @id @default(cuid())
+   createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  amount Float
+  user  User     @relation(fields: [userId], references: [id])
+  userId String
+  availableDepositMethod AvailableDepositMethod? @relation(fields: [availableDepositMethodId], references: [id])
+  availableDepositMethodId String?
+  momoTransaction MomoTransaction[] @relation(fields: [momoTransactionId], references: [id])
+  momoTransactionId String?
+}
+model UserWithdrawRecorder {
+  id String                 @id @default(cuid())
+   createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  amount Float
+  description String?
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  withdrawPointState WithdrawPointState @default(PAYING)
+  userPaymentMethod UserPaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethodId String
+  momoTransaction MomoTransaction? @relation(fields: [momoTransactionId], references: [id])
+  momoTransactionId String?
+}
 model Project {
   id              String                   @id @default(cuid())
   createdAt       DateTime                 @default(now())
@@ -74,7 +106,7 @@ model Project {
   maxUnit         Int
   openDay         DateTime
   closeDay        DateTime
-  description     String
+  description     String @default("")
   usedFor         String
   requirements    String
   contact         String
@@ -82,7 +114,28 @@ model Project {
   author          User                     @relation(fields: [authorId], references: [id])
   authorId        String
   authorName      String
-  projectPaymentMethod   ProjectPaymentMethod[]
+  projectTransactionRecorder ProjectTransactionRecorder[]
+}
+model MomoTransaction {
+  id String @id 
+  transactionId String @unique
+  createdAt       DateTime                 @default(now())
+  data Json
+  userWithdrawRecorder UserWithdrawRecorder[]
+  userDepositRecorder UserDepositRecorder[]
+}
+model ProjectTransactionRecorder {
+  id String @id 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  senderUser          User                     @relation("SenderUser",fields: [senderUserId], references: [id])
+  senderUserId String
+   receiverUser          User                     @relation(name: "ReceiverUser",fields: [receiverUserId], references: [id])
+  receiverUserId String
+  sumAmount Float
+  project Project @relation(fields: [projectId], references: [id])
+  projectId String
+  media Media[] 
 }
 
 model Media {
@@ -91,14 +144,14 @@ model Media {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
   isApprove isApprove @default(PENDING)
-  isPaid    Boolean   @default(false)
+  paidState    Boolean   @default(false)
   paidDate  DateTime?
   user      User      @relation(fields: [userId], references: [id])
   userId    String
   project   Project   @relation(fields: [projectId], references: [id])
   projectId String
-  userPaymentMethod UserPaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
-  userPaymentMethodId String
+  ProjectTransactionRecorder ProjectTransactionRecorder? @relation(fields: [projectTransactionRecorderId],references: [id])
+  projectTransactionRecorderId String?
 }
 
 enum Role {
@@ -121,9 +174,19 @@ enum Status {
   PUBLISHED
   DELETED
 }
-
+enum WithdrawProvider {
+  EWALLET
+  BANK
+}
+enum WithdrawPointState {
+  REJECT
+  PAYING
+  PAID
+}
 enum isComplete {
-  COMPLETE
+  COMPLETED
+  PAUSE
+  STOP
   UNCOMPLETE
 }
 

@@ -9,11 +9,12 @@ import nextConnect from "next-connect";
 
 const PayForPhotos = async (req: any, res: NextApiResponse) => {
   const slug = req.query.slug as string;
+  console.log(slug);
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const role = decoded.role;
-  console.log(slug);
+
   if (role[0] === "ADMIN") {
     try {
       const getMediaBySlug = await prisma.media.findMany({
@@ -28,6 +29,7 @@ const PayForPhotos = async (req: any, res: NextApiResponse) => {
         include: {
           user: true,
           project: true,
+          paidState: false,
         },
       });
 
@@ -60,11 +62,12 @@ const PayForPhotos = async (req: any, res: NextApiResponse) => {
             project: {
               slug: slug,
             },
+            isApprove: "APPROVE",
+            paidState: false,
           },
           include: {
             user: true,
             project: true,
-            userPaymentMethod: true,
           },
         });
         if (!getMediaBySlug) {

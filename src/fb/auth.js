@@ -4,6 +4,7 @@ import { firebaseClient as firebase } from "./firebaseClient";
 
 const authContext = createContext(null);
 const getUserInfo = async (user) => {
+  console.log(user.uid);
   let res = await fetch(`/api/admin/members/get-userInfo?id=${user.uid}`, {
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +83,7 @@ function useProvideAuth() {
       .signOut()
       .then(() => {
         setUser(false);
-        router.reload();
+        router.push("/profile");
       });
   };
 

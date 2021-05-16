@@ -105,6 +105,21 @@ export const HeaderContributeAdmin = ({ user }) => {
               )
             </a>
           </ActiveLink>
+          <ActiveLink
+            href={{
+              pathname: "/admin/contribute/[status]",
+              query: { status: "paid" },
+            }}
+            activeClassName="border-b border-b-2 border-black font-semibold"
+          >
+            <a className="py-2 mx-3 text-sm">
+              Đã thanh toán (
+              {!list.isLoading &&
+                list.items.length > 0 &&
+                list.items[0]?.totalMediaStatusPAID}
+              )
+            </a>
+          </ActiveLink>
         </div>
       </div>
     </div>

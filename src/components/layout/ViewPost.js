@@ -162,7 +162,7 @@ export default function ProjectDetail() {
                     </div>
                   </a>
                 </Link>
-                <div
+                {/* <div
                   style={{
                     padding: 10,
                     borderWidth: 1,
@@ -208,7 +208,7 @@ export default function ProjectDetail() {
                     Fot the complete rights and responsibilities, please read
                     the Terms of Use.
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="p-2 border-t-[0.5px] border-[#f0f0f0]   mt-0.5  bg-white sticky bottom-0 ">

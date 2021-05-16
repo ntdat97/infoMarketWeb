@@ -12,38 +12,48 @@ const UpdatePofileAPI = async (req: any, res: NextApiResponse) => {
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const role = decoded.role;
   const data = req.body.data.values;
-  const updateProfile = await prisma.user.update({
-    where: {
-      id: req.uid,
-    },
-    data: {
-      bio: data.bio,
-      website: data.website,
-      name: data.displayName,
-      photoURL: data.avatarURL,
-    },
-  });
-
-  const updateFirebaseProfile = await firebaseAdmin.auth().updateUser(req.uid, {
-    displayName: data.displayName,
-  });
-
-  console.log(req.picture, data.avatarURL);
-
-  if (data.photoURL !== req.picture) {
-    await firebaseAdmin.auth().updateUser(req.uid, {
-      photoURL: data.avatarURL,
+  try {
+    const updateProfile = await prisma.user.update({
+      where: {
+        id: req.uid,
+      },
+      data: {
+        bio: data.bio,
+        website: data.website,
+        name: data.displayName,
+        photoURL: data.avatarURL,
+      },
     });
-  }
 
-  /*  const claims = (await firebaseAdmin.auth().getUser(req.uid)).customClaims;
+    const updateFirebaseProfile = await firebaseAdmin
+      .auth()
+      .updateUser(req.uid, {
+        displayName: data.displayName,
+      });
+
+    console.log(req.picture, data.avatarURL);
+
+    if (data.photoURL !== req.picture) {
+      await firebaseAdmin.auth().updateUser(req.uid, {
+        photoURL: data.avatarURL,
+      });
+    }
+
+    /*  const claims = (await firebaseAdmin.auth().getUser(req.uid)).customClaims;
   await firebaseAdmin.auth().setCustomUserClaims(req.uid, {
     ...claims,
     username: data.username,
     flag_is_setting_profile: true,
   }); */
 
-  return res.status(201).send([updateProfile, updateFirebaseProfile]);
+    return res.status(201).send([updateProfile, updateFirebaseProfile]);
+  } catch (error) {
+    //console.log(error)
+    res.status(400).json({
+      success: "0",
+      data: error,
+    });
+  }
 };
 
 export default use(

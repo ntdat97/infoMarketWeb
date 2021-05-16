@@ -27,8 +27,8 @@ const Edit = () => {
       sidebar={<SideBar />}
       main={
         <MainUser
-          subHeader={<HeaderPaymentUser user={user} />}
-          content={<MainPaymentUser />}
+          /* subHeader={<HeaderPaymentUser user={user} />} */
+          content={<MainPaymentUser user={user} />}
         />
       }
     />

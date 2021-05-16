@@ -10,17 +10,6 @@ const sendPhoto = async (req: any, res: NextApiResponse) => {
   try {
     const data = req.body;
     const cloneData = JSON.parse(data);
-    /*   const totalSentByUser = await prisma.media.count({
-      where: {
-        userId: cloneData.data.values.userId,
-        projectId: cloneData.data.values.projectId,
-      },{
-        url: cloneData.data.values.url,
-        userId: cloneData.data.values.userId,
-        projectId: cloneData.data.values.projectId,
-      }
-    });
- */
     const createMedia = await prisma.media.createMany({
       data: [...cloneData.data.values],
     });

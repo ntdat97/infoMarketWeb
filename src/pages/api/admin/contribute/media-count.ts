@@ -13,13 +13,18 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
   const role = decoded.role;
   console.log(role);
   if (role[0] === "ADMIN") {
-    const totalMediaStatusALL = await prisma.media.count();
+    const totalMediaStatusALL = await prisma.media.count({
+      where: {
+        paidState: false,
+      },
+    });
 
     const totalMediaStatusPENDING = await prisma.media.count({
       where: {
         isApprove: {
           equals: "PENDING",
         },
+        paidState: false,
       },
     });
 
@@ -28,6 +33,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
         isApprove: {
           equals: "APPROVE",
         },
+        paidState: false,
       },
     });
 
@@ -36,15 +42,21 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
         isApprove: {
           equals: "REJECT",
         },
+        paidState: false,
       },
     });
-
+    const totalMediaStatusPAID = await prisma.media.count({
+      where: {
+        paidState: true,
+      },
+    });
     return res.status(200).send([
       {
         totalMediaStatusALL,
         totalMediaStatusAPPROVE,
         totalMediaStatusPENDING,
         totalMediaStatusREJECT,
+        totalMediaStatusPAID,
       },
     ]);
   } else {

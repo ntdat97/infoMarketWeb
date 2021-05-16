@@ -1,40 +1,39 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { Feather, Grid, Hash, Tag, Users, Image, Folder } from "react-feather";
+import { Users, Image, Folder, DollarSign, CreditCard } from "react-feather";
 
 const MENU_SIDEBAR = [
   {
     id: 1,
-    label: "Trang chủ",
-    icon: <Grid size={18} />,
-    link: "/admin/dashboard",
-    key: "dashboard",
-  },
-  {
-    id: 2,
     label: "Dự án",
     icon: <Folder size={18} />,
     key: "posts",
     link: "/admin/projects/all",
   },
   {
-    id: 3,
+    id: 2,
     label: "Hình ảnh",
     icon: <Image size={18} />,
     link: "/admin/contribute/all",
   },
   {
-    id: 4,
+    id: 3,
     label: "Thành viên",
     icon: <Users size={18} />,
     link: "/admin/members/all",
   },
   {
+    id: 4,
+    label: "Rút tiền",
+    icon: <DollarSign size={18} />,
+    link: "/admin/payment",
+  },
+  {
     id: 5,
-    label: "Hashtag",
-    icon: <Hash size={18} />,
-    link: "/hashtags",
+    label: "Nạp tiền",
+    icon: <CreditCard size={18} />,
+    link: "/admin/deposit",
   },
 ];
 

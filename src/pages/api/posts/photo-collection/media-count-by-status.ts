@@ -17,6 +17,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
       project: {
         slug: slug,
       },
+      paidState: false,
     },
   });
 
@@ -28,6 +29,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
       isApprove: {
         equals: "PENDING",
       },
+      paidState: false,
     },
   });
 
@@ -39,6 +41,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
       isApprove: {
         equals: "APPROVE",
       },
+      paidState: false,
     },
   });
 
@@ -50,15 +53,24 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
       isApprove: {
         equals: "REJECT",
       },
+      paidState: false,
     },
   });
-
+  const totalMediaStatusPAID = await prisma.media.count({
+    where: {
+      project: {
+        slug: slug,
+      },
+      paidState: true,
+    },
+  });
   return res.status(200).send([
     {
       totalMediaStatusALL,
       totalMediaStatusAPPROVE,
       totalMediaStatusPENDING,
       totalMediaStatusREJECT,
+      totalMediaStatusPAID,
     },
   ]);
 };

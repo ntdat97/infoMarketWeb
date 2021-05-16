@@ -49,6 +49,13 @@ export const MenuAdmin = ({ user }) => {
               {...layerProps}
               className="shadow-xl  bg-white w-52 rounded-md border border-gray-200"
             >
+              <Link href="/profile">
+                <a>
+                  <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
+                    Trang cá nhân
+                  </li>
+                </a>
+              </Link>
               <Link href="/new">
                 <a>
                   <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">

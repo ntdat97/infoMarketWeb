@@ -34,16 +34,9 @@ apiRoute.post(async (req: any, res: NextApiResponse) => {
         ...inputPostData.data,
       },
     });
-    const temp = [];
-    inputPostData.payment.map((item) => {
-      temp.push({ ProjectPaymentMethodId: item, projectId: createPost.id });
-    });
-    const createPaymentMethod = await prisma.projectPaymentMethod.createMany({
-      data: temp,
-    });
     res.status(200).json({
       success: "1",
-      data: [createPost, createPaymentMethod],
+      data: [createPost],
     });
   } catch (error) {
     console.log(error);

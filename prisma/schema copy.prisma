@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://prisma:prisma@localhost:5432"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["selectRelationCount"]
+}
+
+model User {
+  id            String          @id
+  email         String          @unique
+  role          Role            @default(USER)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  name          String?
+  providers     String
+  username      String?         @unique
+  userState     userState       @default(ACTIVE)
+  photoURL      String?
+  website       String?
+  bio           String?
+  userPaymentMethod UserPaymentMethod[]
+  project       Project[]
+  media         Media[]
+}
+
+model AlaivablePaymentMethod {
+  id                   String          @id
+  provider             String
+  ewalletProvider      String?
+  bankProvider         String?
+  paymentMethod        UserPaymentMethod[]
+  projectPaymentMethod ProjectPaymentMethod[]
+}
+model ProjectPaymentMethod {
+  id                  String                 @id @default(cuid())
+  ProjectPaymentMethod   AlaivablePaymentMethod @relation(fields: [ProjectPaymentMethodId], references: [id])
+  ProjectPaymentMethodId String
+  project Project @relation(fields: [projectId], references: [id])
+  projectId String
+   createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+}
+model UserPaymentMethod {
+  id                  String                 @id @default(cuid())
+  userPaymentMethod   AlaivablePaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethodId String
+   createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+  paymentState  PaymentState @default(LIVE)
+  name                String?
+  phone               String?
+  stk                 String?
+  user                User @relation(fields: [userId], references: [id])
+  media Media[]
+  projectTransaction ProjectTransaction[]
+  userId   String
+}
+
+model Project {
+  id              String                   @id @default(cuid())
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now())
+  status          Status                   @default(PENDING)
+  complete        isComplete               @default(UNCOMPLETE)
+  caroselImage    Json[]
+  slug            String                   @unique
+  projectName     String
+  price           Float
+  maxUnit         Int
+  openDay         DateTime
+  closeDay        DateTime
+  description     String
+  usedFor         String
+  requirements    String
+  contact         String
+  media           Media[]
+  author          User                     @relation(fields: [authorId], references: [id])
+  authorId        String
+  authorName      String
+  projectPaymentMethod   ProjectPaymentMethod[]
+  projectTransaction ProjectTransaction[]
+}
+model MomoTransaction {
+  id String @id @default(cuid())
+  transactionId String @unique
+  senderPhone String
+  senderName String
+  note String
+  amount Float
+  clientTime DateTime
+  ackTime DateTime
+  statusCode String
+  statusText String
+  transactionDetail TransactionDetail[]
+}
+model TransactionDetail {
+  id String @id @default(cuid())
+  momoTransaction MomoTransaction @relation(fields: [momoTransactionId], references: [id])
+  momoTransactionId String
+  ProjectTransaction ProjectTransaction @relation(fields: [projectTransactionId], references: [id])
+  projectTransactionId String
+}
+model ProjectTransaction {
+  id String @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  sumAmount Float
+  identifyCode String
+  project Project @relation(fields: [projectId], references: [id])
+  projectId String
+  userPaymentMethod UserPaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethodId String
+  transactionState TransactionState  @default(PAYING)
+  transactionDetail TransactionDetail[]
+  MediaBatchTransaction MediaBatchTransaction[]
+}
+model MediaBatchTransaction {
+  id String @id @default(cuid())
+  media Media @relation(fields: [mediaId], references: [id])
+  mediaId String
+  ProjectTransaction ProjectTransaction @relation(fields: [projectTransactionID], references: [id])
+  projectTransactionID String
+}
+model Media {
+  id        String    @id @default(cuid())
+  url       String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  isApprove isApprove @default(PENDING)
+  paidState    PaidState   @default(UNPAID)
+  paidDate  DateTime?
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project   @relation(fields: [projectId], references: [id])
+  projectId String
+  userPaymentMethod UserPaymentMethod @relation(fields: [userPaymentMethodId], references: [id])
+  userPaymentMethodId String
+  mediaBatchTransaction MediaBatchTransaction[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum userState {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+enum PaymentState {
+  LIVE
+  DELETED
+}
+
+enum Status {
+  PENDING
+  PUBLISHED
+  DELETED
+}
+enum TransactionState {
+  REJECT
+  PAYING
+  PAID
+}
+enum PaidState {
+  UNPAID
+  PAYING
+  PAID
+}
+enum isComplete {
+  COMPLETE
+  UNCOMPLETE
+}
+
+enum isApprove {
+  PENDING
+  REJECT
+  APPROVE
+}

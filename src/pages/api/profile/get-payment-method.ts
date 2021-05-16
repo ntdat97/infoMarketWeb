@@ -4,8 +4,8 @@ import prisma from "../../../libs/prisma";
 import { NextApiResponse } from "next";
 
 const PayemntMethodAPI = async (req: any, res: NextApiResponse) => {
-  const getAllPayment = await prisma.alaivablePaymentMethod.findMany({});
-  const getProvider = await prisma.alaivablePaymentMethod.findMany({
+  const getAllPayment = await prisma.availablePaymentMethod.findMany({});
+  const getProvider = await prisma.availablePaymentMethod.findMany({
     where: {},
     distinct: ["provider"],
     select: {

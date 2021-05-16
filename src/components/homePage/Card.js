@@ -47,18 +47,21 @@ export default function Card({ data }) {
               </div>
             </div>
             <div className="absolute right-0 bottom-9 z-10">
-              <div className="text-[#00574a] bg-[#e7f5f2] rounded-l-3xl p-1 pl-5 pr-[10px]">
-                {data.complete}
-              </div>
+              {data.complete === "UNCOMPLETE" && <div></div>}
+              {data.complete === "PAUSE" && (
+                <div className="text-[#f5440f] bg-[#ffc4b3] rounded-l-3xl p-1 pl-5 pr-[10px] font-medium">
+                  Tạm dừng
+                </div>
+              )}
             </div>
           </a>
         </Link>
         <Link href={`/project/${data.slug}`}>
           <a className="flex flex-row items-center p-4">
             <div>{data.authorName}</div>
-            <div className="flex flex-row items-center ml-2 mt-[2px]">
+            {/*  <div className="flex flex-row items-center ml-2 mt-[2px]">
               <RenderStar />
-            </div>
+            </div> */}
           </a>
         </Link>
       </div>

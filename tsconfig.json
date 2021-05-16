@@ -18,7 +18,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/api/admin/members/get-userInfots"
+    "src/pages/api/admin/members/get-userInfots",
+    "src/pages/api/posts/pay-for-photos"
   ],
   "exclude": ["node_modules"]
 }

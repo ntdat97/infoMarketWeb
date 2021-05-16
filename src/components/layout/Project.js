@@ -49,16 +49,6 @@ const ProjectInfo = ({ post, author }) => {
             {closeDateFormated}
           </div>
         </div>
-        <div className="flex flex-row items-center flex-wrap">
-          {post?.projectPaymentMethod.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
-            >
-              {item.ProjectPaymentMethodId.toUpperCase()}
-            </div>
-          ))}
-        </div>
       </div>
       <div className="flex justify-center items-center w-3/12">
         <Link href={`/profile/${author[0].username}`}>
@@ -189,7 +179,7 @@ export default function Project() {
                   </div>
                 </a>
               </Link>
-              <div
+              {/*  <div
                 style={{
                   padding: 10,
                   borderWidth: 1,
@@ -235,7 +225,7 @@ export default function Project() {
                   Fot the complete rights and responsibilities, please read the
                   Terms of Use.
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="p-2 border-t-[0.5px] border-[#f0f0f0]   mt-0.5  bg-white sticky bottom-0 ">

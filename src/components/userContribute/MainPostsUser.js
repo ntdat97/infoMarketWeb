@@ -23,21 +23,6 @@ export const MainPostsUser = ({ user }) => {
       return { items: json };
     },
   });
-  const removePost = async (slug) => {
-    toast.loading("Đang xóa", { duration: 4000 });
-    const req = await fetch(`/api/posts/remove-post?slug=${slug}`, {
-      headers: {
-        Authorization: `Bearer ${await user.getIdToken()}`,
-      },
-    });
-    if (!req.ok) {
-      toast.error("Có lỗi khi xóa, vui lòng thử lại");
-    }
-    if (req.ok) {
-      toast.success("Xóa thành công");
-      list.reload();
-    }
-  };
   useEffect(() => {
     list.reload();
   }, [router.query.status]);
@@ -121,6 +106,33 @@ export const MainPostsUser = ({ user }) => {
           return (
             <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
               {row.original.isApprove}
+            </span>
+          );
+        },
+      },
+      {
+        Header: "Thanh toán",
+        accessor: "payment",
+        Cell: ({ row }) => {
+          console.log(row);
+          if (row.original.paidState === true) {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#389e0d] bg-[#f6ffed] border border-[#b7eb8f]">
+                Đã thanh toán
+              </span>
+            );
+          }
+          if (row.original.paidState === false) {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-red-800 bg-red-300 border border-red-500">
+                Chưa thanh toán
+              </span>
+            );
+          }
+
+          return (
+            <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
+              Chưa xác định
             </span>
           );
         },

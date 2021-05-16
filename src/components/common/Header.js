@@ -3,7 +3,7 @@ import { HeaderLogin } from "./HeaderLogin";
 import { useAuth } from "../../fb/auth";
 import { UserBennedModal } from "../modal/UserBannedModal";
 import React, { useState } from "react";
-export function Header() {
+export function Header({ isScroll = true, isSticky = true }) {
   const [modalBannedVisible, setModalBannedVisible] = useState(false);
   const { user } = useAuth();
   const { signout } = useAuth();
@@ -14,7 +14,9 @@ export function Header() {
       return <HeaderGuess />;
     } else {
       if (user) {
-        return <HeaderLogin user={user} />;
+        return (
+          <HeaderLogin user={user} isScroll={isScroll} isSticky={isSticky} />
+        );
       } else {
         return <HeaderGuess />;
       }

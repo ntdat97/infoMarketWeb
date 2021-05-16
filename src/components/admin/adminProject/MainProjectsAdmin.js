@@ -6,8 +6,9 @@ import { format } from "date-fns";
 import { dateFromNow } from "../../../libs/dateFromNow";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Edit, Trash2, Image } from "react-feather";
+import { Edit, Trash2, Image, Pause, Play } from "react-feather";
 import React, { useEffect, useMemo } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export const MainProjectsAdmin = ({ user }) => {
   const router = useRouter();
@@ -27,7 +28,36 @@ export const MainProjectsAdmin = ({ user }) => {
   useEffect(() => {
     list.reload();
   }, [router.query.status]);
-
+  const stopProject = async (slug) => {
+    const req = await fetch(`/api/posts/stop-project?slug=${slug}`, {
+      headers: {
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    console.log(await req.json());
+    if (!req.ok) {
+      toast.error("Có lỗi khi tạm dừng dự án, vui lòng thử lại");
+    }
+    if (req.ok) {
+      toast.success("Tạm dừng thành công");
+      list.reload();
+    }
+  };
+  const resumeProject = async (slug) => {
+    const req = await fetch(`/api/posts/resume-project?slug=${slug}`, {
+      headers: {
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    console.log(await req.json());
+    if (!req.ok) {
+      toast.error("Có lỗi khi tiếp tục dự án, vui lòng thử lại");
+    }
+    if (req.ok) {
+      toast.success("Tiếp tục thành công");
+      list.reload();
+    }
+  };
   const columns = useMemo(
     () => [
       {
@@ -126,6 +156,40 @@ export const MainProjectsAdmin = ({ user }) => {
         },
       },
       {
+        Header: "Trạng thái",
+        accessor: "complete",
+        Cell: ({ row }) => {
+          /*  if (row.original.status === "DRAFT") {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#096dd9] bg-[#e6f7ff] border border-[#91d5ff]">
+                {row.original.status}
+              </span>
+            );
+          } */
+          if (row.original.complete === "UNCOMPLETE") {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#389e0d] bg-[#f6ffed] border border-[#b7eb8f]">
+                Đang thu thập
+              </span>
+            );
+          }
+
+          if (row.original.complete === "PAUSE") {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
+                Tạm dừng
+              </span>
+            );
+          }
+
+          return (
+            <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
+              {row.original.complete}
+            </span>
+          );
+        },
+      },
+      {
         Header: "Cập nhật gần đây",
         accessor: "updatedAt",
         Cell: ({ row }) => {
@@ -154,6 +218,36 @@ export const MainProjectsAdmin = ({ user }) => {
           return (
             <>
               <div className="flex flex-row ">
+                {row.original.complete === "UNCOMPLETE" && (
+                  <span className="text-sm mr-2  ">
+                    <Tooltip
+                      text={
+                        <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
+                          Tạm dừng dự án
+                        </span>
+                      }
+                    >
+                      <button onClick={() => stopProject(row.original.slug)}>
+                        <Pause />
+                      </button>
+                    </Tooltip>
+                  </span>
+                )}
+                {row.original.complete === "PAUSE" && (
+                  <span className="text-sm mr-2  ">
+                    <Tooltip
+                      text={
+                        <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
+                          Tiếp tục dự án
+                        </span>
+                      }
+                    >
+                      <button onClick={() => resumeProject(row.original.slug)}>
+                        <Play />
+                      </button>
+                    </Tooltip>
+                  </span>
+                )}
                 <span className="text-sm mr-2 ml-2">
                   <Link
                     href={{
@@ -235,7 +329,10 @@ export const MainProjectsAdmin = ({ user }) => {
         ) : (
           <>
             {list.items.length > 0 ? (
-              <TableData columns={columns} data={list.items} />
+              <>
+                <Toaster />
+                <TableData columns={columns} data={list.items} />
+              </>
             ) : (
               <p>Empty...</p>
             )}

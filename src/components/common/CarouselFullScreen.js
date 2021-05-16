@@ -20,7 +20,6 @@ export default function CarouselFullScreen({
     winHeight = window.innerHeight;
     imageHeight = "h-[" + Math.round(winHeight * 0.8) + "px]";
   }
-  console.log(winHeight);
 
   const navigate = () => {
     setOpenImageModal(!openImageModal);

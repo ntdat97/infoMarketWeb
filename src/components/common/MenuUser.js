@@ -49,6 +49,13 @@ export const MenuUser = ({ isAdmin, user }) => {
               {...layerProps}
               className="shadow-xl  bg-white w-52 rounded-md border border-gray-200"
             >
+              <Link href="/profile">
+                <a>
+                  <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
+                    Trang cá nhân
+                  </li>
+                </a>
+              </Link>
               <Link href="/new">
                 <a>
                   <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
@@ -56,7 +63,7 @@ export const MenuUser = ({ isAdmin, user }) => {
                   </li>
                 </a>
               </Link>
-              <Link
+              {/*  <Link
                 href={{
                   pathname: "/my-projects/[status]",
                   query: {
@@ -66,10 +73,10 @@ export const MenuUser = ({ isAdmin, user }) => {
               >
                 <a>
                   <li className="py-2 px-4 mx-0 hover:bg-gray-50 ">
-                    Bài viết của tôi
+                    Dự của tôi
                   </li>
                 </a>
-              </Link>
+              </Link> */}
               {isAdmin && (
                 <Link href="/admin/projects/all">
                   <a>

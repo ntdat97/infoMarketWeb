@@ -29,13 +29,10 @@ export function ProjectDetail({ user }) {
   const [modalSubmitVisible, setModalSubmitVisible] = useState(false);
   const [errorModalVisible, setErrorModalVisible] = useState([false, []]);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
-  const [paymentMethodSelected, setPaymentMethodSelected] = useState(null);
-  const [selectPaymentVisible, setSelectPaymentVisible] = useState(false);
   const [countUserPhoto, setCountUserPhoto] = useState(0);
   /* const [countTemp, setCountTemp] = useState(0); */
   const router = useRouter();
   const slug = router.query.slug;
-
   const fetchPost = async () => {
     setStatus("loading");
     if (!slug) return;
@@ -51,13 +48,11 @@ export function ProjectDetail({ user }) {
         ContentType: "application/json",
       },
     });
-
     const authorReq = await req1.json();
 
     if (!req.ok && !req1.ok) {
       setStatus("error");
     }
-
     setAuthor(authorReq);
     setPost(data);
     setStatus("ok");
@@ -101,7 +96,6 @@ export function ProjectDetail({ user }) {
           url: item.response.body.data[0].linkUrl,
           userId: user.uid,
           projectId: post.id,
-          userPaymentMethodId: paymentMethodSelected,
         });
       });
       sendPhoto(data);
@@ -111,7 +105,7 @@ export function ProjectDetail({ user }) {
     console.log(countTemp);
     setCountUserPhoto(countUserPhoto + coverImage.length);
   }, [countTemp]); */
-  const sendPhotoChecker = () => {
+  const sendPhotoChecker = (post) => {
     /*     const data = {
       userId: user.uid,
       projectId: post.id,
@@ -119,79 +113,14 @@ export function ProjectDetail({ user }) {
     
     countPhoto(data); */
 
-    const intersection = author[0].userPaymentMethod.filter((a) =>
-      post.projectPaymentMethod.some(
-        (b) => a.userPaymentMethodId === b.ProjectPaymentMethodId
-      )
-    );
     if (user) {
-      if (intersection.length > 0) {
-        if (paymentMethodSelected) {
-          setIsShowUploader(true);
-        } else {
-          toast.error("Vui lòng chọn phương thức thanh toán");
-        }
+      if (post.complete === "UNCOMPLETE") {
+        setIsShowUploader(true);
       } else {
-        var state = [...errorModalVisible];
-        state[0] = true;
-        state[1] = post.projectPaymentMethod;
-        setErrorModalVisible(state);
+        toast.error("Dự án đã tạm dừng");
       }
     } else {
       setModalAuthVisible(true);
-    }
-  };
-
-  const PaymentRender = () => {
-    if (status === "ok") {
-      const intersection = author[0].userPaymentMethod.filter((a) =>
-        post?.projectPaymentMethod.some(
-          (b) => a.ProjectPaymentMethodId === b.userPaymentMethodId
-        )
-      );
-      const postOnly = post?.projectPaymentMethod.filter(
-        (a) =>
-          !author[0].userPaymentMethod.some(
-            (b) => a.ProjectPaymentMethodId === b.userPaymentMethodId
-          )
-      );
-      console.log(intersection[0]);
-      var paymentObject = [];
-      intersection.map((item, index) =>
-        paymentObject.push(
-          <div
-            key={index}
-            className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
-          >
-            {item.userPaymentMethodId.toUpperCase()}
-            <input
-              type="radio"
-              value={item.id}
-              checked={item.id === paymentMethodSelected ? true : false}
-              name="payment"
-              className="ml-1"
-              onChange={(event) => setPaymentMethodSelected(event.target.value)}
-            />
-          </div>
-        )
-      );
-      postOnly.map((item, index) =>
-        paymentObject.push(
-          <Tooltip
-            key={index + 100}
-            text={
-              <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
-                Bạn chưa thêm phương thức thanh toán này
-              </span>
-            }
-          >
-            <div className="flex flex-row border border-gray-400 hover:disable rounded-md p-1 m-1 items-center justify-center">
-              {item.ProjectPaymentMethodId.toUpperCase()}
-            </div>
-          </Tooltip>
-        )
-      );
-      return <>{paymentObject} </>;
     }
   };
   if (post?.id == "empty") {
@@ -246,7 +175,14 @@ export function ProjectDetail({ user }) {
                   <div className="text-3xl m font-bold  py-2">
                     {post.projectName}
                   </div>
-                  <div style={{ paddingVertical: 1.5 }}>{post.authorName}</div>
+                  <Link href={`/profile/${author[0].username}`}>
+                    <a
+                      style={{ paddingVertical: 1.5 }}
+                      className="py-2 text-lg"
+                    >
+                      {post.authorName}
+                    </a>
+                  </Link>
                   <div
                     style={{
                       fontSize: 17,
@@ -256,13 +192,13 @@ export function ProjectDetail({ user }) {
                       color: "#454545",
                     }}
                   >
-                    $ {post.price}/photo
+                    $ {post.price}đ/ảnh{" "}
                   </div>
                   <div className="flex flex-row items-center py-1">
                     <MdImage color="#8f8f8f" className="mr-1" />
                     <div style={{ color: "#454545", fontSize: 17 }}>
                       {" "}
-                      {post.maxUnit} photos
+                      {post.maxUnit} ảnh
                     </div>
                   </div>
                   <div className="flex flex-row items-center py-1">
@@ -279,20 +215,6 @@ export function ProjectDetail({ user }) {
                       {new Date(post.closeDay).toLocaleDateString(vi)}
                     </div>
                   </div>
-                  <div
-                    className="flex flex-row items-center flex-wrap"
-                    id="payment"
-                  >
-                    {/* {post?.projectPaymentMethod.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex flex-row border border-[#006A73] rounded-md p-1 m-1 items-center justify-center"
-                      >
-                        {item.ProjectPaymentMethodId.toUpperCase()}
-                      </div>
-                    ))} */}
-                    <PaymentRender />
-                  </div>
                 </div>
                 <div className="flex justify-center items-center w-3/12">
                   <Link href={`/profile/${author[0].username}`}>
@@ -305,6 +227,9 @@ export function ProjectDetail({ user }) {
                     </a>
                   </Link>
                 </div>
+              </div>
+              <div className="text-[#f5440f] bg-[#ffc4b3] text-center p-1 pl-5 pr-[10px] font-medium">
+                Dự án đã tạm dừng
               </div>
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
                 <div
@@ -367,7 +292,7 @@ export function ProjectDetail({ user }) {
                     </div>
                   </a>
                 </Link>
-                <div
+                {/* <div
                   style={{
                     padding: 10,
                     borderWidth: 1,
@@ -413,13 +338,13 @@ export function ProjectDetail({ user }) {
                     Fot the complete rights and responsibilities, please read
                     the Terms of Use.
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
           <div className="p-2 border-t-[0.5px] border-[#f0f0f0]   mt-0.5  bg-white sticky bottom-0 right-0">
             <button
-              onClick={sendPhotoChecker}
+              onClick={() => sendPhotoChecker(post)}
               className="py-1  rounded-md bg-[#006A73] flex w-full focus:opacity-50 focus:outline-none items-center justify-center"
             >
               <div className="text-white font-semibold">Send photos</div>

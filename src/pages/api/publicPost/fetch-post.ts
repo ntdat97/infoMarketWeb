@@ -28,9 +28,6 @@ apiRoute.get(async (req: any, res: NextApiResponse) => {
           equals: slug,
         },
       },
-      include: {
-        projectPaymentMethod: true,
-      },
     });
     if (!getPostByAdmin) {
       return res.status(400).json({ message: "Data is empty." });
