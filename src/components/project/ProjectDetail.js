@@ -58,6 +58,7 @@ export function ProjectDetail({ user }) {
     setStatus("ok");
   };
   async function sendPhoto(values) {
+    console.log(values);
     setModalLoadingVisible(true);
     const response = await fetch("/api/sendPhoto/project", {
       method: "POST",
@@ -93,7 +94,8 @@ export function ProjectDetail({ user }) {
       var data = [];
       coverImage.map((item, index) => {
         data.push({
-          url: item.response.body.data[0].linkUrl,
+          url: "",
+          urlPaid: item.response.body.data[0].linkUrl,
           userId: user.uid,
           projectId: post.id,
         });
@@ -115,7 +117,11 @@ export function ProjectDetail({ user }) {
 
     if (user) {
       if (post.complete === "UNCOMPLETE") {
-        setIsShowUploader(true);
+        if (post.type === "MAP") {
+          toast.error("Dự án thu thập ảnh trên bản đồ chỉ áp dụng cho di động");
+        } else {
+          setIsShowUploader(true);
+        }
       } else {
         toast.error("Dự án đã tạm dừng");
       }
@@ -228,9 +234,11 @@ export function ProjectDetail({ user }) {
                   </Link>
                 </div>
               </div>
-              <div className="text-[#f5440f] bg-[#ffc4b3] text-center p-1 pl-5 pr-[10px] font-medium">
-                Dự án đã tạm dừng
-              </div>
+              {post.complete === "PAUSE" && (
+                <div className="text-[#f5440f] bg-[#ffc4b3] text-center p-1 pl-5 pr-[10px] font-medium">
+                  Dự án đã tạm dừng
+                </div>
+              )}
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
                 <div
                   style={{
@@ -278,20 +286,20 @@ export function ProjectDetail({ user }) {
                 >
                   Contact requester
                 </div>
-                <Link href="#">
+                <Link href={`mailto:${post.contact}`}>
                   <a>
                     <div className="text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold">
                       Ask a question
                     </div>
                   </a>
                 </Link>
-                <Link href="#">
+                {/* <Link href="#">
                   <a>
                     <div className="text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold">
                       Share project
                     </div>
                   </a>
-                </Link>
+                </Link> */}
                 {/* <div
                   style={{
                     padding: 10,

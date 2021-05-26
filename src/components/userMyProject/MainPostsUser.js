@@ -7,7 +7,7 @@ import { dateFromNow } from "../../libs/dateFromNow";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ConfirmModal } from "../modal/ConfirmModal";
-import { Edit, Trash2, Image, Play, Pause } from "react-feather";
+import { Edit, Trash2, Image, Play, Pause, Map } from "react-feather";
 import React, { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 export const MainPostsUser = ({ user }) => {
@@ -87,7 +87,7 @@ export const MainPostsUser = ({ user }) => {
         accessor: "title",
         Cell: ({ row }) => {
           return (
-            <div className="flex flex-col">
+            <div className="flex flex-row items-center ">
               <Link
                 href={{
                   pathname: `/project/[slug]/project-preview`,
@@ -98,6 +98,9 @@ export const MainPostsUser = ({ user }) => {
                   {row.original.projectName}
                 </a>
               </Link>
+              {row.original.type === "MAP" && (
+                <Map className="ml-2" size={16} color="green" />
+              )}
               {/* <span className="text-xs text-gray-500">
                 Đăng bởi{" "}
                 <Link
@@ -276,10 +279,17 @@ export const MainPostsUser = ({ user }) => {
 
                   <span className="text-sm mr-2 ml-2">
                     <Link
-                      href={{
-                        pathname: `/project/[slug]/photo-collection/all`,
-                        query: { slug: row.original.slug },
-                      }}
+                      href={
+                        row.original.type === "MAP"
+                          ? {
+                              pathname: `/project/[slug]/photo-collection-map/all`,
+                              query: { slug: row.original.slug },
+                            }
+                          : {
+                              pathname: `/project/[slug]/photo-collection/all`,
+                              query: { slug: row.original.slug },
+                            }
+                      }
                     >
                       <a>
                         <Tooltip

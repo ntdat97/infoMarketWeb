@@ -17,7 +17,6 @@ const PostsAPI = async (
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const role = decoded.role;
   let getAllDepositByStatus;
-  let getMomoTransaction;
   if (role[0] === "ADMIN") {
     if (status === "all") {
       getAllDepositByStatus = await prisma.userDepositRecorder.findMany({
@@ -29,9 +28,8 @@ const PostsAPI = async (
           momoTransaction: true,
         },
       });
-      getMomoTransaction = await prisma.momoTransaction.findMany();
     }
-    return res.status(200).send([getAllDepositByStatus, getMomoTransaction]);
+    return res.status(200).send(getAllDepositByStatus);
   } else {
     return res.status(200).send({ message: "You are not Authourize" });
   }

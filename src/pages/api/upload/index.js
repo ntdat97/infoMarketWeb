@@ -10,12 +10,13 @@ const decode = (x) => {
   x = decodeURIComponent(x);
   return x;
 };
+
 const upload = multer({
   storage: new MulterGoogleCloudStorage({
     filename: (req, file, cb) =>
       cb(null, `${fileId}-${decode(file.originalname)}`),
   }),
-}); /* cb(null, `${fileId}-${(console, log(decode(file.originalname)))}`), */
+});
 const uploadLocal = multer({
   storage: multer.diskStorage({
     destination: "./public/uploads",
@@ -33,7 +34,6 @@ const apiRoute = nextConnect({
     res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
   },
 });
-
 apiRoute.use(upload.array("files"));
 apiRoute.post((req, res) => {
   res.status(200).json({
@@ -44,7 +44,6 @@ apiRoute.post((req, res) => {
     })),
   });
 });
-
 export default apiRoute;
 
 export const config = {

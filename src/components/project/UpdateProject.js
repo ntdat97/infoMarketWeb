@@ -197,6 +197,9 @@ const UpdateProject = ({ post, user, payment }) => {
             </div>
           </button>
         </div>
+        {formik.errors.projectName && formik.touched.projectName && (
+          <p style={{ color: "red" }}>{formik.errors.projectName}</p>
+        )}
         <div className="flex flex-row pb-2.5 border-b border-[#f0f0f0]">
           <div className="w-9/12 px-2">
             <input

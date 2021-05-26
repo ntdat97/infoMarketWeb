@@ -76,7 +76,7 @@ model UserDepositRecorder {
   userId String
   availableDepositMethod AvailableDepositMethod? @relation(fields: [availableDepositMethodId], references: [id])
   availableDepositMethodId String?
-  momoTransaction MomoTransaction[] @relation(fields: [momoTransactionId], references: [id])
+  momoTransaction MomoTransaction? @relation(fields: [momoTransactionId], references: [id])
   momoTransactionId String?
 }
 model UserWithdrawRecorder {
@@ -101,6 +101,7 @@ model Project {
   complete        isComplete               @default(UNCOMPLETE)
   caroselImage    Json[]
   slug            String                   @unique
+  type            ProjectType @default(IMAGE)
   projectName     String
   price           Float
   maxUnit         Int
@@ -137,10 +138,25 @@ model ProjectTransactionRecorder {
   projectId String
   media Media[] 
 }
-
+model MediaMap {
+  id        String    @id @default(cuid())
+  media      Media      @relation(fields: [mediaId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  mediaId    String
+  lat       Float
+  long       Float
+  Country String?
+  City String?
+  District String?
+  Subdistrict String?
+  Street String?
+  FullAddress String?
+}
 model Media {
   id        String    @id @default(cuid())
-  url       String
+  url       String?
+  urlPaid String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
   isApprove isApprove @default(PENDING)
@@ -152,6 +168,7 @@ model Media {
   projectId String
   ProjectTransactionRecorder ProjectTransactionRecorder? @relation(fields: [projectTransactionRecorderId],references: [id])
   projectTransactionRecorderId String?
+  mediaMap MediaMap[]
 }
 
 enum Role {
@@ -188,6 +205,10 @@ enum isComplete {
   PAUSE
   STOP
   UNCOMPLETE
+}
+enum ProjectType {
+  IMAGE
+  MAP
 }
 
 enum isApprove {

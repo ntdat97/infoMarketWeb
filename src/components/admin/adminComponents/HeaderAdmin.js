@@ -9,7 +9,7 @@ export const HeaderAdmin = ({ user }) => {
         <div>
           <Link href="/">
             <a>
-              <img src="/icon.png" alt="icon.png" className="w-8" />
+              <img src="/trove-icon.png" alt="icon.png" className="w-8" />
             </a>
           </Link>
         </div>

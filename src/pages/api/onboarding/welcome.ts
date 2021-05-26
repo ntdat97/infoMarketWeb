@@ -10,7 +10,9 @@ import { NextApiResponse } from "next";
 const OnboardingWelcomeAPI = async (req: any, res: NextApiResponse) => {
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
+
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
+  console.log(decoded);
   try {
     const user = await prisma.user.findFirst({
       where: {

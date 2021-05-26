@@ -16,12 +16,20 @@ export const PhotoCollection = () => {
   const { user } = useAuth();
   const router = useRouter();
   const slug = router.query.slug;
+  var page = 1;
+  if (typeof router.query.page != "undefined") {
+    if (router.query.page == 1) {
+      page = 1;
+    } else {
+      page = router.query.page;
+    }
+  }
   const statusURL = router.query.status;
   const fetchPost = async () => {
     setStatus("loading");
     if (!slug) return;
     const req = await fetch(
-      `/api/posts/photo-collection/${statusURL}?slug=${slug}`,
+      `/api/posts/photo-collection/${statusURL}?slug=${slug}&page=${page}`,
       {
         headers: {
           Authorization: `Bearer ${await user.getIdToken(true)}`,
@@ -30,7 +38,6 @@ export const PhotoCollection = () => {
     );
 
     const data = await req.json();
-    console.log(data);
     if (!req.ok) {
       setStatus("error");
     }
@@ -39,10 +46,11 @@ export const PhotoCollection = () => {
   };
   useEffect(() => {
     fetchPost();
-  }, [slug, statusURL, reloadTable]);
+  }, [slug, statusURL, reloadTable, page]);
   return (
     <>
       <LayoutUser
+        widthFull={true}
         header={<Header isScroll={false} isSticky={false} />}
         sidebar={<SideBar />}
         main={
@@ -51,9 +59,12 @@ export const PhotoCollection = () => {
           ) : status === "ok" ? (
             <MainUser
               /* subHeader={<HeaderCollection data={post} user={user} />} */
+
               content={
                 <PhotoCollectionMain
-                  data={post}
+                  data={post[0]}
+                  pageCount={post[1]}
+                  page={page}
                   user={user}
                   setReloadTable={() => setReloadTable(!reloadTable)}
                 />

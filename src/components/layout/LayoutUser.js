@@ -1,6 +1,12 @@
 import React, { ReactNode } from "react";
 
-export const LayoutUser = ({ header, sidebar, main, shadow = false }) => {
+export const LayoutUser = ({
+  header,
+  sidebar,
+  main,
+  shadow = false,
+  widthFull = false,
+}) => {
   return (
     <div>
       {header}
@@ -9,9 +15,11 @@ export const LayoutUser = ({ header, sidebar, main, shadow = false }) => {
           {sidebar}
         </div>
  */}
-        <section className="max-w-[1080px] mx-auto">
+        <section>
           <div
-            className={`max-w-[1108px] mx-auto mt-3 ${shadow ? "shadow" : ""}`}
+            className={`${
+              widthFull ? "max-w-full" : "max-w-[1108px]"
+            } mx-auto mt-3 ${shadow ? "shadow" : ""}`}
           >
             {main}
           </div>

@@ -38,7 +38,7 @@ export function HeaderGuess() {
         <div className=" flex justify-between items-center">
           <Link href="/">
             <a>
-              <img src="/icon.png" className="h-[45px] w-[45px]" />
+              <img src="/trove-icon.png" className="h-[45px] w-[45px]" />
             </a>
           </Link>
 

@@ -5,21 +5,25 @@ import { addRequestId } from "../../../../libs/middleware/utils/addRequestId";
 import { addUserIdAndRole } from "../../../../libs/middleware/utils/addUserIdAndRole";
 import { allowedHttpMethod } from "../../../../libs/middleware/utils/allowedHttpMethod";
 import { NextApiResponse } from "next";
-import nextConnect from "next-connect";
-
+const imageToBase64 = require("image-to-base64");
+var Jimp = require("jimp");
 const getMedia = async (req: any, res: NextApiResponse) => {
   const slug = req.query.slug as string;
   const status = req.query.status as string;
+  const page = parseInt(req.query.page);
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);
   const role = decoded.role;
-  console.log(slug);
+  var skip = 50 * page - 50;
+  var take = 50;
 
   if (status === "all") {
     if (role[0] === "ADMIN") {
       try {
         const getMediaBySlug = await prisma.media.findMany({
+          skip: skip,
+          take: take,
           orderBy: {
             updatedAt: "desc",
           },
@@ -34,12 +38,25 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: true,
           },
         });
-
+        const count = await prisma.media.count({
+          where: {
+            project: {
+              slug: slug,
+            },
+            paidState: false,
+          },
+        });
+        var pageCount = 0;
+        if (count % 50 === 0) {
+          pageCount = Math.floor(count / 50);
+        } else {
+          pageCount = Math.floor(count / 50) + 1;
+        }
         if (!getMediaBySlug) {
           return res.status(400).json({ message: "Data is empty." });
         }
 
-        return res.status(200).json(getMediaBySlug);
+        return res.status(200).json([getMediaBySlug, pageCount]);
       } catch (error) {
         // console.log(error);
 
@@ -57,6 +74,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         });
         if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.media.findMany({
+            skip: skip,
+            take: take,
             orderBy: {
               createdAt: "desc",
             },
@@ -71,13 +90,33 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               project: true,
             },
           });
+          var array = [...getMediaBySlug];
+          array.map((item, index) => {
+            delete item.urlPaid;
+          });
+
+          const count = await prisma.media.count({
+            where: {
+              project: {
+                slug: slug,
+              },
+              paidState: false,
+            },
+          });
+          var pageCount = 0;
+          if (count % 50 === 0) {
+            pageCount = Math.floor(count / 50);
+          } else {
+            pageCount = Math.floor(count / 50) + 1;
+          }
+
           if (!getMediaBySlug) {
             return res
               .status(400)
               .json({ message: "Data is empty.", id: "empty" });
           }
 
-          return res.status(200).json(getMediaBySlug);
+          return res.status(200).json([array, pageCount]);
         }
         return res
           .status(200)
@@ -95,6 +134,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
     if (role[0] === "ADMIN") {
       try {
         const getMediaBySlug = await prisma.media.findMany({
+          skip: skip,
+          take: take,
           orderBy: {
             updatedAt: "desc",
           },
@@ -110,12 +151,26 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: true,
           },
         });
-
+        const count = await prisma.media.count({
+          where: {
+            isApprove: "PENDING",
+            project: {
+              slug: slug,
+            },
+            paidState: false,
+          },
+        });
+        var pageCount = 0;
+        if (count % 50 === 0) {
+          pageCount = Math.floor(count / 50);
+        } else {
+          pageCount = Math.floor(count / 50) + 1;
+        }
         if (!getMediaBySlug) {
           return res.status(400).json({ message: "Data is empty." });
         }
 
-        return res.status(200).json(getMediaBySlug);
+        return res.status(200).json([getMediaBySlug, pageCount]);
       } catch (error) {
         // console.log(error);
 
@@ -133,6 +188,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         });
         if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.media.findMany({
+            skip: skip,
+            take: take,
             orderBy: {
               updatedAt: "desc",
             },
@@ -148,13 +205,32 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               project: true,
             },
           });
+          var array = [...getMediaBySlug];
+          array.map((item, index) => {
+            delete item.urlPaid;
+          });
+          const count = await prisma.media.count({
+            where: {
+              isApprove: "PENDING",
+              project: {
+                slug: slug,
+              },
+              paidState: false,
+            },
+          });
+          var pageCount = 0;
+          if (count % 50 === 0) {
+            pageCount = Math.floor(count / 50);
+          } else {
+            pageCount = Math.floor(count / 50) + 1;
+          }
           if (!getMediaBySlug) {
             return res
               .status(400)
               .json({ message: "Data is empty.", id: "empty" });
           }
 
-          return res.status(200).json(getMediaBySlug);
+          return res.status(200).json([array, pageCount]);
         }
         return res
           .status(200)
@@ -172,6 +248,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
     if (role[0] === "ADMIN") {
       try {
         const getMediaBySlug = await prisma.media.findMany({
+          skip: skip,
+          take: take,
           orderBy: {
             updatedAt: "desc",
           },
@@ -187,12 +265,30 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: true,
           },
         });
-
+        const count = await prisma.media.count({
+          where: {
+            isApprove: "APPROVE",
+            project: {
+              slug: slug,
+            },
+            paidState: false,
+          },
+        });
+        var array = [...getMediaBySlug];
+        array.map((item, index) => {
+          delete item.urlPaid;
+        });
+        var pageCount = 0;
+        if (count % 50 === 0) {
+          pageCount = Math.floor(count / 50);
+        } else {
+          pageCount = Math.floor(count / 50) + 1;
+        }
         if (!getMediaBySlug) {
           return res.status(400).json({ message: "Data is empty." });
         }
 
-        return res.status(200).json(getMediaBySlug);
+        return res.status(200).json([array, pageCount]);
       } catch (error) {
         // console.log(error);
 
@@ -210,6 +306,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         });
         if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.media.findMany({
+            skip: skip,
+            take: take,
             orderBy: {
               updatedAt: "desc",
             },
@@ -225,13 +323,28 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               project: true,
             },
           });
+          const count = await prisma.media.count({
+            where: {
+              isApprove: "APPROVE",
+              project: {
+                slug: slug,
+              },
+              paidState: false,
+            },
+          });
+          var pageCount = 0;
+          if (count % 50 === 0) {
+            pageCount = Math.floor(count / 50);
+          } else {
+            pageCount = Math.floor(count / 50) + 1;
+          }
           if (!getMediaBySlug) {
             return res
               .status(400)
               .json({ message: "Data is empty.", id: "empty" });
           }
 
-          return res.status(200).json(getMediaBySlug);
+          return res.status(200).json([getMediaBySlug, pageCount]);
         }
         return res
           .status(200)
@@ -249,6 +362,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
     if (role[0] === "ADMIN") {
       try {
         const getMediaBySlug = await prisma.media.findMany({
+          skip: skip,
+          take: take,
           orderBy: {
             updatedAt: "desc",
           },
@@ -264,12 +379,30 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: true,
           },
         });
-
+        var array = [...getMediaBySlug];
+        array.map((item, index) => {
+          delete item.urlPaid;
+        });
+        const count = await prisma.media.count({
+          where: {
+            isApprove: "REJECT",
+            project: {
+              slug: slug,
+            },
+            paidState: false,
+          },
+        });
+        var pageCount = 0;
+        if (count % 50 === 0) {
+          pageCount = Math.floor(count / 50);
+        } else {
+          pageCount = Math.floor(count / 50) + 1;
+        }
         if (!getMediaBySlug) {
           return res.status(400).json({ message: "Data is empty." });
         }
 
-        return res.status(200).json(getMediaBySlug);
+        return res.status(200).json([array, pageCount]);
       } catch (error) {
         // console.log(error);
 
@@ -287,6 +420,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         });
         if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.media.findMany({
+            skip: skip,
+            take: take,
             orderBy: {
               updatedAt: "desc",
             },
@@ -302,13 +437,28 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               project: true,
             },
           });
+          const count = await prisma.media.count({
+            where: {
+              isApprove: "REJECT",
+              project: {
+                slug: slug,
+              },
+              paidState: false,
+            },
+          });
+          var pageCount = 0;
+          if (count % 50 === 0) {
+            pageCount = Math.floor(count / 50);
+          } else {
+            pageCount = Math.floor(count / 50) + 1;
+          }
           if (!getMediaBySlug) {
             return res
               .status(400)
               .json({ message: "Data is empty.", id: "empty" });
           }
 
-          return res.status(200).json(getMediaBySlug);
+          return res.status(200).json([getMediaBySlug, pageCount]);
         }
         return res
           .status(200)
@@ -326,6 +476,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
     if (role[0] === "ADMIN") {
       try {
         const getMediaBySlug = await prisma.media.findMany({
+          skip: skip,
+          take: take,
           orderBy: {
             updatedAt: "desc",
           },
@@ -340,12 +492,25 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             project: true,
           },
         });
-
+        const count = await prisma.media.count({
+          where: {
+            project: {
+              slug: slug,
+            },
+            paidState: true,
+          },
+        });
+        var pageCount = 0;
+        if (count % 50 === 0) {
+          pageCount = Math.floor(count / 50);
+        } else {
+          pageCount = Math.floor(count / 50) + 1;
+        }
         if (!getMediaBySlug) {
           return res.status(400).json({ message: "Data is empty." });
         }
 
-        return res.status(200).json(getMediaBySlug);
+        return res.status(200).json([getMediaBySlug, pageCount]);
       } catch (error) {
         // console.log(error);
 
@@ -363,6 +528,8 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         });
         if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.media.findMany({
+            skip: skip,
+            take: take,
             orderBy: {
               updatedAt: "desc",
             },
@@ -377,13 +544,27 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               project: true,
             },
           });
+          const count = await prisma.media.count({
+            where: {
+              project: {
+                slug: slug,
+              },
+              paidState: true,
+            },
+          });
+          var pageCount = 0;
+          if (count % 50 === 0) {
+            pageCount = Math.floor(count / 50);
+          } else {
+            pageCount = Math.floor(count / 50) + 1;
+          }
           if (!getMediaBySlug) {
             return res
               .status(400)
               .json({ message: "Data is empty.", id: "empty" });
           }
 
-          return res.status(200).json(getMediaBySlug);
+          return res.status(200).json([getMediaBySlug, pageCount]);
         }
         return res
           .status(200)
@@ -401,7 +582,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
 };
 
 export default use(
-  allowedHttpMethod("GET"),
-  addRequestId,
-  addUserIdAndRole
+  allowedHttpMethod("GET")
+  /*   addRequestId,
+  addUserIdAndRole */
 )(getMedia);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { MenuUser } from "./MenuUser";
+import { NewProjectDropdown } from "./NewProjectDropdown";
 import { useAuth } from "../../fb/auth";
 import { useRouter } from "next/router";
 import {
@@ -67,7 +68,7 @@ export function HeaderLogin({ user, isScroll, isSticky }) {
         <div className=" flex justify-between items-center">
           <Link href="/">
             <a>
-              <img src="/icon.png" className="h-[45px] w-[45px]" />
+              <img src="/trove-icon.png" className="h-[45px] w-[45px]" />
             </a>
           </Link>
 
@@ -131,11 +132,7 @@ export function HeaderLogin({ user, isScroll, isSticky }) {
           </div>
 
           <div className="items-center flex flex-row">
-            <Link href="/new">
-              <a className="text-center shadow bg-[#21b532] justify-center items-center rounded-xl h-full py-1 px-2">
-                <div className="text-white">Thêm mới</div>
-              </a>
-            </Link>
+            <NewProjectDropdown />
             <MenuUser user={user} isAdmin={isAdmin} />
           </div>
         </div>

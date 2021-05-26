@@ -22,7 +22,9 @@ const PostsAPI = async (
       },
       include: {
         user: true,
-        project: true,
+        project: {
+          include: { author: true },
+        },
       },
     });
   } else if (status === "pending") {

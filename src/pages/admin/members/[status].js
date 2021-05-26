@@ -19,10 +19,6 @@ const adminMember = () => {
     return <Redirect />;
   }
 
-  user.getIdToken().then((data) => {
-    // console.log(data);
-  });
-
   return (
     <>
       <LayoutAdmin

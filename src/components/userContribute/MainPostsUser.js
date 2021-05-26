@@ -38,9 +38,9 @@ export const MainPostsUser = ({ user }) => {
               <a
                 className="hover:underline font-semibold text-base mb-1 "
                 target="_blank"
-                href={row.original.url}
+                href={row.original.urlPaid}
               >
-                <img src={row.original.url} className="w-28 h-20 shadow" />
+                <img src={row.original.urlPaid} className="w-28 h-20 shadow" />
               </a>
               {/* <span className="text-xs text-gray-500">
                 Đăng trong{" "}
@@ -124,7 +124,7 @@ export const MainPostsUser = ({ user }) => {
           }
           if (row.original.paidState === false) {
             return (
-              <span className="px-2 py-1 rounded-xs font-medium text-xs text-red-800 bg-red-300 border border-red-500">
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
                 Chưa thanh toán
               </span>
             );

@@ -9,7 +9,6 @@ import nextConnect from "next-connect";
 
 const PayForPhotos = async (req: any, res: NextApiResponse) => {
   const slug = req.query.slug as string;
-  console.log(slug);
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);

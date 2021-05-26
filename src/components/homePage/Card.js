@@ -1,6 +1,7 @@
 import React from "react";
 import { MdStar, MdStarHalf } from "react-icons/md";
 import { IoTrophyOutline } from "react-icons/io5";
+import { Map } from "react-feather";
 import Link from "next/link";
 export default function Card({ data }) {
   const RenderStar = () => {
@@ -25,12 +26,16 @@ export default function Card({ data }) {
           <a
             className="p-0.5 justify-center relative overflow-hidden rounded-t-lg w-auto h-[171px] bg-cover bg-center object-fill"
             style={{
-              backgroundImage: `url(${data.caroselImage[0].url})`,
+              backgroundImage: `url(${
+                data.caroselImage.length > 0
+                  ? data.caroselImage[0].url
+                  : "/default-cover.jpg"
+              })`,
             }}
           >
             <div className="absolute top-0 right-0 bottom-0 left-0 bg-[rgba(70,70,70,0.5)]"></div>
             <div className="flex flex-col absolute">
-              <div className="line-clamp-1 text-white text-3xl font-bold px-3 pt-1">
+              <div className="text-white text-3xl font-bold px-3 pt-1">
                 {data.projectName}
               </div>
               <div className="flex flex-row items-center mt-[5px]">
@@ -59,6 +64,9 @@ export default function Card({ data }) {
         <Link href={`/project/${data.slug}`}>
           <a className="flex flex-row items-center p-4">
             <div>{data.authorName}</div>
+            {data.type === "MAP" && (
+              <Map className="ml-2" size={16} color="green" />
+            )}
             {/*  <div className="flex flex-row items-center ml-2 mt-[2px]">
               <RenderStar />
             </div> */}

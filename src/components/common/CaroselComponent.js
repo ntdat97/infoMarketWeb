@@ -74,10 +74,14 @@ export default function CarouselComponent({
         </button>
         <div className=" flex flex-row justify-center ">
           <Carousel
-            autoPlay={true}
             showThumbs={false}
             infiniteLoop={true}
             dynamicHeight={true}
+            swipeable={true}
+            swipeScrollTolerance={5}
+            showIndicators={true}
+            useKeyboardArrows={true}
+            emulateTouch={true}
           >
             {data.map((item, index) => (
               <div key={index} className=" w-full h-auto bg-[#cfcfcf] ">
@@ -101,12 +105,15 @@ export default function CarouselComponent({
       <div className="flex flex-row  justify-center">
         <Carousel
           onClickItem={() => setOpenImageModal(!openImageModal)}
-          autoPlay={true}
           showThumbs={false}
           infiniteLoop={true}
           swipeable={true}
           dynamicHeight={true}
           onChange={setCarousel}
+          swipeScrollTolerance={5}
+          showIndicators={true}
+          useKeyboardArrows={true}
+          emulateTouch={true}
           /* ref={carouselRef} */
         >
           {data.map((item, index) => (

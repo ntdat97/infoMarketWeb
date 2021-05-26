@@ -27,7 +27,7 @@ import "react-datepicker/dist/react-datepicker.css";
 registerLocale("vi", vi);
 const pics = [
   {
-    url: "/slider.jpg",
+    url: "/default-cover.jpg",
   },
 ];
 const rightOptions = [
@@ -88,6 +88,7 @@ const CreateProject = () => {
       usedFor: "",
       requirements: "",
       contact: "",
+      type: "IMAGE",
     },
     validationSchema: yup.object().shape({
       projectName: yup

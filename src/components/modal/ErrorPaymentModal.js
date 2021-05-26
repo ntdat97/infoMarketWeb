@@ -5,7 +5,6 @@ export const ErrorPaymentModal = ({
   modalVisible,
   errorText = "Có lỗi xảy ra, vui lòng thử lại",
 }) => {
-  console.log(modalVisible);
   errorText =
     "Bạn phải thêm phương thức thanh toán " +
     modalVisible[1].map(

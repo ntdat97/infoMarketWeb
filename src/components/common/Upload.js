@@ -24,18 +24,14 @@ export const Uploader = ({
       .use(XHRUpload, {
         endpoint: "/api/upload",
         fieldName: "files",
+        timeout: 120 * 1000,
       })
       .on("complete", (result) => {
         console.log("Upload result:", result);
         setOutFile(result.successful);
       });
-    /* .on("files-added", (file) => {
-        setCountTempFiles(file.lenght);
-      }); */
-
     setUppy(uppyInstance);
   }, []);
-
   // React.useEffect(() => {
   //   if (!uppy) return;
   //   return () => uppy.close();

@@ -165,20 +165,20 @@ export default function Project() {
               >
                 Contact requester
               </div>
-              <Link href="#">
+              <Link href={`mailto:${post.contact}`}>
                 <a>
                   <div className="text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold">
                     Ask a question
                   </div>
                 </a>
               </Link>
-              <Link href="#">
+              {/* <Link href="#">
                 <a>
                   <div className="text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold">
                     Share project
                   </div>
                 </a>
-              </Link>
+              </Link> */}
               {/*  <div
                 style={{
                   padding: 10,

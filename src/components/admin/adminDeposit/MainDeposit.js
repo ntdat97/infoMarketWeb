@@ -30,7 +30,7 @@ export const MainDeposit = ({ user }) => {
   const [paymentDescriptionModalVisible, setPaymentDescriptionModalVisible] =
     useState(false);
   const [paymentDescriptionId, setPaymentDescriptionId] = useState(null);
-  const [paymentDescription, setPaymentDescription] = useState("");
+  const [paymentDescription, setPaymentDescription] = useState(null);
   const cancelButtonRef = useRef();
   const cancelButtonRefHistory = useRef();
   const router = useRouter();
@@ -43,51 +43,18 @@ export const MainDeposit = ({ user }) => {
       });
 
       let json = await res.json();
-      setPaymentDescription(json[1]);
-      return { items: json[0] };
+      return { items: json };
     },
   });
-  const rejectWithdraw = async (id) => {
-    toast.loading("Đang từ chối", { duration: 4000 });
-    const req = await fetch(`/api/admin/payment/reject-withdraw?id=${id}`, {
-      headers: {
-        Authorization: `Bearer ${await user.getIdToken()}`,
-      },
-    });
-    if (!req.ok) {
-      toast.error("Có lỗi thực hiện, vui lòng thử lại");
-    }
-    if (req.ok) {
-      toast.success("Từ chối thành công");
-      list.reload();
-    }
-  };
-  const paidWithdraw = async (id) => {
-    toast.loading("Đang thanh toán", { duration: 4000 });
-    const req = await fetch(`/api/admin/payment/paid-withdraw?id=${id}`, {
-      headers: {
-        Authorization: `Bearer ${await user.getIdToken()}`,
-      },
-    });
-    if (!req.ok) {
-      toast.error("Có lỗi khi thực hiện, vui lòng thử lại");
-    }
-    if (req.ok) {
-      toast.success("Thanh toán thành công");
-      list.reload();
-    }
-  };
   useEffect(() => {
     list.reload();
   }, [router.query.status]);
-
   const columns = useMemo(
     () => [
       {
         Header: "Tên user",
         accessor: "url",
         Cell: ({ row }) => {
-          console.log(row.original);
           return (
             <div className="flex flex-col">
               <Link
@@ -132,7 +99,7 @@ export const MainDeposit = ({ user }) => {
               className="text-center text-gray-800 shadow border-[#2e43ff] justify-center items-center rounded-xl h-full py-1 px-2"
               onClick={() => {
                 setPaymentInfoModalVisible(true);
-                setPaymentInfoModal(row.original.momoTransactionId);
+                setPaymentInfoModal(row.original.momoTransaction);
               }}
             >
               Hiển thị
@@ -200,8 +167,6 @@ export const MainDeposit = ({ user }) => {
                     >
                       <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                     </Transition.Child>
-                    {console.log(paymentInfoModal)}
-                    {console.log(paymentDescription)}
                     {/* This element is to trick the browser into centering the modal contents. */}
                     <span
                       className="hidden sm:inline-block sm:align-middle sm:h-screen"
@@ -242,32 +207,33 @@ export const MainDeposit = ({ user }) => {
                               <div>
                                 <p className="text-base text-gray-600 py-1">
                                   Hình thức thanh toán:{" "}
-                                  <span className="font-bold">
-                                    {paymentInfoModal.userPaymentMethodId.toUpperCase()}
-                                  </span>
+                                  <span className="font-bold">MOMO</span>
                                 </p>
                                 <p className="text-base text-gray-600 py-1">
-                                  Họ tên người nhận tiền:{" "}
+                                  Họ tên người gởi:{" "}
                                   <span className="font-bold">
-                                    {paymentInfoModal.name}
+                                    {paymentInfoModal.data.partnerName}
                                   </span>{" "}
                                 </p>
-                                {paymentInfoModal.phone !== "" && (
-                                  <p className="text-base text-gray-600 py-1">
-                                    Số điện thoại ví:{" "}
-                                    <span className="font-bold">
-                                      {paymentInfoModal.phone}
-                                    </span>{" "}
-                                  </p>
-                                )}
-                                {paymentInfoModal.stk !== "" && (
-                                  <p className="text-base text-gray-600 py-1">
-                                    Số tài khoản:{" "}
-                                    <span className="font-bold">
-                                      {paymentInfoModal.stk}
-                                    </span>{" "}
-                                  </p>
-                                )}
+
+                                <p className="text-base text-gray-600 py-1">
+                                  Số điện thoại ví:{" "}
+                                  <span className="font-bold">
+                                    {paymentInfoModal.data.partnerId}
+                                  </span>{" "}
+                                </p>
+                                <p className="text-base text-gray-600 py-1">
+                                  Mã giao dịch:{" "}
+                                  <span className="font-bold">
+                                    {paymentInfoModal.data.tranId}
+                                  </span>{" "}
+                                </p>
+                                <p className="text-base text-gray-600 py-1">
+                                  Lời nhắn:{" "}
+                                  <span className="font-bold">
+                                    {paymentInfoModal.data.comment}
+                                  </span>{" "}
+                                </p>
                               </div>
                             </div>
                           </div>

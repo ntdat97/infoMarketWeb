@@ -21,6 +21,18 @@ const PostsAPI = async (
       where: {
         status: "PUBLISHED",
       },
+      include: {
+        author: {
+          select: {
+            photoURL: true,
+            name: true,
+            username: true,
+            email: true,
+            bio: true,
+            website: true,
+          },
+        },
+      },
     });
   } else if (status === "pending") {
     getAllPostsByStatus = await prisma.project.findMany({

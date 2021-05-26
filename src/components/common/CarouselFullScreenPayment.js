@@ -64,7 +64,16 @@ export default function CarouselFullScreenPayment({
         }}
       >
         <div className=" flex flex-row justify-center ">
-          <Carousel autoPlay={true} infiniteLoop={true} dynamicHeight={true}>
+          <Carousel
+            infiniteLoop={true}
+            dynamicHeight={true}
+            swipeable={true}
+            swipeScrollTolerance={5}
+            showThumbs={false}
+            showIndicators={true}
+            useKeyboardArrows={true}
+            emulateTouch={true}
+          >
             {data.map((item, index) => (
               <div key={index} className=" w-full  bg-[#cfcfcf] ">
                 <button
