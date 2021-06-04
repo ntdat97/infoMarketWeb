@@ -66,71 +66,104 @@ export function HeaderLogin({ user, isScroll, isSticky }) {
         }
       >
         <div className=" flex justify-between items-center">
-          <Link href="/">
-            <a>
-              <img src="/trove-icon.png" className="h-[45px] w-[45px]" />
-            </a>
-          </Link>
-
-          <div className="flex flex-row   h-full items-center justify-center">
+          <div className="flex flex-row ">
             <Link href="/">
-              <a
-                className="p-1 pr-4 border-r border-gray-500"
-                style={{
-                  borderBottomColor: path == "/" ? "#21b532" : "#e6e6e6",
-                }}
-              >
-                {/* {path == "/" ? (
+              <a className="mr-16">
+                <img src="/trove-icon.png" className="h-[45px] w-[45px]" />
+              </a>
+            </Link>
+
+            <div className="flex flex-row   h-full items-center justify-center">
+              <Link href="/">
+                <a
+                  className="p-1 pr-4 border-r  border-gray-500"
+                  /*  style={{
+                  borderBottomColor: path === "/" ? "#21b532" : "white",
+                }} */
+                >
+                  {/* {path == "/" ? (
                   <RiFileTextFill size={30} fill="#21b532" />
                 ) : (
                   <RiFileTextLine size={30} fill="gray" />
                 )}
  */}
-                <div className="text-[#5c5c5c] font-semibold text-lg text-center">
-                  Tất cả dự án
-                </div>
-              </a>
-            </Link>
+                  <div
+                    className=" font-semibold text-lg text-center border-b py-1"
+                    style={{
+                      color: path === "/" ? "black" : "#5c5c5c",
+                      borderBottomColor: path === "/" ? "#21b532" : "white",
+                      fontWeight: path === "/" ? "700" : "600",
+                    }}
+                  >
+                    <span className="">Tất cả dự án</span>
+                  </div>
+                </a>
+              </Link>
 
-            <Link href="/my-projects/all">
-              <a
-                className=" p-1 text-center pl-4"
-                style={{
+              <Link href="/my-projects/all">
+                <a
+                  className=" p-1 text-center pl-4 pr-4  border-r border-gray-500"
+                  /* style={{
                   borderColor:
                     path == "/my-projects/all" ? "#21b532" : "#e6e6e6",
-                }}
-              >
-                {/*  {path == "/my-projects/all" ? (
+                }} */
+                >
+                  {/*  {path == "/my-projects/all" ? (
                   <RiFileUserFill size={30} fill="#21b532" />
                 ) : (
                   <RiFileUserLine size={30} fill="gray" />
                 )} */}
 
-                <div className="text-[#5c5c5c] font-semibold text-lg text-center">
-                  Dự án của tôi
-                </div>
-              </a>
-            </Link>
-            {/*  <Link href="/profile">
-              <a
-                className=" p-1 text-center"
-                style={{
-                  borderColor: path == "/profile" ? "#21b532" : "#e6e6e6",
-                }}
-              >
-                  {path == "/profile" ? (
-                  <RiAccountCircleLine size={30} fill="#21b532" />
-                ) : (
-                  <RiAccountCircleLine size={30} fill="gray" />
-                )} 
-
-                <div className="text-[#5c5c5c] font-semibold text-lg">
-                  Profile
-                </div>
-              </a>
-            </Link> */}
+                  <div
+                    className="text-[#5c5c5c] font-semibold text-lg text-center py-1   border-b"
+                    style={{
+                      color:
+                        path.includes("my-projects") == true
+                          ? "black"
+                          : "#5c5c5c",
+                      borderBottomColor:
+                        path.includes("my-projects") == true
+                          ? "#21b532"
+                          : "white",
+                      fontWeight:
+                        path.includes("my-projects") == true ? "700" : "600",
+                    }}
+                  >
+                    Dự án của tôi
+                  </div>
+                </a>
+              </Link>
+              <Link href="/my-contribute">
+                <a
+                  className=" p-1 text-center pl-4"
+                  /* style={{
+                    borderColor:
+                      path.includes("my-contribute") == true
+                        ? "#21b532"
+                        : "#e6e6e6",
+                  }} */
+                >
+                  <div
+                    className="text-[#5c5c5c] font-semibold text-lg text-center py-1 border-b"
+                    style={{
+                      color:
+                        path.includes("my-contribute") == true
+                          ? "black"
+                          : "#5c5c5c",
+                      borderBottomColor:
+                        path.includes("my-contribute") == true
+                          ? "#21b532"
+                          : "white",
+                      fontWeight:
+                        path.includes("my-contribute") == true ? "700" : "600",
+                    }}
+                  >
+                    Đóng góp của tôi
+                  </div>
+                </a>
+              </Link>
+            </div>
           </div>
-
           <div className="items-center flex flex-row">
             <NewProjectDropdown />
             <MenuUser user={user} isAdmin={isAdmin} />

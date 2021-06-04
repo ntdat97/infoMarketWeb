@@ -181,7 +181,7 @@ export const MainPostsUser = ({ user }) => {
         },
       },
       {
-        Header: "Trạng thái",
+        Header: "Hoạt động",
         accessor: "complete",
         Cell: ({ row }) => {
           /*  if (row.original.status === "DRAFT") {

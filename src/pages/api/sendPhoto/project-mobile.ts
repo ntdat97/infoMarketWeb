@@ -16,7 +16,7 @@ const sendPhoto = async (req: any, res: NextApiResponse) => {
     var getMediaBySlugWatermark = [...cloneData.data.values];
     for await (const item of getMediaBySlugWatermark) {
       const ORIGINAL_IMAGE = item.urlPaid;
-      const LOGO = process.env.BASE_MEDIA_URL + "/trove-markwater.png";
+      const LOGO = process.env.BASE_MEDIA_URL + "/trove-watermark.png";
 
       const FILENAME = "D:/hoc/LuanVan/nextjs/infomarket/public/test.jpg";
 

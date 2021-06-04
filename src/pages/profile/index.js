@@ -42,7 +42,7 @@ export default function ProfilePage() {
           {user === false ? (
             <>
               <LayoutUser
-                shadow={true}
+                shadow={false}
                 header={<Header />}
                 sidebar={<SideBar />}
                 main={
@@ -56,6 +56,7 @@ export default function ProfilePage() {
           ) : (
             <>
               <LayoutUser
+                shadow={false}
                 header={<Header />}
                 sidebar={<SideBar />}
                 main={

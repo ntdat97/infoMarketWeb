@@ -317,7 +317,7 @@ const CreateProjectMap = () => {
               paddingVertical: 7,
             }}
           >
-            Description
+            Mô tả
           </div>
 
           <textarea
@@ -341,7 +341,7 @@ const CreateProjectMap = () => {
               paddingVertical: 7,
             }}
           >
-            How photos will be used
+            Mục đích sử dụng ảnh
           </div>
           <textarea
             style={{
@@ -364,7 +364,7 @@ const CreateProjectMap = () => {
               paddingVertical: 7,
             }}
           >
-            Requirements
+            Yêu cầu
           </div>
           <textarea
             style={{

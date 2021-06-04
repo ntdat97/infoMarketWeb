@@ -53,9 +53,9 @@ export const MainContributeAdmin = ({ user }) => {
               <a
                 className="hover:underline font-semibold text-base mb-1 "
                 target="_blank"
-                href={row.original.url}
+                href={row.original.urlPaid}
               >
-                <img src={row.original.url} className="w-28 h-20 shadow" />
+                <img src={row.original.urlPaid} className="w-28 h-20 shadow" />
               </a>
               {/* <span className="text-xs text-gray-500">
                 Đăng trong{" "}

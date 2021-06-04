@@ -14,11 +14,10 @@ const sendPhoto = async (req: any, res: NextApiResponse) => {
     const data = req.body;
     const cloneData = data;
     const position = data.momentPosition;
-    console.log(position);
     var getMediaBySlugWatermark = [...cloneData.data.values];
     const ORIGINAL_IMAGE = getMediaBySlugWatermark[0].urlPaid;
-    const LOGO = process.env.BASE_MEDIA_URL + "/trove-markwater.png";
-
+    const LOGO = process.env.BASE_MEDIA_URL + "/trove-watermark.png";
+    console.log(LOGO);
     const FILENAME = "D:/hoc/LuanVan/nextjs/infomarket/public/test.jpg";
 
     const main = async () => {

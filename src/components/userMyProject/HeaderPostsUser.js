@@ -18,7 +18,7 @@ export const HeaderPostsUser = ({ user }) => {
 
   return (
     <div className="flex px-6 py-3 border-b mt-2">
-      <ActiveLink href="/my-projects/all" activeClassName="">
+      {/* <ActiveLink href="/my-projects/all" activeClassName="">
         <a className="pb-2 mx-3 text-sm border-b border-black font-semibold">
           <h2 className="font-bold text-xl mr-2">Bài viết</h2>
         </a>
@@ -30,8 +30,8 @@ export const HeaderPostsUser = ({ user }) => {
         <a className="pb-2 mx-3 text-sm">
           <h2 className="font-bold text-xl mr-2">Đóng góp</h2>
         </a>
-      </ActiveLink>
-      <div className="border-l pl-2">
+      </ActiveLink> */}
+      <div className="pl-2">
         <div className="ml-8">
           <ActiveLink
             href={{

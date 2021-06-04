@@ -27,7 +27,7 @@ const MENU_SIDEBAR = [
     id: 4,
     label: "Rút tiền",
     icon: <DollarSign size={18} />,
-    link: "/admin/payment",
+    link: "/admin/payment/all",
   },
   {
     id: 5,

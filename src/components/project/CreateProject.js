@@ -317,10 +317,11 @@ const CreateProject = () => {
               paddingVertical: 7,
             }}
           >
-            Description
+            Mô tả
           </div>
 
           <textarea
+            rows={3}
             style={{
               borderColor:
                 formik.errors.description && formik.touched.description
@@ -341,9 +342,10 @@ const CreateProject = () => {
               paddingVertical: 7,
             }}
           >
-            How photos will be used
+            Mục đích sử dụng
           </div>
           <textarea
+            rows={5}
             style={{
               borderColor:
                 formik.errors.usedFor && formik.touched.usedFor
@@ -364,9 +366,10 @@ const CreateProject = () => {
               paddingVertical: 7,
             }}
           >
-            Requirements
+            Yêu cầu
           </div>
           <textarea
+            rows={5}
             style={{
               borderColor:
                 formik.errors.requirements && formik.touched.requirements

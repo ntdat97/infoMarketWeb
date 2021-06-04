@@ -18,7 +18,7 @@ export const HeaderPostsUser = ({ user }) => {
   });
   return (
     <div className="flex px-6 py-3 border-b mt-2">
-      <ActiveLink
+      {/*  <ActiveLink
         href="/my-projects/all"
         activeClassName="border-b border-b-2 border-black font-semibold"
       >
@@ -33,8 +33,8 @@ export const HeaderPostsUser = ({ user }) => {
         <a className="pb-2 mx-3 text-sm border-b border-black">
           <h2 className="font-bold text-xl mr-2 ">Đóng góp</h2>
         </a>
-      </ActiveLink>
-      <div className="border-l pl-2">
+      </ActiveLink> */}
+      <div className="pl-2">
         <div className="ml-8">
           <ActiveLink
             href={{
@@ -60,7 +60,7 @@ export const HeaderPostsUser = ({ user }) => {
             activeClassName="border-b border-b-2 border-black font-semibold"
           >
             <a className="py-2 mx-3 text-sm">
-              Đã đăng (
+              Đã duyệt (
               {!list.isLoading &&
                 list.items.length > 0 &&
                 list.items[0]?.totalMediaStatusAPPROVE}

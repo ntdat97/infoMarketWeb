@@ -1,9 +1,9 @@
-import { firebaseAdmin } from "../../../../fb/firebaseAdmin";
-import prisma from "../../../../libs/prisma";
-import { use } from "../../../../libs/middleware/nextMiddleware";
-import { addRequestId } from "../../../../libs/middleware/utils/addRequestId";
-import { addUserIdAndRole } from "../../../../libs/middleware/utils/addUserIdAndRole";
-import { allowedHttpMethod } from "../../../../libs/middleware/utils/allowedHttpMethod";
+import { firebaseAdmin } from "../../../../../fb/firebaseAdmin";
+import prisma from "../../../../../libs/prisma";
+import { use } from "../../../../../libs/middleware/nextMiddleware";
+import { addRequestId } from "../../../../../libs/middleware/utils/addRequestId";
+import { addUserIdAndRole } from "../../../../../libs/middleware/utils/addUserIdAndRole";
+import { allowedHttpMethod } from "../../../../../libs/middleware/utils/allowedHttpMethod";
 import { NextApiResponse } from "next";
 const imageToBase64 = require("image-to-base64");
 var Jimp = require("jimp");
@@ -44,7 +44,9 @@ const getMedia = async (req: any, res: NextApiResponse) => {
         });
         var array = [...getMediaBySlug];
         array.map((item, index) => {
-          delete item.media.urlPaid;
+          if (!item.media.paidState) {
+            delete item.media.urlPaid;
+          }
         });
 
         const count = await prisma.mediaMap.count({
@@ -85,7 +87,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             slug: slug,
           },
         });
-        if (decoded.uid === decoded.uid) {
+        if (getPostByPublic.authorId === decoded.uid) {
           const getMediaBySlug = await prisma.mediaMap.findMany({
             /*            skip: skip,
             take: take, 
@@ -97,7 +99,6 @@ const getMedia = async (req: any, res: NextApiResponse) => {
                 project: {
                   slug: slug,
                 },
-                userId: decoded.uid,
               },
             },
             include: {
@@ -108,12 +109,12 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               },
             },
           });
-          /*  var array = [...getMediaBySlug];
+          var array = [...getMediaBySlug];
           array.map((item, index) => {
             if (!item.media.paidState) {
               delete item.media.urlPaid;
             }
-          }); */
+          });
 
           const count = await prisma.mediaMap.count({
             where: {
@@ -137,7 +138,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
               .json({ message: "Data is empty.", id: "empty" });
           }
 
-          return res.status(200).json([getMediaBySlug, pageCount]);
+          return res.status(200).json([array, pageCount]);
         }
         return res
           .status(200)

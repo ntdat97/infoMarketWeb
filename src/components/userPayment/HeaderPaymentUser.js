@@ -41,76 +41,11 @@ export const HeaderPaymentUser = ({ user, confirm }) => {
             </ActiveLink>
           </div>
           <div className="flex flex-row">
-            <div className="text-2xl font-semibold border-r-2 pr-[32px] mr-5">
+            <div className="text-2xl font-semibold  pr-[32px] mr-5">
               {!list.isLoading &&
                 list.items.length > 0 &&
                 list.items[0]?.projectName}
             </div>
-            <ActiveLink
-              href={{
-                pathname: "/project/[slug]/photo-collection/[status]",
-                query: { status: "all", slug: slug },
-              }}
-              activeClassName="border-b border-b-2 border-black font-semibold"
-            >
-              <a className="py-2 mx-3 text-sm">
-                Tất cả{" "}
-                {/*(
-                 {!list.isLoading &&
-                  list.items.length > 0 &&
-                  list.items[0]?.totalMediaStatusALL}
-                ) */}
-              </a>
-            </ActiveLink>
-            <ActiveLink
-              href={{
-                pathname: "/project/[slug]/photo-collection/[status]",
-                query: { status: "pending", slug: slug },
-              }}
-              activeClassName="border-b border-b-2 border-black font-semibold"
-            >
-              <a className="py-2 mx-3 text-sm">
-                Đang chờ duyệt{" "}
-                {/*(
-                  {!list.isLoading &&
-                  list.items.length > 0 &&
-                  list.items[0]?.totalMediaStatusPENDING}
-                ) */}
-              </a>
-            </ActiveLink>
-            <ActiveLink
-              href={{
-                pathname: "/project/[slug]/photo-collection/[status]",
-                query: { status: "approve", slug: slug },
-              }}
-              activeClassName="border-b border-b-2 border-black font-semibold"
-            >
-              <a className="py-2 mx-3 text-sm">
-                Đã duyệt
-                {/*(
-                 {!list.isLoading &&
-                  list.items.length > 0 &&
-                  list.items[0]?.totalMediaStatusAPPROVE}
-                ) */}
-              </a>
-            </ActiveLink>
-
-            <ActiveLink
-              href={{
-                pathname: "/project/[slug]/photo-collection/[status]",
-                query: { status: "reject", slug: slug },
-              }}
-              activeClassName="border-b border-b-2 border-black font-semibold"
-            >
-              <a className="py-2 mx-3 text-sm">
-                Đã từ chối{" "}
-                {/*(
-                 {!list.isLoading &&
-                  list.items.length > 0 &&
-                  list.items[0]?.totalMediaStatusREJECT}
-                ) */}
-              </a>
-            </ActiveLink>
           </div>
           <div>
             <span className="text-sm ml-2">

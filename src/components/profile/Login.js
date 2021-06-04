@@ -10,13 +10,15 @@ function Login() {
       <div className=" py-6 w-full">
         <div className="flex   bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-2xl">
           <div className="flex flex-col h-full p-8 w-full">
-            <h2 className="text-2xl font-semibold text-gray-700 text-center">
+            <h2 className="text-2xl font-semibold text-gray-700 text-center mb-2">
               Infomation Market
             </h2>
-            <p className="text-xl text-gray-600 text-center">Welcome back!</p>
+            <p className="text-xl text-gray-600 text-center">
+              Chào mừng đến với ứng dụng Chợ Thông Tin
+            </p>
             <button
               onClick={signinWithGoogle}
-              className="flex items-center w-full justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
+              className="flex items-center w-full justify-center mt-4 border-g text-white rounded-lg border border-green-300 hover:bg-gray-100"
             >
               <div className="px-4 py-3 ">
                 <svg className="h-6 w-6" viewBox="0 0 40 40">
@@ -39,7 +41,7 @@ function Login() {
                 </svg>
               </div>
               <h1 className="px-4 pr-12 py-3 w-5/6 text-center text-gray-600 font-bold">
-                Sign in with Google
+                Đăng nhập bằng tài khoản Google
               </h1>
             </button>
             {/* <div className="mt-4 flex items-center justify-between">

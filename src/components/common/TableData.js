@@ -17,11 +17,14 @@ export const TableData = ({ columns, data }) => {
       <table {...getTableProps()} className="bg-white w-full">
         <thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()} className="">
+            <tr
+              {...headerGroup.getHeaderGroupProps()}
+              className="border-r border-l border-gray-800 "
+            >
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="z-50 bg-white font-semibold  text-left px-3 py-3 border-b border-gray-800"
+                  className="z-50 font-bold text-lg  text-left px-3 py-3 border-b border-t border-gray-800 bg-green-100"
                 >
                   {column.render("Header")}
                 </th>
@@ -29,7 +32,10 @@ export const TableData = ({ columns, data }) => {
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
+        <tbody
+          {...getTableBodyProps()}
+          className="border-r border-l border-gray-200 "
+        >
           {rows.map((row) => {
             prepareRow(row);
             return (

@@ -45,10 +45,10 @@ export default function Card({ data }) {
                   size="20"
                 />
                 <div className="text-base text-white items-center">
-                  ${data.price}
+                  {data.price}đ
                 </div>
                 <div className="text-base text-white items-center">/</div>
-                <div className="text-base text-white items-center">Photo</div>
+                <div className="text-base text-white items-center">Ảnh</div>
               </div>
             </div>
             <div className="absolute right-0 bottom-9 z-10">
@@ -62,10 +62,10 @@ export default function Card({ data }) {
           </a>
         </Link>
         <Link href={`/project/${data.slug}`}>
-          <a className="flex flex-row items-center p-4">
-            <div>{data.authorName}</div>
+          <a className="flex flex-row justify-between items-center ">
+            <div className="p-4">{data.authorName}</div>
             {data.type === "MAP" && (
-              <Map className="ml-2" size={16} color="green" />
+              <Map className="mx-4" size={40} color="green" />
             )}
             {/*  <div className="flex flex-row items-center ml-2 mt-[2px]">
               <RenderStar />

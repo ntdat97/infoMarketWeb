@@ -7,10 +7,11 @@ import { dateFromNow } from "../../../libs/dateFromNow";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Edit, Trash2, Image, Pause, Play } from "react-feather";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-
+import { ConfirmModal } from "../../modal/ConfirmModal";
 export const MainProjectsAdmin = ({ user }) => {
+  const [confirmModalVisible, setConfirmModalVisible] = useState([false, ""]);
   const router = useRouter();
   let list = useAsyncList({
     async load() {
@@ -24,7 +25,20 @@ export const MainProjectsAdmin = ({ user }) => {
       return { items: json };
     },
   });
-
+  const removePost = async (slug) => {
+    const req = await fetch(`/api/posts/remove-post?slug=${slug}`, {
+      headers: {
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    if (!req.ok) {
+      toast.error("Có lỗi khi xóa, vui lòng thử lại");
+    }
+    if (req.ok) {
+      toast.success("Xóa thành công");
+      list.reload();
+    }
+  };
   useEffect(() => {
     list.reload();
   }, [router.query.status]);
@@ -57,6 +71,14 @@ export const MainProjectsAdmin = ({ user }) => {
       toast.success("Tiếp tục thành công");
       list.reload();
     }
+  };
+  const confirm = () => {
+    /*     toast.loading("Đang xóa", { duration: 4000 }); */
+    removePost(confirmModalVisible[1]);
+    const state = [...confirmModalVisible];
+    state[0] = !confirmModalVisible[0];
+    setConfirmModalVisible(state);
+    list.reload();
   };
   const columns = useMemo(
     () => [
@@ -156,7 +178,7 @@ export const MainProjectsAdmin = ({ user }) => {
         },
       },
       {
-        Header: "Trạng thái",
+        Header: "Hoạt động",
         accessor: "complete",
         Cell: ({ row }) => {
           /*  if (row.original.status === "DRAFT") {
@@ -331,6 +353,11 @@ export const MainProjectsAdmin = ({ user }) => {
             {list.items.length > 0 ? (
               <>
                 <Toaster />
+                <ConfirmModal
+                  setModalVisible={setConfirmModalVisible}
+                  modalVisible={confirmModalVisible}
+                  confirmButton={confirm}
+                />
                 <TableData columns={columns} data={list.items} />
               </>
             ) : (

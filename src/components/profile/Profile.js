@@ -233,13 +233,10 @@ export default function Profile() {
     }
   }
   const checkTranId = async (tranId) => {
+    toast.loading("Đang kiểm tra", { duration: 3000 });
     setPaymentData(null);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "text/plain");
-    myHeaders.append(
-      "Cookie",
-      "__cfduid=d986408ab1eaba3dbcd3c658c296ee47a1620549929; ci_session=isa7f91jiudjbvc5mpt3hpda9skm8qb5"
-    );
 
     var raw =
       '{\r\n	"access_token": "he2BWRBcBZpDOsmimfSu6DXABbycBzc7n4Fp3RmbpTOpYNhOoz",\r\n	"tranId": ' +
@@ -810,79 +807,74 @@ export default function Profile() {
           <div className="flex flex-row">
             {isEditing ? (
               <>
-                <button onClick={() => setIsEditing(false)}>
-                  <div
-                    className="py-2 mb-2.5"
-                    style={{ color: "#1B9284", fontSize: 18 }}
-                  >
-                    Hủy
-                  </div>
+                <button
+                  className="border rounded-md border-red-500 p-2  mb-2.5 mr-2 shadow focus:outline-none hover:bg-[#d4fffa]"
+                  onClick={() => setIsEditing(false)}
+                >
+                  <div style={{ color: "#1B9284", fontSize: 18 }}>Hủy</div>
                 </button>
                 <button
+                  className="border rounded-md border-blue-500 p-2  mb-2.5 mr-2 shadow focus:outline-none hover:bg-[#d4fffa]"
                   type="submit"
                   onClick={() => {
                     formik.handleSubmit();
                     setIsEditing(false);
                   }}
                 >
-                  <div
-                    className="py-2 mb-2.5 ml-3"
-                    style={{ color: "#1B9284", fontSize: 18 }}
-                  >
-                    Xác nhận
-                  </div>
+                  <div style={{ color: "#1B9284", fontSize: 18 }}>Xác nhận</div>
                 </button>
               </>
             ) : (
-              <button onClick={() => setIsEditing(true)}>
-                <div
-                  className="py-2 mb-2.5"
-                  style={{ color: "#1B9284", fontSize: 18 }}
-                >
+              <button
+                onClick={() => setIsEditing(true)}
+                className="border rounded-md border-[#1B9284] p-2  mb-2.5 mr-2 shadow focus:outline-none hover:bg-[#d4fffa]"
+              >
+                <div className="" style={{ color: "#1B9284", fontSize: 18 }}>
                   Chỉnh sửa
                 </div>
               </button>
             )}
-
-            <button onClick={() => setDepositInfoModal(true)}>
-              <div
-                className="py-2 mb-2.5 ml-3"
-                style={{ color: "#1B9284", fontSize: 18 }}
-              >
-                Nạp tiền
-              </div>
-            </button>
-            <button
-              onClick={() => {
-                if (initValues[0].userPaymentMethod.length > 0) {
-                  setPaymentWithdrawModal(true);
-                } else {
-                  toast.error(
-                    "Vui lòng thêm phương thức thanh toán để rút tiền"
-                  );
-                }
-              }}
-            >
-              <div
-                className="py-2 mb-2.5 ml-3"
-                style={{ color: "#1B9284", fontSize: 18 }}
-              >
-                Rút tiền
-              </div>
-            </button>
-            <button
-              onClick={() => {
-                setPaymentHistoryModal(true);
-                getPaymentHistory();
-              }}
-            >
-              <div
-                className="py-2 mb-2.5 ml-3"
-                style={{ color: "#1B9284", fontSize: 18 }}
-              >
-                Lịch sử nạp/rút
-              </div>
-            </button>
+            {!isEditing && (
+              <>
+                {" "}
+                <button
+                  onClick={() => setDepositInfoModal(true)}
+                  className="border rounded-md border-[#1B9284] p-2  mb-2.5 mr-2 shadow focus:outline-none hover:bg-[#d4fffa]"
+                >
+                  <div
+                    /* className="py-2 mb-2.5 ml-3" */
+                    style={{ color: "#1B9284", fontSize: 18 }}
+                  >
+                    Nạp tiền
+                  </div>
+                </button>
+                <button
+                  className="border rounded-md border-[#1B9284] p-2  mb-2.5 mr-2 shadow focus:outline-none hover:bg-[#d4fffa]"
+                  onClick={() => {
+                    if (initValues[0].userPaymentMethod.length > 0) {
+                      setPaymentWithdrawModal(true);
+                    } else {
+                      toast.error(
+                        "Vui lòng thêm phương thức thanh toán để rút tiền"
+                      );
+                    }
+                  }}
+                >
+                  <div style={{ color: "#1B9284", fontSize: 18 }}>Rút tiền</div>
+                </button>
+                <button
+                  className="border rounded-md border-[#1B9284] p-2  mb-2.5 mr-2 shadow focus:outline-none hover:bg-[#d4fffa]"
+                  onClick={() => {
+                    setPaymentHistoryModal(true);
+                    getPaymentHistory();
+                  }}
+                >
+                  <div style={{ color: "#1B9284", fontSize: 18 }}>
+                    Lịch sử nạp/rút
+                  </div>
+                </button>{" "}
+              </>
+            )}
           </div>
         </div>
         <div className=" py-3 px-[22px]">Project Activites</div>
@@ -1178,8 +1170,10 @@ export default function Profile() {
             </button>
           </div>
         )}
-
-        <button onClick={signout}>Đăng xuất</button>
+        <div className="pb-20 bg-white" />
+        {/*    <button onClick={signout} className="mb-20">
+          Đăng xuất
+        </button> */}
       </div>
     </>
   );

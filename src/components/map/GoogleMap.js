@@ -54,7 +54,7 @@ export function GoogleMap() {
   const { user } = useAuth();
   async function getMediaInfo() {
     const response = await fetch(
-      `/api/posts/photo-collection-map/${router.query.status}?slug=${slug}`,
+      `/api/posts/photo-collection-map/web/${router.query.status}?slug=${slug}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +163,7 @@ export function GoogleMap() {
     zoom: 12,
   };
   const Marker = ({ item, index }) => {
-    /*     console.log(
+    /*  console.log(
       item.media.paidState == false
         ? item.media.isApprove === "PENDING"
           ? "#c3c900"
@@ -180,23 +180,25 @@ export function GoogleMap() {
         <button
           onMouseEnter={() => setItemHover(item.id)}
           onMouseLeave={() => setItemHover("")}
+          style={{
+            backgroundColor:
+              item.media.paidState == false
+                ? item.media.isApprove === "PENDING"
+                  ? "#c3c900"
+                  : item.media.isApprove === "APPROVE"
+                  ? "#21b532"
+                  : item.media.isApprove === "REJECT"
+                  ? "#ff0000"
+                  : "#b0b0b0"
+                : "#2e43ff",
+          }}
           className={` rounded-full  ${
             itemHover === item.id
               ? "w-5 h-5"
               : selectedItem === item.id
               ? " w-5 h-5 bg-[#19ff21]"
               : "w-3 h-3"
-          }  bg-[${
-            item.media.paidState == false
-              ? item.media.isApprove === "PENDING"
-                ? "#c3c900"
-                : item.media.isApprove === "APPROVE"
-                ? "#21b532"
-                : item.media.isApprove === "REJECT"
-                ? "#ff0000"
-                : "#b0b0b0"
-              : "#2e43ff"
-          }] focus:outline-none hover:bg-[${
+          }   focus:outline-none hover:bg-[${
             item.media.isApprove === "PENDING"
               ? "#c3c900"
               : item.media.isApprove === "APPROVE"
@@ -328,9 +330,9 @@ export function GoogleMap() {
                       onMouseEnter={() => setItemHover(item.id)}
                       onMouseLeave={() => setItemHover("")}
                       src={
-                        typeof item.media.urlPaid === "undefined"
-                          ? item.media.url
-                          : item.media.urlPaid
+                        item.media.paidState
+                          ? item.media.urlPaid
+                          : item.media.url
                       }
                       className={`h-[200px] object-cover w-full`}
                     />
@@ -338,7 +340,8 @@ export function GoogleMap() {
                 </button>
 
                 <div className="flex flex-row justify-between items-center mx-3 py-2">
-                  {typeof item.media.urlPaid != "undefined" ? null /* (
+                  {/* {console.log(item.media)} */}
+                  {item.media.paidState ? null /* (
                     <CreditCard color="green" size={40} />
                   ) */ : (
                     <>
@@ -387,7 +390,14 @@ export function GoogleMap() {
                     onClick={() => map.panTo({ lat: item.lat, lng: item.long })}
                     className="focus:outline-none"
                   >
-                    <MapPin color="#19ff21" size={40} />
+                    <MapPin
+                      color={
+                        typeof item.media.urlPaid != "undefined"
+                          ? "#2e43ff"
+                          : "#19ff21"
+                      }
+                      size={40}
+                    />
                   </button>
                 </div>
               </div>

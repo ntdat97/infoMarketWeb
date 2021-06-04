@@ -247,7 +247,7 @@ export const MainPostsUser = ({ user }) => {
             {list.items.length > 0 ? (
               <TableData columns={columns} data={list.items} />
             ) : (
-              <p>Empty...</p>
+              <p className="text-xl font-semibold">Bạn chưa gửi hình ảnh nào</p>
             )}
           </>
         )}

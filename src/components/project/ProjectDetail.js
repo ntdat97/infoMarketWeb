@@ -247,7 +247,7 @@ export function ProjectDetail({ user }) {
                     paddingVertical: 7,
                   }}
                 >
-                  Description
+                  Mô tả
                 </div>
                 <div>{post.description}</div>
               </div>
@@ -259,7 +259,7 @@ export function ProjectDetail({ user }) {
                     paddingVertical: 7,
                   }}
                 >
-                  How photos will be used
+                  Mục đích sử dụng
                 </div>
                 <div>{post.usedFor}</div>
               </div>
@@ -271,7 +271,7 @@ export function ProjectDetail({ user }) {
                     paddingVertical: 7,
                   }}
                 >
-                  Photo requirements
+                  Yêu cầu
                 </div>
                 <div>{post.requirements}</div>
               </div>

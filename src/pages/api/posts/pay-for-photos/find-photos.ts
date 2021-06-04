@@ -24,11 +24,12 @@ const PayForPhotos = async (req: any, res: NextApiResponse) => {
           project: {
             slug: slug,
           },
+          isApprove: "APPROVE",
+          paidState: false,
         },
         include: {
           user: true,
           project: true,
-          paidState: false,
         },
       });
 

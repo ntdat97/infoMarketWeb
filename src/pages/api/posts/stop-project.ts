@@ -17,6 +17,7 @@ const apiRoute = nextConnect({
 
 apiRoute.get(async (req: any, res: NextApiResponse) => {
   const slug = req.query.slug as string;
+  console.log(slug);
   const authValue = req.headers.authorization;
   const token = authValue.replace("Bearer ", "");
   const decoded = await firebaseAdmin.auth().verifyIdToken(token);

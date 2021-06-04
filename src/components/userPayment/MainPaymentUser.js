@@ -659,7 +659,7 @@ export const MainPaymentUser = ({ user }) => {
             {list.items.length > 0 ? (
               <TableData columns={columns} data={list.items} />
             ) : (
-              <div className="text-center text-2xl text-gray-600">
+              <div className="text-center text-2xl text-gray-600 mt-10">
                 Bạn chưa duyệt hình ảnh nào
               </div>
             )}
