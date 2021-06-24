@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { Edit, Trash2 } from "react-feather";
 import React, { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-export const MainPostsUser = ({ user }) => {
+export const MainContributeUser = ({ user }) => {
   const router = useRouter();
   let list = useAsyncList({
     async load() {
@@ -68,7 +68,7 @@ export const MainPostsUser = ({ user }) => {
                 pathname: `/project/${row.original.project.slug}`,
               }}
             >
-              <a className="hover:underline font-semibold">
+              <a className="hover:underline font-semibold max-w-[200px] line-clamp-3">
                 {row.original.project.projectName}{" "}
               </a>
             </Link>
@@ -114,7 +114,6 @@ export const MainPostsUser = ({ user }) => {
         Header: "Thanh toán",
         accessor: "payment",
         Cell: ({ row }) => {
-          console.log(row);
           if (row.original.paidState === true) {
             return (
               <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#389e0d] bg-[#f6ffed] border border-[#b7eb8f]">

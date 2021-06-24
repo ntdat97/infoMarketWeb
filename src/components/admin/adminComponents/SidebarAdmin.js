@@ -33,7 +33,7 @@ const MENU_SIDEBAR = [
     id: 5,
     label: "Nạp tiền",
     icon: <CreditCard size={18} />,
-    link: "/admin/deposit",
+    link: "/admin/deposit/all",
   },
 ];
 

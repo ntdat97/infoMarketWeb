@@ -32,6 +32,7 @@ export const MenuUser = ({ isAdmin, user }) => {
       >
         <img src={user?.photoURL} className="ml-4 rounded-full w-8 h-8" />
         <span className="text-sm mx-2">{user?.displayName}</span>
+
         {isAdmin && (
           <span className="text-xs bg-[#fff7e6] text-[#fa8c16] border-[#ffd591] p-1 mx-1 font-semibold">
             ADMIN

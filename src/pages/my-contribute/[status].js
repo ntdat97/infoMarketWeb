@@ -1,8 +1,8 @@
 import { Header } from "../../components/common/Header";
 import { LayoutUser } from "../../components/layout/LayoutUser";
 import { MainUser } from "../../components/layout/MainUser";
-import { HeaderPostsUser } from "../../components/userContribute/HeaderPostsUser";
-import { MainPostsUser } from "../../components/userContribute/MainPostsUser";
+import { HeaderContributeUser } from "../../components/userContribute/HeaderContributeUser";
+import { MainContributeUser } from "../../components/userContribute/MainContributeUser";
 import SideBar from "../../components/common/SideBar";
 import { Loading } from "../../components/common/Loading";
 import { Redirect } from "../../components/common/Redirect";
@@ -25,8 +25,8 @@ const MyContribute = () => {
         sidebar={<SideBar />}
         main={
           <MainUser
-            subHeader={<HeaderPostsUser user={user} />}
-            content={<MainPostsUser user={user} />}
+            subHeader={<HeaderContributeUser user={user} />}
+            content={<MainContributeUser user={user} />}
           />
         }
       />

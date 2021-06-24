@@ -48,7 +48,6 @@ const DepositMoney = async (req: any, res: NextApiResponse) => {
             id: decoded.uid,
           },
         });
-        console.log(getCurrentPointReceiver);
         if (decoded.uid === item[0].userId) {
           fail = fail + 1;
           break;

@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { MdAccessTime, MdImage } from "react-icons/md";
+import { MdAccessTime, MdImage, MdAttachMoney } from "react-icons/md";
 import CarouselComponent from "../common/CaroselComponent";
 import { Uploader } from "../common/Upload";
 import { ModalSubmit } from "./ModalSubmit";
 import { ErrorPaymentModal } from "../modal/ErrorPaymentModal";
 import { UnAuthModal } from "./UnAuthModal";
-import Header from "../common/Header";
-import Modal from "react-modal";
-import SideBar from "../common/SideBar";
-import { useAsyncList } from "@react-stately/data";
+
 import { useRouter } from "next/router";
 import { Loading } from "../common/Loading";
 import Link from "next/link";
-import DatePicker, { registerLocale } from "react-datepicker";
-import { Tooltip } from "../common/Tooltip";
 import vi from "date-fns/locale/vi";
 import { LoadingModal } from "../common/LoadingModal";
 import toast, { Toaster } from "react-hot-toast";
-import { useAuth } from "../../fb/auth";
 
 export function ProjectDetail({ user }) {
   const [coverImage, setCoverImage] = useState([]);
@@ -58,7 +52,6 @@ export function ProjectDetail({ user }) {
     setStatus("ok");
   };
   async function sendPhoto(values) {
-    console.log(values);
     setModalLoadingVisible(true);
     const response = await fetch("/api/sendPhoto/project", {
       method: "POST",
@@ -140,7 +133,7 @@ export function ProjectDetail({ user }) {
     <>
       {status === "loading" ? (
         <Loading />
-      ) : status === "ok" ? (
+      ) : status === "ok" && post.status === "PUBLISHED" ? (
         <>
           {isShowUploader ? (
             <Uploader
@@ -176,38 +169,29 @@ export function ProjectDetail({ user }) {
               <div>
                 <CarouselComponent data={post.caroselImage} />
               </div>
+              <div className="text-4xl m font-bold  py-4 text-center">
+                {post.projectName}
+              </div>
               <div className="flex flex-row pb-2.5 border-b border-[#f0f0f0]">
                 <div className="w-9/12 px-2">
-                  <div className="text-3xl m font-bold  py-2">
-                    {post.projectName}
-                  </div>
-                  <Link href={`/profile/${author[0].username}`}>
-                    <a
-                      style={{ paddingVertical: 1.5 }}
-                      className="py-2 text-lg"
-                    >
-                      {post.authorName}
-                    </a>
-                  </Link>
-                  <div
-                    style={{
-                      fontSize: 17,
-                      color: "black",
-                      alignItems: "center",
-                      paddingVertical: 3,
-                      color: "#454545",
-                    }}
-                  >
-                    $ {post.price}đ/ảnh{" "}
-                  </div>
-                  <div className="flex flex-row items-center py-1">
-                    <MdImage color="#8f8f8f" className="mr-1" />
-                    <div style={{ color: "#454545", fontSize: 17 }}>
+                  <div className="items-center text-[#454545] px-1 flex flex-row py-2">
+                    <MdAttachMoney size={30} className="mr-3" />
+                    <div className="text-xl font-medium">
                       {" "}
+                      <span className="text-2xl text-red-400">
+                        {" "}
+                        {post.price}đ
+                      </span>{" "}
+                      /ảnh{" "}
+                    </div>
+                  </div>
+                  <div className="items-center text-[#454545] px-1 flex flex-row py-2">
+                    <MdImage color="#8f8f8f" className="mr-3" size={30} />
+                    <div className="text-xl font-medium">
                       {post.maxUnit} ảnh
                     </div>
                   </div>
-                  <div className="flex flex-row items-center py-1">
+                  <div className="flex flex-row items-center py-1 px-1">
                     <MdAccessTime color="#8f8f8f" className="mr-3" size={30} />
 
                     <div className="text-[17px] text-[#454545] items-center  ">
@@ -222,14 +206,23 @@ export function ProjectDetail({ user }) {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-center items-center w-3/12">
+                <div className="flex justify-center items-center w-3/12 flex-col">
                   <Link href={`/profile/${author[0].username}`}>
                     <a /* onPress={() => navigation.navigate('Profilediver')} */
                     >
                       <img
                         src={author[0].photoURL}
                         style={{ height: 70, width: 70 }}
+                        className="rounded-full"
                       />
+                    </a>
+                  </Link>
+                  <Link href={`/profile/${author[0].username}`}>
+                    <a
+                      style={{ paddingVertical: 1.5 }}
+                      className="py-2 text-lg"
+                    >
+                      {post.authorName}
                     </a>
                   </Link>
                 </div>
@@ -240,7 +233,8 @@ export function ProjectDetail({ user }) {
                 </div>
               )}
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
-                <div
+                <p
+                  className="whitespace-pre-wrap"
                   style={{
                     fontSize: 17,
                     fontWeight: "700",
@@ -248,7 +242,7 @@ export function ProjectDetail({ user }) {
                   }}
                 >
                   Mô tả
-                </div>
+                </p>
                 <div>{post.description}</div>
               </div>
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
@@ -261,7 +255,7 @@ export function ProjectDetail({ user }) {
                 >
                   Mục đích sử dụng
                 </div>
-                <div>{post.usedFor}</div>
+                <p className="whitespace-pre-wrap">{post.usedFor}</p>
               </div>
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
                 <div
@@ -273,7 +267,7 @@ export function ProjectDetail({ user }) {
                 >
                   Yêu cầu
                 </div>
-                <div>{post.requirements}</div>
+                <p className="whitespace-pre-wrap">{post.requirements}</p>
               </div>
               <div className="py-2.5 px-2 border-b border-[#f0f0f0]">
                 <div
@@ -284,12 +278,12 @@ export function ProjectDetail({ user }) {
                     marginBottom: 5,
                   }}
                 >
-                  Contact requester
+                  Liên hệ người tạo dự án
                 </div>
                 <Link href={`mailto:${post.contact}`}>
                   <a>
                     <div className="text-center border-[#006A73] py-1.5 mx-4 border rounded-md mb-4 text-[#006A73] font-semibold">
-                      Ask a question
+                      Đặt câu hỏi
                     </div>
                   </a>
                 </Link>
@@ -355,12 +349,14 @@ export function ProjectDetail({ user }) {
               onClick={() => sendPhotoChecker(post)}
               className="py-1  rounded-md bg-[#006A73] flex w-full focus:opacity-50 focus:outline-none items-center justify-center"
             >
-              <div className="text-white font-semibold">Send photos</div>
+              <div className="text-white font-semibold">Gửi ảnh</div>
             </button>
           </div>
         </>
       ) : (
-        <p>Something went wrong.</p>
+        <div className="flex justify-center mt-10 text-lg">
+          Cố lỗi xảy ra hoặc dự án đã bị xóa
+        </div>
       )}
     </>
   );

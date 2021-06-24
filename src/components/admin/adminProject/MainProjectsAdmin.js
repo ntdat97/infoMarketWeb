@@ -273,7 +273,7 @@ export const MainProjectsAdmin = ({ user }) => {
                 <span className="text-sm mr-2 ml-2">
                   <Link
                     href={{
-                      pathname: `/project/[slug]/photo-collection/all`,
+                      pathname: `/project/[slug]/photo-collection-map/all`,
                       query: { slug: row.original.slug },
                     }}
                   >

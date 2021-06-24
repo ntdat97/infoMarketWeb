@@ -39,6 +39,7 @@ function useProvideAuth() {
       .signInWithPopup(provider)
       .then(async (response) => {
         const userInfo = await getUserInfo(response.user);
+        console.log(userInfo.userState);
         if (userInfo.userState === "BANNED") {
           signout();
         } else {

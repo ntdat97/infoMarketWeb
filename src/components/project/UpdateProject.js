@@ -97,10 +97,6 @@ const UpdateProject = ({ post, user, payment }) => {
         .string()
         .required("Vui lòng nhập tên")
         .max(50, "Tên tối đa 50 chữ cái"),
-      price: yup
-        .number()
-        .required("Vui lòng nhập giá")
-        .typeError("Vui lòng nhập đúng định dạng (số)"),
       maxUnit: yup
         .number()
         .required("Vui lòng nhập số lượng tối đa")
@@ -218,23 +214,14 @@ const UpdateProject = ({ post, user, payment }) => {
             <div style={{ paddingVertical: 1.5 }} className="text-xl ">
               {user.displayName}
             </div>
-            {formik.errors.price && formik.touched.price && (
-              <p style={{ color: "red" }}>{formik.errors.price}</p>
-            )}
+            <p style={{ color: "red" }}>Lưu ý: bạn không thể sửa giá</p>
             <div className="flex flex-row my-2">
               <input
-                style={{
-                  borderColor:
-                    formik.errors.price && formik.touched.price
-                      ? "red"
-                      : "#e5e7eb",
-                }}
                 className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
                 placeholder="Price"
                 name="price"
                 type="number"
                 value={formik.values.price}
-                onChange={formik.handleChange}
               />
               <div className="text-xl p-1 justify-center items-center mx-2">
                 {" "}
@@ -334,7 +321,7 @@ const UpdateProject = ({ post, user, payment }) => {
               paddingVertical: 7,
             }}
           >
-            Description
+            Mô tả
           </div>
 
           <textarea
@@ -358,7 +345,7 @@ const UpdateProject = ({ post, user, payment }) => {
               paddingVertical: 7,
             }}
           >
-            How photos will be used
+            Mục đích sử dụng
           </div>
           <textarea
             style={{
@@ -381,7 +368,7 @@ const UpdateProject = ({ post, user, payment }) => {
               paddingVertical: 7,
             }}
           >
-            Requirements
+            Yêu cầu
           </div>
           <textarea
             style={{
@@ -410,7 +397,7 @@ const UpdateProject = ({ post, user, payment }) => {
               marginBottom: 5,
             }}
           >
-            Contact requester
+            Liên hệ người tạo dự án
           </div>
           <input
             style={{
@@ -426,7 +413,7 @@ const UpdateProject = ({ post, user, payment }) => {
             onChange={formik.handleChange}
           />
 
-          <div
+          {/* <div
             style={{
               padding: 10,
               borderWidth: 1,
@@ -460,7 +447,7 @@ const UpdateProject = ({ post, user, payment }) => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="p-2 border-t-[0.5px] border-[#f0f0f0]  mt-0.5  bg-white sticky bottom-0 ">

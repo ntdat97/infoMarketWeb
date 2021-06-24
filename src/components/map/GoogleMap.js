@@ -40,8 +40,7 @@ export function GoogleMap() {
           mediaId: item.media.id,
           status: item.media.isApprove,
           url: item.media.url,
-          urlPaid:
-            typeof item.media.urlPaid === "undefined" ? "" : item.media.urlPaid,
+          urlPaid: item.media.paidState ? item.media.urlPaid : "",
           isChange: false,
         });
       });
@@ -321,22 +320,16 @@ export function GoogleMap() {
                     setIndexImage(index);
                   }}
                 >
-                  <LazyLoad>
-                    <img
-                      ref={(el) => (itemsRef.current[index] = el)}
-                      onClick={() =>
-                        map.panTo({ lat: item.lat, lng: item.long })
-                      }
-                      onMouseEnter={() => setItemHover(item.id)}
-                      onMouseLeave={() => setItemHover("")}
-                      src={
-                        item.media.paidState
-                          ? item.media.urlPaid
-                          : item.media.url
-                      }
-                      className={`h-[200px] object-cover w-full`}
-                    />
-                  </LazyLoad>
+                  <img
+                    ref={(el) => (itemsRef.current[index] = el)}
+                    onClick={() => map.panTo({ lat: item.lat, lng: item.long })}
+                    onMouseEnter={() => setItemHover(item.id)}
+                    onMouseLeave={() => setItemHover("")}
+                    src={
+                      item.media.paidState ? item.media.urlPaid : item.media.url
+                    }
+                    className={`h-[200px] object-cover w-full`}
+                  />
                 </button>
 
                 <div className="flex flex-row justify-between items-center mx-3 py-2">
@@ -391,11 +384,7 @@ export function GoogleMap() {
                     className="focus:outline-none"
                   >
                     <MapPin
-                      color={
-                        typeof item.media.urlPaid != "undefined"
-                          ? "#2e43ff"
-                          : "#19ff21"
-                      }
+                      color={item.media.paidState ? "#2e43ff" : "#19ff21"}
                       size={40}
                     />
                   </button>

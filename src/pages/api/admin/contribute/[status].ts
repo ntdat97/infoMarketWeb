@@ -23,9 +23,6 @@ const PostsAPI = async (
         orderBy: {
           updatedAt: "desc",
         },
-        where: {
-          paidState: false,
-        },
         include: {
           user: true,
           project: true,

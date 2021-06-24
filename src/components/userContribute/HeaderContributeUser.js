@@ -2,7 +2,7 @@ import { ActiveLink } from "../common/ActiveLink";
 import { useAsyncList } from "@react-stately/data";
 import React from "react";
 
-export const HeaderPostsUser = ({ user }) => {
+export const HeaderContributeUser = ({ user }) => {
   let list = useAsyncList({
     async load() {
       let res = await fetch("/api/posts/my-contribute/media-count", {

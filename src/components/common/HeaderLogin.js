@@ -133,7 +133,7 @@ export function HeaderLogin({ user, isScroll, isSticky }) {
                   </div>
                 </a>
               </Link>
-              <Link href="/my-contribute">
+              <Link href="/my-contribute/all">
                 <a
                   className=" p-1 text-center pl-4"
                   /* style={{

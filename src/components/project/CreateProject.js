@@ -193,7 +193,7 @@ const CreateProject = () => {
                     : "#e5e7eb",
               }}
               className="text-3xl m font-bold  my-2   text-gray-700 focus:outline-none focus:ring focus:border-blue-300 border border-gray-300 rounded py-2 h-14 px-4 block w-full appearance-none"
-              placeholder="Project's Name"
+              placeholder="Tên dự án"
               name="projectName"
               value={formik.values.projectName}
               onChange={formik.handleChange}
@@ -213,7 +213,7 @@ const CreateProject = () => {
                       : "#e5e7eb",
                 }}
                 className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
-                placeholder="Price"
+                placeholder="Giá"
                 name="price"
                 type="number"
                 value={formik.values.price}
@@ -238,7 +238,7 @@ const CreateProject = () => {
                       : "#e5e7eb",
                 }}
                 className="text-lg  border text-[#454545] items-center py-1 focus:outline-none focus:ring forcus:border-[0.5px] p-1 focus:border-blue-300  rounded-md"
-                placeholder="Maximun unit"
+                placeholder="Số lượng tối đa"
                 name="maxUnit"
                 type="number"
                 value={formik.values.maxUnit}
@@ -267,7 +267,7 @@ const CreateProject = () => {
                 }}
                 locale="vi"
                 dateFormat="dd/MM/yyyy"
-                placeholderText="Start date"
+                placeholderText="Ngày bắt đầu"
                 name="openDay"
                 selectsStart
                 startDate={formik.values.openDay}
@@ -289,7 +289,7 @@ const CreateProject = () => {
                 }}
                 locale="vi"
                 dateFormat="dd/MM/yyyy"
-                placeholderText="Close date"
+                placeholderText="Ngày kết thúc"
                 name="closeDay"
                 selectsEnd
                 startDate={formik.values.openDay}
@@ -396,7 +396,7 @@ const CreateProject = () => {
               marginBottom: 5,
             }}
           >
-            Contact requester
+            Lên hệ người tạo dự án
           </div>
           <input
             style={{

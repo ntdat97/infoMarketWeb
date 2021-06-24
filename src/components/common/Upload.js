@@ -20,6 +20,9 @@ export const Uploader = ({
     const uppyInstance = Uppy({
       locale: Vietnam,
       allowMultipleUploads: isAllowMultipleUploads,
+      restrictions: {
+        allowedFileTypes: [".jpg", ".jpeg", ".png", ".gif"],
+      },
     })
       .use(XHRUpload, {
         endpoint: "/api/upload",

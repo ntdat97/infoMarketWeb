@@ -219,7 +219,7 @@ function CarouselFullScreenPhotoCollection({
                 >
                   <MdClear size={30} color="white" />
                 </button>
-                {item.urlPaid === "" && (
+                {!isPaid && (
                   <>
                     <button
                       onClick={() => pending(index)}

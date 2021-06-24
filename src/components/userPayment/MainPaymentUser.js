@@ -179,6 +179,7 @@ export const MainPaymentUser = ({ user }) => {
       /* navigation.navigate('Project'); */
     };
     if (data.length > 0) {
+      console.log(data);
       const note = paymentID;
       const amount = data[id].length * data[id][0].project?.price;
       return (
@@ -222,7 +223,7 @@ export const MainPaymentUser = ({ user }) => {
           </button>
           <div className=" bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col text-lg ">
             <div className="text-center  py-1.5 mx-4  rounded-md mb-4 text-[#006A73] font-semibold px-1.5 text-2xl ">
-              Tạo giao dịch thanh toán
+              Thanh toán cho từng tài khoản
             </div>
             <div className="flex flex-row">
               <div className="mr-5">
@@ -318,28 +319,29 @@ export const MainPaymentUser = ({ user }) => {
           </button>
           <div className=" bg-white rounded-xl p-3 items-center shadow justify-center flex flex-col text-lg ">
             <div className="text-center  py-1.5 mx-4  rounded-md mb-4 text-[#006A73] font-semibold px-1.5 text-2xl ">
-              Tạo giao dịch thanh toán hàng loạt
+              Thanh toán cho toàn bộ ảnh đã duyệt
             </div>
             <div className="flex flex-row ">
               <div className="mr-5">
                 Tên dự án:
                 <span className="font-bold">
+                  {" "}
                   {data[id][0].project.projectName}
                 </span>
               </div>
               <div>
                 Tổng số người nhận:
-                <span className="font-bold">{data.length} người</span>
+                <span className="font-bold"> {data.length} người</span>
               </div>
             </div>
             <div className="flex flex-row border-b border-gray-300 pb-3">
               <div className="mr-5">
                 Tổng số ảnh:
-                <span className="font-bold">{photosCount} </span>
+                <span className="font-bold"> {photosCount} </span>
               </div>
               <div>
                 Tổng số tiền:
-                <span className="font-bold">{amount}</span>
+                <span className="font-bold"> {amount}</span>
               </div>
             </div>
 

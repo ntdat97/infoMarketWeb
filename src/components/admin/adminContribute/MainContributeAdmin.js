@@ -100,7 +100,7 @@ export const MainContributeAdmin = ({ user }) => {
                 pathname: `/project/${row.original.project.slug}`,
               }}
             >
-              <a className="hover:underline font-semibold">
+              <a className="hover:underline font-semibold max-w-[200px] line-clamp-3">
                 {row.original.project.projectName}{" "}
               </a>
             </Link>
@@ -143,6 +143,32 @@ export const MainContributeAdmin = ({ user }) => {
         },
       },
       {
+        Header: "Thanh toán",
+        accessor: "payment",
+        Cell: ({ row }) => {
+          if (row.original.paidState === true) {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#389e0d] bg-[#f6ffed] border border-[#b7eb8f]">
+                Đã thanh toán
+              </span>
+            );
+          }
+          if (row.original.paidState === false) {
+            return (
+              <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
+                Chưa thanh toán
+              </span>
+            );
+          }
+
+          return (
+            <span className="px-2 py-1 rounded-xs font-medium text-xs text-[#d48806] bg-[#fffbe6] border border-[#ffe58f]">
+              Chưa xác định
+            </span>
+          );
+        },
+      },
+      {
         Header: "Ngày gởi",
         accessor: "createdAt",
         Cell: ({ row }) => {
@@ -164,7 +190,7 @@ export const MainContributeAdmin = ({ user }) => {
           );
         },
       },
-      {
+      /* {
         Header: "Cập nhật gần đây",
         accessor: "updatedAt",
         Cell: ({ row }) => {
@@ -183,77 +209,6 @@ export const MainContributeAdmin = ({ user }) => {
                 {dateFromNow(row.original.updatedAt)}
               </Tooltip>
             </span>
-          );
-        },
-      },
-      /* {
-        Header: "Hành động",
-        accessor: "slug",
-        Cell: ({ row }) => {
-          return (
-            <>
-              <div className="flex flex-row ">
-                <span className="text-sm mr-2 ml-2">
-                  <Link
-                    href={{
-                      pathname: `/project/[slug]/photo-collection/all`,
-                      query: { slug: row.original.slug },
-                    }}
-                  >
-                    <a>
-                      <Tooltip
-                        text={
-                          <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
-                            Ảnh đã đóng góp
-                          </span>
-                        }
-                      >
-                        <Image />
-                      </Tooltip>
-                    </a>
-                  </Link>
-                </span>
-                <span className="text-sm mr-2 ml-2">
-                  <Link
-                    href={{
-                      pathname: `/project/[slug]/edit`,
-                      query: { slug: row.original.slug },
-                    }}
-                  >
-                    <a>
-                      <Tooltip
-                        text={
-                          <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
-                            Chỉnh sửa
-                          </span>
-                        }
-                      >
-                        <Edit />
-                      </Tooltip>
-                    </a>
-                  </Link>
-                </span>
-                {row.original.status != "DELETED" && (
-                  <span className="text-sm ml-2  ">
-                    <Tooltip
-                      text={
-                        <span className="px-2 py-1 rounded-sm text-xs bg-black text-white">
-                          Xóa
-                        </span>
-                      }
-                    >
-                      <button
-                        onClick={() =>
-                          setConfirmModalVisible([true, row.original.slug])
-                        }
-                      >
-                        <Trash2 />
-                      </button>
-                    </Tooltip>
-                  </span>
-                )}
-              </div>
-            </>
           );
         },
       }, */

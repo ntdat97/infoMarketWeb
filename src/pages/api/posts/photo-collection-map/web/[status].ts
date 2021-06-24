@@ -42,12 +42,12 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             },
           },
         });
-        var array = [...getMediaBySlug];
+        /* var array = [...getMediaBySlug];
         array.map((item, index) => {
           if (!item.media.paidState) {
             delete item.media.urlPaid;
           }
-        });
+        }); */
 
         const count = await prisma.mediaMap.count({
           where: {
@@ -71,7 +71,7 @@ const getMedia = async (req: any, res: NextApiResponse) => {
             .json({ message: "Data is empty.", id: "empty" });
         }
 
-        return res.status(200).json([array, pageCount]);
+        return res.status(200).json([getMediaBySlug, pageCount]);
       } catch (error) {
         // console.log(error);
 

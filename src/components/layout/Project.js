@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MdAccessTime, MdImage } from "react-icons/md";
+import { MdAccessTime, MdImage, MdAttachMoney } from "react-icons/md";
 import CarouselComponent from "../common/CaroselComponent";
 import { ModalSubmit } from "../project/ModalSubmit";
 import { useRouter } from "next/router";
@@ -15,27 +15,21 @@ const ProjectInfo = ({ post, author }) => {
   return (
     <div className="flex flex-row pb-2.5 border-b border-[#f0f0f0]">
       <div className="w-9/12 px-2">
-        <div className="text-3xl m font-bold  py-2">{post.projectName}</div>
-        <div style={{ paddingVertical: 1.5 }}>{post.authorName}</div>
-        <div
-          style={{
-            fontSize: 17,
-            color: "black",
-            alignItems: "center",
-            paddingVertical: 3,
-            color: "#454545",
-          }}
-        >
-          $ {post.price}/photo
-        </div>
-        <div className="flex flex-row items-center py-1">
-          <MdImage color="#8f8f8f" className="mr-1" />
-          <div style={{ color: "#454545", fontSize: 17 }}>
+        <div className="items-center text-[#454545] px-1 flex flex-row py-2">
+          <MdAttachMoney size={30} className="mr-3" />
+          <div className="text-xl font-medium">
             {" "}
-            {post.maxUnit} photos
+            <span className="text-2xl text-red-400">
+              {" "}
+              {post.price}đ
+            </span> /ảnh{" "}
           </div>
         </div>
-        <div className="flex flex-row items-center py-1">
+        <div className="items-center text-[#454545] px-1 flex flex-row py-2">
+          <MdImage color="#8f8f8f" className="mr-3" size={30} />
+          <div className="text-xl font-medium">{post.maxUnit} ảnh</div>
+        </div>
+        <div className="flex flex-row items-center py-1 px-1">
           <MdAccessTime color="#8f8f8f" className="mr-3" size={30} />
 
           <div className="text-[17px] text-[#454545] items-center  ">
@@ -50,10 +44,19 @@ const ProjectInfo = ({ post, author }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center items-center w-3/12">
+      <div className="flex flex-col justify-center items-center w-3/12">
         <Link href={`/profile/${author[0].username}`}>
           <a /* onPress={() => navigation.navigate('Profilediver')} */>
-            <img src={author[0].photoURL} style={{ height: 70, width: 70 }} />
+            <img
+              src={author[0].photoURL}
+              className="rounded-full"
+              style={{ height: 70, width: 70 }}
+            />
+          </a>
+        </Link>
+        <Link href={`/profile/${author[0].username}`}>
+          <a style={{ paddingVertical: 1.5 }} className="py-2 text-lg">
+            {post.authorName}
           </a>
         </Link>
       </div>
@@ -116,6 +119,9 @@ export default function Project() {
             <ModalSubmit />
             <div>
               <CarouselComponent data={post.caroselImage} />
+            </div>
+            <div className="text-4xl m font-bold  py-4 text-center">
+              {post.projectName}
             </div>
             <ProjectInfo post={post} author={author} />
             <div className="py-2.5 px-2 border-b border-[#f0f0f0]">

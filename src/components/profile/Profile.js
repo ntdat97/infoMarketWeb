@@ -195,7 +195,6 @@ export default function Profile() {
 
   async function handleChangeProfile(values) {
     toast.loading("Đang cập nhật", { duration: 4000 });
-    console.log(formik.values);
     const response = await fetch("/api/profile/update-profile", {
       method: "POST",
       headers: {
@@ -211,7 +210,6 @@ export default function Profile() {
     }
   }
   async function handleDepositMoney(values) {
-    toast.loading("Đang kiểm tra", { duration: 4000 });
     const response = await fetch("/api/profile/deposit-money-momo", {
       method: "POST",
       headers: {
@@ -263,7 +261,7 @@ export default function Profile() {
   };
   async function handleAddPayment(values) {
     toast.loading("Đang thêm Payment", { duration: 4000 });
-
+    setIsAddingPaymentMethod(false);
     const response = await fetch("/api/profile/add-payment-method", {
       method: "POST",
       headers: {
@@ -274,9 +272,13 @@ export default function Profile() {
     });
     if (response.ok) {
       toast.success("Thêm thành công");
+      formikPayment.setFieldValue("phone", "");
+      formikPayment.setFieldValue("stk", "");
       me.reload();
     } else {
       toast.error("Có lỗi xảy ra");
+      formikPayment.setFieldValue("phone", "");
+      formikPayment.setFieldValue("stk", "");
     }
   }
   async function withdrawMoney() {
@@ -309,6 +311,7 @@ export default function Profile() {
     if (response.ok) {
       const data = await response.json();
       const concat = data.userDepositRecorder.concat(data.userWithdrawRecorder);
+      concat.length <= 0 && toast.error("Bạn chưa thực hiện thanh toán nào");
       setPaymentHistoryData(concat);
     } else {
       toast.error("Có lỗi xảy ra khi tải lịch sử");
@@ -325,7 +328,6 @@ export default function Profile() {
       }
     );
     const res = await response.json();
-    console.log(res);
     if (response.ok) {
       toast.success("Xóa thành công");
       router.reload();
@@ -684,13 +686,24 @@ export default function Profile() {
                           <button
                             className="border border-[#1B9284] rounded-md  p-1 px-2"
                             onClick={() => {
-                              if (amountMoney <= userPoint) {
-                                toast.loading("Đang thực hiện", {
-                                  duration: 4000,
-                                });
-                                withdrawMoney();
+                              if (
+                                amountMoney != null &&
+                                amountMoney != 0 &&
+                                amountMoney != "" &&
+                                paymentMethodSelected != null
+                              ) {
+                                if (amountMoney <= userPoint) {
+                                  toast.loading("Đang thực hiện", {
+                                    duration: 4000,
+                                  });
+                                  withdrawMoney();
+                                } else {
+                                  toast.error("Số dư của bạn không đủ");
+                                }
                               } else {
-                                toast.error("Số dư của bạn không đủ");
+                                toast.error(
+                                  "Vui lòng nhập số tiền và phương thức thanh toán"
+                                );
                               }
                             }}
                           >
@@ -1011,6 +1024,7 @@ export default function Profile() {
                       </div>
                     );
                   }
+
                   if (item.provider === "BANK") {
                     return (
                       <div key={index}>

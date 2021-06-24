@@ -13,11 +13,7 @@ const PostsCountByStatusAPI = async (req: any, res: NextApiResponse) => {
   const role = decoded.role;
   console.log(role);
   if (role[0] === "ADMIN") {
-    const totalMediaStatusALL = await prisma.media.count({
-      where: {
-        paidState: false,
-      },
-    });
+    const totalMediaStatusALL = await prisma.media.count();
 
     const totalMediaStatusPENDING = await prisma.media.count({
       where: {
