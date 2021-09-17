@@ -1,4 +1,4 @@
-Chi tiết về project và các hình ảnh screenshot nằm ở file LuanVan_Nguyen_Tan_Dat.pdf
+Chi tiết về project và các hình ảnh screenshot nằm ở file LuanVan_NguyenTanDat_C1800005.pdf
 
 Công cụ cần thiết:
 - Docker
