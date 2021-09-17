@@ -13,7 +13,7 @@ Bước 1: Tại địa chỉ source gốc chạy lệnh: "yarn" hoặc "npm ins
 Bước 2: Lần lượt chạy các lệnh
 - Khởi động container của docker: chạy docker desktop -> chuột phải vào file docker-compose.yml -> compose up hoặc tạo docker container với cấu hình như file  docker-compose.yml
 - Tạo cơ sở dữ liệu của prisma: "npx prisma generate" 
-Bước 3: Chạy website với port 124 (ứng dụng di động chạy local với port 124): "yarn dev -p 124"
+- Bước 3: Chạy website với port 124 (ứng dụng di động chạy local với port 124): "yarn dev -p 124"
 
 ** Mobile
 
