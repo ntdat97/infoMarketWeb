@@ -2,9 +2,8 @@ Chi tiết về project và các hình ảnh screenshot nằm ở file LuanVan_N
 
 Công cụ cần thiết:
 - Docker
-- npm
+- npm hoặc yarn
 - react-native cli
-- yarn
 - Máy ảo android studio hoặc máy thật có bật chế độ usb debug
 
 ** Web
